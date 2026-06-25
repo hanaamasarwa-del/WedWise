@@ -4,7 +4,7 @@
 
 - WedWise is a wedding-planning prototype for a course/project presentation.
 - The protected brief in `WedWise protected site brief.txt` is the source of truth for the product idea and must not be changed unless explicitly requested.
-- The current site files are placeholders: `frontend/index.html`, `frontend/styles.css`, and `script.js`.
+- The active static site files are `frontend/index.html`, `frontend/styles.css`, and `frontend/script.js`.
 - Demo supplier data lives in `backend/database/` and is synthetic only. Do not present it as verified supplier data.
 
 ## Planned App Flow
@@ -19,5 +19,5 @@
 ## Implementation Notes
 
 - Keep the project structure simple unless a backend or build step is introduced.
-- Keep secrets in `.env`, using `.env.example` as the documented template.
+- Keep secrets in `backend/.env`, using `backend/.env.example` as the documented template.
 - If real suppliers are added later, store the data source and review date.
