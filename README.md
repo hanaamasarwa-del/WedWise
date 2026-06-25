@@ -20,7 +20,7 @@ At the beginning of every future CLI session, read:
 - `WedWise protected site brief.txt` contains the site brief and execution instructions.
 - Do not rewrite, reorganize, remove, or otherwise change `WedWise protected site brief.txt` unless the user explicitly asks for that exact change.
 - `README.md` is the single place for durable project context and important session notes.
-- `index.html` and `styles.css` are intentionally empty placeholders for the future site build.
+- `frontend/index.html` and `frontend/styles.css` are intentionally empty placeholders for the future site build.
 
 ## Memory Policy
 
@@ -33,26 +33,27 @@ Keep notes short. Skip routine file operations, temporary recovery steps, and de
 - Initial project setup and synthetic demo database assets are in place.
 - Site implementation has not started yet.
 
-## Expected Folder Contents
-
-The project folder should contain:
+## Project Structure
 
 - `README.md`
 - `WedWise protected site brief.txt`
-- `index.html`
-- `styles.css`
-- `database/`
+- `frontend/`
+  - `index.html`
+  - `styles.css`
+- `backend/`
+  - `database/`
 
 ## Database Demo Assets
 
-`database/` contains synthetic supplier data for development and demo use only:
+`backend/database/` contains synthetic supplier data for development and demo use only:
 
-- `README.md` — database usage notes and data-safety rules.
-- `seed.sql` — canonical SQLite schema and seed data.
-- `demo_database.sqlite` — ready-to-open SQLite database generated from the seed.
-- `demo_suppliers.json` — JSON export of the demo supplier catalog.
-- `example_queries.sql` — sample lookup, request, report, and lead queries.
+- `README.md` - database usage notes and data-safety rules.
+- `seed.sql` - canonical SQLite schema and seed data.
+- `demo_database.sqlite` - ready-to-open SQLite database generated from the seed.
+- `demo_suppliers.json` - JSON export of the demo supplier catalog.
+- `example_queries.sql` - sample lookup, request, report, and lead queries.
 
 ## Session Notes
 
 - 2026-06-25 10:12 (Asia/Jerusalem): Project created as a new repository with the initial setup and synthetic demo supplier database assets.
+- 2026-06-25: Project reorganized into `frontend/` and `backend/` directories.
