@@ -2,7 +2,7 @@
 
 WedWise is a future static HTML/CSS wedding-planning website based on the protected site brief.
 
-Project created today: June 25, 2026 at 10:12 (Asia/Jerusalem).
+Project created: June 25, 2026.
 
 ## GitHub Repository
 
@@ -27,6 +27,8 @@ At the beginning of every future CLI session, read:
 Record only durable context that future sessions need: project decisions, important user preferences, implementation milestones, and constraints.
 
 Keep notes short. Skip routine file operations, temporary recovery steps, and details that are already obvious from the current files.
+
+Use dates only in project documentation and session notes. Do not include times or timezones.
 
 ## Current Status
 
@@ -55,5 +57,5 @@ Keep notes short. Skip routine file operations, temporary recovery steps, and de
 
 ## Session Notes
 
-- 2026-06-25 10:12 (Asia/Jerusalem): Project created as a new repository with the initial setup and synthetic demo supplier database assets.
+- 2026-06-25: Project created as a new repository with the initial setup and synthetic demo supplier database assets.
 - 2026-06-25: Project reorganized into `frontend/` and `backend/` directories.
