@@ -1,0 +1,11 @@
+# Environment variables - never commit these
+server/.env
+.env
+
+# Node modules
+server/node_modules/
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
