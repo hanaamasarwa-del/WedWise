@@ -30,7 +30,6 @@ const progressFill = document.getElementById('progress-fill');
 const progressBar = document.querySelector('.progress-bar');
 const btnBack = document.getElementById('btn-back');
 const btnNext = document.getElementById('btn-next');
-const btnSubmit = document.getElementById('btn-submit');
 const btnRestart = document.getElementById('btn-restart');
 const questionnaireSection = document.getElementById('questionnaire');
 const reportSection = document.getElementById('report-section');
@@ -162,9 +161,9 @@ function updateProgress(step) {
 
 function updateNavButtons(step) {
   btnBack.hidden = step === 1;
-  btnNext.hidden = step === TOTAL_STEPS;
-  btnNext.disabled = step === TOTAL_STEPS;
-  btnSubmit.hidden = step !== TOTAL_STEPS;
+  btnNext.hidden = false;
+  btnNext.disabled = false;
+  btnNext.textContent = step === TOTAL_STEPS ? 'שליחה וקבלת דוח' : 'הבא';
 }
 
 function goToStep(step) {
@@ -284,14 +283,19 @@ function renderReport(html) {
 
 async function submitQuestionnaire(payload) {
   const apiBaseUrl = window.location.protocol === 'file:' ? 'http://localhost:3000' : '';
-  const response = await fetch(`${apiBaseUrl}/api/telegram-lead`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
 
-  if (!response.ok) {
-    throw new Error('Telegram delivery failed');
+  try {
+    const response = await fetch(`${apiBaseUrl}/api/telegram-lead`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      console.warn('Telegram delivery failed, showing local report');
+    }
+  } catch (error) {
+    console.warn('Backend not available, showing local report:', error);
   }
 
   return generateMockReport(payload);
@@ -308,8 +312,12 @@ function resetForm() {
 }
 
 btnNext.addEventListener('click', () => {
-  if (currentStep < TOTAL_STEPS && validateStep(currentStep)) {
+  if (!validateStep(currentStep)) return;
+
+  if (currentStep < TOTAL_STEPS) {
     goToStep(currentStep + 1);
+  } else if (currentStep === TOTAL_STEPS) {
+    form.dispatchEvent(new Event('submit'));
   }
 });
 
@@ -326,8 +334,8 @@ form.addEventListener('submit', async (e) => {
   const state = getFormState();
   const payload = buildWeddingRequestPayload(state);
 
-  btnSubmit.disabled = true;
-  btnSubmit.textContent = 'מייצרים את הדוח...';
+  btnNext.disabled = true;
+  btnNext.textContent = 'מייצרים את הדוח...';
 
   try {
     const reportHtml = await submitQuestionnaire(payload);
@@ -335,8 +343,8 @@ form.addEventListener('submit', async (e) => {
   } catch {
     showError('לא הצלחנו לשלוח את הטופס כרגע. אנא נסו שוב בעוד רגע.');
   } finally {
-    btnSubmit.disabled = false;
-    btnSubmit.textContent = 'שליחה וקבלת דוח';
+    btnNext.disabled = false;
+    btnNext.textContent = 'שליחה וקבלת דוח';
   }
 });
 
