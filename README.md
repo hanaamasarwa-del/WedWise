@@ -51,6 +51,10 @@ Use dates only in project documentation and session notes. Do not include times 
 - `backend/`
   - `.env.example`
   - `database/`
+- `server/`
+  - `.env.example`
+  - `index.js`
+  - `package.json`
 
 ## Database Demo Assets
 
@@ -62,9 +66,22 @@ Use dates only in project documentation and session notes. Do not include times 
 - `demo_suppliers.json` - JSON export of the demo supplier catalog.
 - `example_queries.sql` - sample lookup, request, report, and lead queries.
 
+## Local Application
+
+Run the site and backend together:
+
+```bash
+cd server
+npm install
+npm start
+```
+
+Then open `http://localhost:3000`. Form submissions are sent through the backend to Telegram. Configure `TELEGRAM_BOT_TOKEN` in the ignored `server/.env` file or as a deployment secret. `TELEGRAM_CHAT_ID` can be set explicitly; otherwise the server securely auto-detects it only when exactly one private chat has sent `/start` to the bot.
+
 ## Session Notes
 
 - 2026-06-25: Project created as a new repository with the initial setup and synthetic demo supplier database assets.
 - 2026-06-25: Project reorganized into `frontend/` and `backend/` directories.
 - 2026-06-25: Added basic support files for local development notes, environment documentation, ignore rules, and the future JavaScript entry point.
 - 2026-06-25: Consolidated the active website files under `frontend/` and backend configuration under `backend/`.
+- 2026-06-25: Added secure Telegram notifications for complete form submissions.
