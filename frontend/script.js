@@ -69,8 +69,11 @@ function buildWeddingRequestPayload(state) {
       estimated_budget_ils: state.estimated_budget_ils,
       guest_count: state.guest_count,
       region_id: parseInt(state.region_id, 10),
+      region_name: state.region_name,
       preferred_styles_json: JSON.stringify([state.preferred_style]),
       preferred_colors: state.preferred_colors,
+      flowers: state.flowers,
+      decorations: state.decorations,
       flowers_and_decor: flowersAndDecor,
       free_text: state.free_text,
     },
@@ -279,16 +282,16 @@ function renderReport(html) {
 }
 
 async function submitQuestionnaire(payload) {
-  // Future API integration:
-  // const response = await fetch('/api/wedding-requests', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(payload),
-  // });
-  // if (!response.ok) throw new Error('Submit failed');
-  // return response.json();
+  const response = await fetch('/api/telegram-lead', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
 
-  console.log('WedWise payload (ready for API):', payload);
+  if (!response.ok) {
+    throw new Error('Telegram delivery failed');
+  }
+
   return generateMockReport(payload);
 }
 
@@ -327,6 +330,8 @@ form.addEventListener('submit', async (e) => {
   try {
     const reportHtml = await submitQuestionnaire(payload);
     renderReport(reportHtml);
+  } catch {
+    showError('לא הצלחנו לשלוח את הטופס כרגע. אנא נסו שוב בעוד רגע.');
   } finally {
     btnSubmit.disabled = false;
     btnSubmit.textContent = 'שליחה וקבלת דוח';

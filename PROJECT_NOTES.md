@@ -20,4 +20,5 @@
 
 - Keep the project structure simple unless a backend or build step is introduced.
 - Keep secrets in `backend/.env`, using `backend/.env.example` as the documented template.
+- Telegram notifications require `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`; both must remain backend-only secrets.
 - If real suppliers are added later, store the data source and review date.
