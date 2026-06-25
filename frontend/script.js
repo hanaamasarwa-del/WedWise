@@ -282,7 +282,8 @@ function renderReport(html) {
 }
 
 async function submitQuestionnaire(payload) {
-  const response = await fetch('/api/telegram-lead', {
+  const apiBaseUrl = window.location.protocol === 'file:' ? 'http://localhost:3000' : '';
+  const response = await fetch(`${apiBaseUrl}/api/telegram-lead`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
