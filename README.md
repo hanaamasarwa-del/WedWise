@@ -2,7 +2,7 @@
 
 WedWise is a future static HTML/CSS wedding-planning website based on the protected site brief.
 
-Project created today: June 25, 2026 at 10:12 (Asia/Jerusalem).
+Project created: June 25, 2026.
 
 ## GitHub Repository
 
@@ -21,6 +21,9 @@ At the beginning of every future CLI session, read:
 - Do not rewrite, reorganize, remove, or otherwise change `WedWise protected site brief.txt` unless the user explicitly asks for that exact change.
 - `README.md` is the single place for durable project context and important session notes.
 - `frontend/index.html` and `frontend/styles.css` are intentionally empty placeholders for the future site build.
+- `script.js` is a placeholder JavaScript entry point for the future site build.
+- `.env.example` documents local environment variables. Copy it to `.env` and fill real secrets only on the local machine.
+- `PROJECT_NOTES.md` keeps short durable implementation notes separate from the protected brief.
 
 ## Memory Policy
 
@@ -28,20 +31,27 @@ Record only durable context that future sessions need: project decisions, import
 
 Keep notes short. Skip routine file operations, temporary recovery steps, and details that are already obvious from the current files.
 
+Use dates only in project documentation and session notes. Do not include times or timezones.
+
 ## Current Status
 
 - Initial project setup and synthetic demo database assets are in place.
 - Site implementation has not started yet.
+- Basic project support files are in place: `.gitignore`, `.env.example`, `PROJECT_NOTES.md`, and `script.js`.
 
 ## Project Structure
 
 - `README.md`
+- `.gitignore`
+- `.env.example`
+- `PROJECT_NOTES.md`
 - `WedWise protected site brief.txt`
 - `frontend/`
   - `index.html`
   - `styles.css`
 - `backend/`
   - `database/`
+- `script.js`
 
 ## Database Demo Assets
 
@@ -55,5 +65,6 @@ Keep notes short. Skip routine file operations, temporary recovery steps, and de
 
 ## Session Notes
 
-- 2026-06-25 10:12 (Asia/Jerusalem): Project created as a new repository with the initial setup and synthetic demo supplier database assets.
+- 2026-06-25: Project created as a new repository with the initial setup and synthetic demo supplier database assets.
 - 2026-06-25: Project reorganized into `frontend/` and `backend/` directories.
+- 2026-06-25: Added basic support files for local development notes, environment documentation, ignore rules, and the future JavaScript entry point.
