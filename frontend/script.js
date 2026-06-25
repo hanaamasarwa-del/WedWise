@@ -163,6 +163,7 @@ function updateProgress(step) {
 function updateNavButtons(step) {
   btnBack.hidden = step === 1;
   btnNext.hidden = step === TOTAL_STEPS;
+  btnNext.disabled = step === TOTAL_STEPS;
   btnSubmit.hidden = step !== TOTAL_STEPS;
 }
 
@@ -307,7 +308,7 @@ function resetForm() {
 }
 
 btnNext.addEventListener('click', () => {
-  if (validateStep(currentStep)) {
+  if (currentStep < TOTAL_STEPS && validateStep(currentStep)) {
     goToStep(currentStep + 1);
   }
 });
