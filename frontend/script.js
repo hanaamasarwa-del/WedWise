@@ -4,6 +4,29 @@
  * Payload shape aligns with wedding_requests + lead_submissions schema.
  */
 
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
+function startPageAtTop() {
+  const root = document.documentElement;
+  const previousScrollBehavior = root.style.scrollBehavior;
+
+  root.style.scrollBehavior = 'auto';
+  window.scrollTo(0, 0);
+  root.style.scrollBehavior = previousScrollBehavior;
+
+  if (window.location.hash) {
+    history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+  }
+}
+
+startPageAtTop();
+window.addEventListener('pageshow', () => {
+  startPageAtTop();
+  window.setTimeout(startPageAtTop, 0);
+});
+
 const TOTAL_STEPS = 5;
 
 const REGION_NAMES = {
@@ -34,6 +57,47 @@ const btnRestart = document.getElementById('btn-restart');
 const questionnaireSection = document.getElementById('questionnaire');
 const reportSection = document.getElementById('report-section');
 const reportContent = document.getElementById('report-content');
+const siteHeader = document.querySelector('.site-header');
+const howItWorksNav = document.querySelector('.nav-links a[href="#how-it-works"]');
+const questionnaireNav = document.querySelector('.nav-links a[href="#questionnaire"]');
+
+function setActiveNav(activeLink) {
+  [howItWorksNav, questionnaireNav].forEach((link) => {
+    const isActive = link === activeLink;
+    link.classList.toggle('is-active', isActive);
+
+    if (isActive) {
+      link.setAttribute('aria-current', 'location');
+    } else {
+      link.removeAttribute('aria-current');
+    }
+  });
+}
+
+function updateActiveNav() {
+  const headerHeight = siteHeader.offsetHeight;
+  const questionnaireStart = questionnaireSection.offsetTop - headerHeight - 80;
+  const activeLink = window.scrollY >= questionnaireStart
+    ? questionnaireNav
+    : howItWorksNav;
+
+  setActiveNav(activeLink);
+}
+
+let navUpdateRequested = false;
+window.addEventListener('scroll', () => {
+  if (navUpdateRequested) return;
+
+  navUpdateRequested = true;
+  window.requestAnimationFrame(() => {
+    updateActiveNav();
+    navUpdateRequested = false;
+  });
+}, { passive: true });
+
+window.addEventListener('resize', updateActiveNav);
+howItWorksNav.addEventListener('click', () => setActiveNav(howItWorksNav));
+questionnaireNav.addEventListener('click', () => setActiveNav(questionnaireNav));
 
 function getCheckedValues(name) {
   return Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map((el) => el.value);

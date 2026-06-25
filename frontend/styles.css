@@ -31,6 +31,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
 }
 
 body {
@@ -85,21 +86,22 @@ body {
   text-decoration: none;
   font-weight: 500;
   font-size: 0.95rem;
-  transition: color var(--transition);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition), background var(--transition);
 }
 
 .nav-links a:hover {
   color: var(--color-primary);
+  background: rgba(196, 132, 122, 0.1);
 }
 
-.nav-cta {
+.nav-links a.is-active {
   background: var(--color-primary);
   color: var(--color-surface) !important;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-sm);
 }
 
-.nav-cta:hover {
+.nav-links a.is-active:hover {
   background: var(--color-primary-dark);
   color: var(--color-surface) !important;
 }
@@ -694,8 +696,13 @@ select {
     padding: 1.5rem;
   }
 
-  .nav-links a:not(.nav-cta) {
-    display: none;
+  .nav-links {
+    gap: 0.35rem;
+  }
+
+  .nav-links a {
+    padding: 0.45rem 0.65rem;
+    font-size: 0.85rem;
   }
 }
 
@@ -709,7 +716,7 @@ select {
   margin-bottom: 3.5rem;
 }
 
-.how-it-works-header h1 {
+.how-it-works-header h2 {
   font-size: 2.5rem;
   margin-bottom: 1rem;
   color: var(--color-text);
@@ -1047,7 +1054,7 @@ select {
     grid-template-columns: 1fr;
   }
 
-  .how-it-works-header h1 {
+  .how-it-works-header h2 {
     font-size: 2rem;
   }
 
@@ -1095,7 +1102,7 @@ select {
     margin-right: 0;
   }
 
-  .how-it-works-header h1 {
+  .how-it-works-header h2 {
     font-size: 1.5rem;
   }
 
