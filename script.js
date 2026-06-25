@@ -86,6 +86,9 @@ function buildWeddingRequestPayload(state) {
 function showError(message) {
   formError.textContent = message;
   formError.hidden = false;
+  formError.classList.remove('error-shake');
+  void formError.offsetWidth; // force reflow to restart the animation
+  formError.classList.add('error-shake');
 }
 
 function clearError() {
@@ -155,6 +158,12 @@ function updateProgress(step) {
   progressLabel.textContent = `שלב ${step} מתוך ${TOTAL_STEPS}`;
   progressFill.style.width = `${(step / TOTAL_STEPS) * 100}%`;
   progressBar.setAttribute('aria-valuenow', String(step));
+
+  document.querySelectorAll('.step-pip').forEach((pip) => {
+    const pipStep = parseInt(pip.dataset.step, 10);
+    pip.classList.toggle('completed', pipStep < step);
+    pip.classList.toggle('active', pipStep === step);
+  });
 }
 
 function updateNavButtons(step) {

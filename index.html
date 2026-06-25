@@ -129,6 +129,17 @@
 
             <form id="wedding-form" novalidate>
               <div class="progress-wrapper">
+                <div class="step-track" aria-hidden="true">
+                  <div class="step-pip active" data-step="1"><span>1</span></div>
+                  <div class="step-track-line"></div>
+                  <div class="step-pip" data-step="2"><span>2</span></div>
+                  <div class="step-track-line"></div>
+                  <div class="step-pip" data-step="3"><span>3</span></div>
+                  <div class="step-track-line"></div>
+                  <div class="step-pip" data-step="4"><span>4</span></div>
+                  <div class="step-track-line"></div>
+                  <div class="step-pip" data-step="5"><span>5</span></div>
+                </div>
                 <div class="progress-text">
                   <span id="progress-label">שלב 1 מתוך 5</span>
                 </div>
@@ -268,9 +279,18 @@
               </fieldset>
 
               <div class="form-nav">
-                <button type="button" id="btn-back" class="btn btn-secondary" hidden>חזרה</button>
-                <button type="button" id="btn-next" class="btn btn-primary">הבא</button>
-                <button type="submit" id="btn-submit" class="btn btn-primary" hidden>שליחה וקבלת דוח</button>
+                <button type="button" id="btn-back" class="btn btn-secondary btn-nav-back" hidden>
+                  <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                  חזרה
+                </button>
+                <button type="button" id="btn-next" class="btn btn-primary btn-nav-next">
+                  הבא
+                  <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                </button>
+                <button type="submit" id="btn-submit" class="btn btn-primary btn-nav-submit" hidden>
+                  שליחה וקבלת דוח
+                  <span class="material-symbols-outlined" aria-hidden="true">send</span>
+                </button>
               </div>
             </form>
           </div>
