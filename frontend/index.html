@@ -7,14 +7,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="site.css">
 </head>
-<body>
+<body id="top">
   <header class="site-header">
     <div class="container header-inner">
-      <a href="index.html" class="logo">WedWise</a>
+      <a href="#top" class="logo">WedWise</a>
       <nav class="nav-links">
-        <a href="how-it-works.html">איך זה עובד</a>
+        <a href="#how-it-works" class="is-active" aria-current="location">איך זה עובד</a>
         <a href="#questionnaire" class="nav-cta">התחילו לתכנן</a>
       </nav>
     </div>
@@ -35,6 +35,68 @@
       </div>
     </section>
 
+    <section id="how-it-works" class="how-it-works how-it-works--full-page">
+      <div class="container">
+        <div class="how-it-works-header">
+          <h2>איך זה עובד?</h2>
+          <p>תהליך תכנון החתונה שלכם בשלוש שלבים פשוטים</p>
+        </div>
+
+        <div class="steps-grid">
+          <article class="step-card">
+            <span class="step-number">1</span>
+            <h3>ממלאים שאלון</h3>
+            <p>מספרים לנו על התקציב, האורחים, האזור, הסגנון והעדפות העיצוב שלכם. השאלון קצר וקל, ויכול להיעשות בכמה דקות בלבד.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-number">2</span>
+            <h3>מקבלים דוח מותאם</h3>
+            <p>המערכת מנתחת את המידע שהזנתם ומייצרת דוח אישי עם המלצות קונקרטיות והכוונה לתכנון החתונה של חלומכם.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-number">3</span>
+            <h3>מתקדמים עם הסוכנות</h3>
+            <p>רוצים להמשיך? נציג שלנו יחזור אליכם ויעזור לסגור אולם, דיג׳יי, עיצוב ושאר השירותים שאתם צריכים.</p>
+          </article>
+        </div>
+
+        <section class="why-us">
+          <h2>למה לבחור ב־ WedWise?</h2>
+          <div class="benefits-grid">
+            <div class="benefit-card">
+              <h3>📋 שאלון חכם</h3>
+              <p>שאלות מדוקדקות שעוזרות לנו להבין בדיוק את החזון שלכם.</p>
+            </div>
+            <div class="benefit-card">
+              <h3>🤖 בינה מלאכותית</h3>
+              <p>ניתוח מתקדם של ההעדפות שלכם ליצירת המלצות מדויקות.</p>
+            </div>
+            <div class="benefit-card">
+              <h3>💰 התאמה לתקציב</h3>
+              <p>כל ההמלצות והספקים מותאמים לדיוק לתקציב שלכם.</p>
+            </div>
+            <div class="benefit-card">
+              <h3>👥 שירות אנושי</h3>
+              <p>נציג אישי שיעזור לכם בכל שלב של תהליך התכנון.</p>
+            </div>
+            <div class="benefit-card">
+              <h3>⏱️ חיסכון בזמן</h3>
+              <p>תכנון מסודר ויעיל, ללא התלבטויות וחיפוש סתום.</p>
+            </div>
+            <div class="benefit-card">
+              <h3>✨ חתונה ייחודית</h3>
+              <p>דוח אישי לחלוטין שמשקף את הסגנון והאישיות שלכם.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="cta-section">
+          <h2>מוכנים להתחיל?</h2>
+          <p>בואו נעזור לכם ליצור את החתונה של חלומכם</p>
+          <a href="#questionnaire" class="btn btn-primary btn-lg">התחילו את השאלון</a>
+        </section>
+      </div>
+    </section>
 
     <section id="questionnaire" class="questionnaire">
       <div class="container">
@@ -203,6 +265,56 @@
     </div>
   </footer>
 
-  <script src="script.js" defer></script>
+  <aside class="chat-widget" id="chat-widget">
+    <section
+      class="chat-panel"
+      id="chat-panel"
+      aria-labelledby="chat-title"
+      aria-hidden="true"
+      hidden
+    >
+      <header class="chat-header">
+        <div>
+          <h2 id="chat-title">העוזר של WedWise</h2>
+          <p><span class="chat-status-dot" aria-hidden="true"></span> כאן כדי לעזור</p>
+        </div>
+        <button type="button" class="chat-close" id="chat-close" aria-label="סגירת הצ'אט">×</button>
+      </header>
+
+      <div class="chat-messages" id="chat-messages" aria-live="polite">
+        <div class="chat-message chat-message--assistant">
+          שלום! אני העוזר של WedWise. אפשר לשאול אותי על האתר, השאלון או תכנון החתונה.
+        </div>
+      </div>
+
+      <form class="chat-form" id="chat-form">
+        <label class="sr-only" for="chat-input">כתבו הודעה</label>
+        <textarea
+          id="chat-input"
+          rows="1"
+          maxlength="2000"
+          placeholder="איך אפשר לעזור?"
+          required
+        ></textarea>
+        <button type="submit" class="chat-send" id="chat-send" aria-label="שליחת הודעה">
+          <span aria-hidden="true">➤</span>
+        </button>
+      </form>
+    </section>
+
+    <button
+      type="button"
+      class="chat-launcher"
+      id="chat-launcher"
+      aria-label="פתיחת הצ'אט"
+      aria-controls="chat-panel"
+      aria-expanded="false"
+    >
+      <span class="chat-launcher-icon" aria-hidden="true">💬</span>
+      <span class="chat-launcher-label">אפשר לעזור?</span>
+    </button>
+  </aside>
+
+  <script src="app.js" defer></script>
 </body>
 </html>

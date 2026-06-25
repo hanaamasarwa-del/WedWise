@@ -1,4 +1,4 @@
-const supabase = require("./supabaseService");
+const supabase = require("./supabase-client");
 
 // Generates a mock AI report from a submission.
 // Replace this function body with a real Claude/OpenAI API call when ready.

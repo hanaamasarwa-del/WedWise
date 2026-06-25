@@ -1,5 +1,5 @@
 const path = require("path");
-const suppliersData = require(path.join(__dirname, "../../backend/database/demo_suppliers.json"));
+const suppliersData = require(path.join(__dirname, "../../data/demo-suppliers/suppliers.demo.json"));
 
 // Maps English region values (from the questionnaire) to Hebrew region names in the DB
 const REGION_MAP = {
