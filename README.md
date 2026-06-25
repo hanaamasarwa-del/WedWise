@@ -80,11 +80,11 @@ API. A current Node.js LTS release is recommended.
 From the repository root:
 
 ```bash
-cd server
+cd backend
 npm install
 ```
 
-Create `server/.env` from `server/.env.example`, then provide the credentials
+Create `backend/.env` from `backend/.env.example`, then provide the credentials
 needed for the features you want to run.
 
 Start the application:
@@ -109,7 +109,7 @@ The Express server serves both the frontend and the API.
 
 ## Environment Variables
 
-The active server reads `server/.env`.
+The active backend reads `backend/.env`.
 
 | Variable | Required | Purpose |
 | --- | --- | --- |
@@ -124,7 +124,7 @@ The active server reads `server/.env`.
 | `AI_API_KEY` | Legacy fallback | Accepted as a fallback by the chatbot if `OPENAI_API_KEY` is absent. Prefer `OPENAI_API_KEY`. |
 | `IMAGE_API_KEY` | Future | Reserved for future image generation. |
 
-Never commit `server/.env` or any real secret.
+Never commit `backend/.env` or any real secret.
 
 ## Chatbot
 
@@ -151,7 +151,7 @@ Chatbot behavior:
   confirmed.
 
 The chatbot's knowledge and behavior instructions are stored in
-`server/services/chat-service.js` in the `SITE_CONTEXT` constant.
+`backend/services/chat-service.js` in the `SITE_CONTEXT` constant.
 
 ### Required Chatbot Maintenance
 
@@ -186,7 +186,7 @@ browser console.
 The Supabase schema is stored at:
 
 ```text
-server/database/supabase-schema.sql
+backend/database/supabase-schema.sql
 ```
 
 Backend routes for submissions, reports, images, suppliers, and leads are
@@ -230,7 +230,7 @@ WedWise/
 │   ├── index.html
 │   ├── app.js
 │   └── site.css
-├── server/
+├── backend/
 │   ├── database/
 │   ├── routes/
 │   ├── services/
@@ -247,7 +247,7 @@ WedWise/
 └── README.md
 ```
 
-`frontend/` and `server/` contain the active application. `data/demo-suppliers/`
+`frontend/` and `backend/` contain the active application. `data/demo-suppliers/`
 contains clearly separated synthetic data assets for development and planned
 supplier matching.
 
@@ -269,9 +269,9 @@ supplier matching.
 Before considering a relevant change complete:
 
 ```bash
-node --check server/index.js
-node --check server/routes/chat.js
-node --check server/services/chat-service.js
+node --check backend/index.js
+node --check backend/routes/chat.js
+node --check backend/services/chat-service.js
 node --check frontend/app.js
 git diff --check
 ```

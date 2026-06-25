@@ -1,6 +1,6 @@
 # WedWise Database Schema
 
-All tables live in Supabase (PostgreSQL). Run `server/database/supabase-schema.sql` in the Supabase SQL Editor to create them.
+All tables live in Supabase (PostgreSQL). Run `backend/database/supabase-schema.sql` in the Supabase SQL Editor to create them.
 
 ---
 

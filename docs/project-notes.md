@@ -19,7 +19,7 @@
 ## Implementation Notes
 
 - Keep the project structure simple unless a backend or build step is introduced.
-- Keep active server secrets in `server/.env`, using `server/.env.example` as the documented template.
+- Keep active backend secrets in `backend/.env`, using `backend/.env.example` as the documented template.
 - Telegram notifications require backend-only `TELEGRAM_BOT_TOKEN`. Set `TELEGRAM_CHAT_ID` explicitly when the bot has more than one private conversation.
 - If real suppliers are added later, store the data source and review date.
-- Keep `server/services/chat-service.js` chatbot knowledge synchronized with every user-facing website change. This review is required before a feature change is complete.
+- Keep `backend/services/chat-service.js` chatbot knowledge synchronized with every user-facing website change. This review is required before a feature change is complete.
