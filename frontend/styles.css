@@ -699,6 +699,385 @@ select {
   }
 }
 
+/* Full-page how-it-works */
+.how-it-works--full-page {
+  padding: 4rem 0;
+}
+
+.how-it-works-header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+.how-it-works-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+}
+
+.how-it-works-header p {
+  font-size: 1.15rem;
+  color: var(--color-muted);
+}
+
+/* Benefits section */
+.why-us {
+  margin: 4rem 0;
+  padding: 3rem 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.why-us h2 {
+  text-align: center;
+  font-size: 1.75rem;
+  margin-bottom: 2.5rem;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.benefit-card {
+  padding: 2rem;
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  text-align: center;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.benefit-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.benefit-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.benefit-card p {
+  font-size: 0.95rem;
+  color: var(--color-muted);
+}
+
+/* CTA section */
+.cta-section {
+  text-align: center;
+  padding: 3rem;
+  background: linear-gradient(160deg, #FBF8F4 0%, #F5EDE6 100%);
+  border-radius: var(--radius-lg);
+  margin: 3rem 0;
+}
+
+.cta-section h2 {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.cta-section p {
+  font-size: 1.05rem;
+  color: var(--color-muted);
+  margin-bottom: 1.5rem;
+}
+
+/* Signup Section */
+.signup-section {
+  padding: 3rem 0;
+  background: var(--color-bg);
+  min-height: calc(100vh - 200px);
+}
+
+.signup-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+.signup-card {
+  background: var(--color-surface);
+  padding: 3rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.signup-card h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+
+.signup-subtitle {
+  color: var(--color-muted);
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+#signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-section {
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.form-section h3 {
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+}
+
+.section-hint {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin-bottom: 1rem;
+}
+
+.checkbox-field {
+  margin: 1rem 0;
+}
+
+.checkbox-field label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.checkbox-field input[type="checkbox"] {
+  margin-top: 0.25rem;
+  cursor: pointer;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+.signup-footer {
+  text-align: center;
+  color: var(--color-muted);
+  margin-top: 1.5rem;
+}
+
+.signup-footer a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.signup-footer a:hover {
+  text-decoration: underline;
+}
+
+.signup-benefits {
+  padding: 2rem;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  height: fit-content;
+  position: sticky;
+  top: 120px;
+}
+
+.signup-benefits h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.benefits-list {
+  list-style: none;
+}
+
+.benefits-list li {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 0;
+}
+
+.benefit-icon {
+  color: var(--color-accent);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.benefits-list span:last-child {
+  color: var(--color-muted);
+}
+
+/* Login Section */
+.login-section {
+  padding: 3rem 0;
+  background: var(--color-bg);
+  min-height: calc(100vh - 200px);
+}
+
+.login-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  align-items: center;
+}
+
+.login-card {
+  background: var(--color-surface);
+  padding: 3rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.login-card h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+
+.login-subtitle {
+  color: var(--color-muted);
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+#login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.login-links {
+  text-align: center;
+}
+
+.forgot-password {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+.login-footer {
+  text-align: center;
+  color: var(--color-muted);
+  margin-top: 1.5rem;
+}
+
+.login-footer a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-footer a:hover {
+  text-decoration: underline;
+}
+
+.login-benefits {
+  text-align: center;
+}
+
+.login-benefits h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+
+.login-benefits > p {
+  color: var(--color-muted);
+  margin-bottom: 2rem;
+  font-size: 1.05rem;
+}
+
+.features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.feature-item {
+  text-align: center;
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.feature-item h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+
+.feature-item p {
+  color: var(--color-muted);
+  font-size: 0.95rem;
+}
+
+/* Site footer */
+.site-footer {
+  background: var(--color-text);
+  color: var(--color-surface);
+  text-align: center;
+  padding: 2rem;
+  margin-top: 4rem;
+}
+
+@media (max-width: 768px) {
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .benefits-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .how-it-works-header h1 {
+    font-size: 2rem;
+  }
+
+  .signup-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .signup-benefits {
+    position: static;
+  }
+
+  .signup-card {
+    padding: 2rem;
+  }
+
+  .login-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .login-card {
+    padding: 2rem;
+  }
+
+  .login-benefits {
+    text-align: center;
+  }
+}
+
 @media (max-width: 480px) {
   .hero {
     padding: 3rem 0 4rem;
@@ -714,5 +1093,13 @@ select {
 
   .form-nav .btn-primary {
     margin-right: 0;
+  }
+
+  .how-it-works-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .cta-section {
+    padding: 2rem;
   }
 }
