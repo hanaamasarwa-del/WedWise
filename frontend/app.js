@@ -428,3 +428,106 @@ form.addEventListener('keydown', (e) => {
 });
 
 goToStep(1);
+
+const chatPanel = document.getElementById('chat-panel');
+const chatLauncher = document.getElementById('chat-launcher');
+const chatClose = document.getElementById('chat-close');
+const chatForm = document.getElementById('chat-form');
+const chatInput = document.getElementById('chat-input');
+const chatSend = document.getElementById('chat-send');
+const chatMessages = document.getElementById('chat-messages');
+const chatHistory = [];
+
+function setChatOpen(isOpen) {
+  chatPanel.hidden = !isOpen;
+  chatPanel.setAttribute('aria-hidden', String(!isOpen));
+  chatLauncher.setAttribute('aria-expanded', String(isOpen));
+  chatLauncher.hidden = isOpen;
+
+  if (isOpen) {
+    window.requestAnimationFrame(() => chatInput.focus());
+  } else {
+    chatLauncher.focus();
+  }
+}
+
+function addChatMessage(role, text, extraClass = '') {
+  const message = document.createElement('div');
+  message.className = `chat-message chat-message--${role} ${extraClass}`.trim();
+  message.textContent = text;
+  chatMessages.appendChild(message);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  return message;
+}
+
+function setChatLoading(isLoading) {
+  chatInput.disabled = isLoading;
+  chatSend.disabled = isLoading;
+}
+
+async function sendChatMessage(message) {
+  chatHistory.push({ role: 'user', content: message });
+  addChatMessage('user', message);
+  setChatLoading(true);
+
+  const typingMessage = addChatMessage('assistant', 'כותב תשובה…', 'chat-message--typing');
+
+  try {
+    const apiBaseUrl = window.location.protocol === 'file:' ? 'http://localhost:3000' : '';
+    const response = await fetch(`${apiBaseUrl}/api/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: chatHistory.slice(-10) }),
+    });
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Chat request failed');
+    }
+
+    typingMessage.remove();
+    chatHistory.push({ role: 'assistant', content: data.reply });
+    addChatMessage('assistant', data.reply);
+  } catch (error) {
+    typingMessage.remove();
+    const serverUnavailable = error instanceof TypeError;
+    const errorMessage = serverUnavailable
+      ? 'השרת של WedWise לא פועל כרגע. יש להפעיל את האתר דרך השרת ולפתוח http://localhost:3000.'
+      : 'מצטערים, הצ׳אט לא זמין כרגע. אפשר לנסות שוב בעוד רגע.';
+
+    addChatMessage(
+      'assistant',
+      errorMessage,
+      'chat-message--error'
+    );
+    console.warn('Chat request failed:', error);
+  } finally {
+    setChatLoading(false);
+    chatInput.focus();
+  }
+}
+
+chatLauncher.addEventListener('click', () => setChatOpen(true));
+chatClose.addEventListener('click', () => setChatOpen(false));
+
+chatForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const message = chatInput.value.trim();
+  if (!message || chatInput.disabled) return;
+
+  chatInput.value = '';
+  sendChatMessage(message);
+});
+
+chatInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    chatForm.requestSubmit();
+  }
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && !chatPanel.hidden) {
+    setChatOpen(false);
+  }
+});

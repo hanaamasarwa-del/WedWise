@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getOrCreateImage } = require("../services/imageService");
+const { getOrCreateImage } = require("../services/image-service");
 
 // POST /api/generate-image
 router.post("/generate-image", async (req, res) => {

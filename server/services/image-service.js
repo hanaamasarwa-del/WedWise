@@ -1,4 +1,4 @@
-const supabase = require("./supabaseService");
+const supabase = require("./supabase-client");
 
 // Generates a mock image for a wedding concept.
 // Replace this function body with a real image generation API call (e.g. DALL-E, Stability AI) when ready.

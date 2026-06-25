@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const supabase = require("../services/supabaseService");
-const { getRecommendations } = require("../services/supplierService");
+const supabase = require("../services/supabase-client");
+const { getRecommendations } = require("../services/supplier-service");
 
 // GET /api/suppliers/recommendations?submissionId=uuid
 router.get("/recommendations", async (req, res) => {

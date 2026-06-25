@@ -1,5 +1,5 @@
 const express = require("express");
-const { sendFormNotification } = require("../services/telegramService");
+const { sendFormNotification } = require("../services/telegram-service");
 
 const router = express.Router();
 const recentSubmissions = new Map();

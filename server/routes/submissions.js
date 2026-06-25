@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const supabase = require("../services/supabaseService");
+const supabase = require("../services/supabase-client");
 
 // POST /api/submissions
 router.post("/", async (req, res) => {

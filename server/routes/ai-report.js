@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getOrCreateReport } = require("../services/aiReportService");
+const { getOrCreateReport } = require("../services/ai-report-service");
 
 // POST /api/generate-report
 router.post("/generate-report", async (req, res) => {

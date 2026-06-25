@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const supabase = require("../services/supabaseService");
-const { sendLeadNotification } = require("../services/telegramService");
+const supabase = require("../services/supabase-client");
+const { sendLeadNotification } = require("../services/telegram-service");
 
 // POST /api/leads
 router.post("/", async (req, res) => {

@@ -4,11 +4,12 @@ const cors = require("cors");
 const path = require("path");
 
 const submissionsRouter = require("./routes/submissions");
-const aiReportRouter = require("./routes/aiReport");
+const aiReportRouter = require("./routes/ai-report");
 const imageRouter = require("./routes/image");
 const suppliersRouter = require("./routes/suppliers");
 const leadsRouter = require("./routes/leads");
-const telegramLeadRouter = require("./routes/telegramLead");
+const telegramLeadRouter = require("./routes/telegram-lead");
+const chatRouter = require("./routes/chat");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,6 +29,7 @@ app.use("/api", imageRouter);
 app.use("/api/suppliers", suppliersRouter);
 app.use("/api/leads", leadsRouter);
 app.use("/api/telegram-lead", telegramLeadRouter);
+app.use("/api/chat", chatRouter);
 
 const frontendDirectory = path.resolve(__dirname, "..", "frontend");
 app.use(express.static(frontendDirectory));

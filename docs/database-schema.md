@@ -1,6 +1,6 @@
 # WedWise Database Schema
 
-All tables live in Supabase (PostgreSQL). Run `server/sql/supabase_schema.sql` in the Supabase SQL Editor to create them.
+All tables live in Supabase (PostgreSQL). Run `server/database/supabase-schema.sql` in the Supabase SQL Editor to create them.
 
 ---
 
@@ -54,7 +54,7 @@ Stores the image result (URL) for a submission.
 ---
 
 ## suppliers
-For future use if suppliers are migrated to Supabase. Current implementation reads from `backend/database/demo_suppliers.json`.
+For future use if suppliers are migrated to Supabase. Current implementation reads from `data/demo-suppliers/suppliers.demo.json`.
 
 | Column | Type | Notes |
 |--------|------|-------|
