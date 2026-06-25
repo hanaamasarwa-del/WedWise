@@ -43,6 +43,8 @@ Use dates only in project documentation and session notes. Do not include times 
   - `index.html`
   - `styles.css`
 - `backend/`
+  - `.env.example`
+  - `README.md`
   - `database/`
 
 ## Database Demo Assets
@@ -55,7 +57,14 @@ Use dates only in project documentation and session notes. Do not include times 
 - `demo_suppliers.json` - JSON export of the demo supplier catalog.
 - `example_queries.sql` - sample lookup, request, report, and lead queries.
 
+## Backend Secrets
+
+OpenAI credentials must be stored only as the backend environment variable `OPENAI_API_KEY`. Never place API keys in frontend HTML, CSS, JavaScript, source code, or Git history.
+
+Use `backend/.env.example` as the template for local configuration. The real `backend/.env` file is ignored by Git. Production credentials must be configured through the hosting provider's secret manager.
+
 ## Session Notes
 
 - 2026-06-25: Project created as a new repository with the initial setup and synthetic demo supplier database assets.
 - 2026-06-25: Project reorganized into `frontend/` and `backend/` directories.
+- 2026-06-25: Added secure backend environment configuration for future OpenAI features.
