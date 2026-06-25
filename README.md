@@ -50,9 +50,11 @@ Use dates only in project documentation and session notes. Do not include times 
   - `script.js`
 - `backend/`
   - `.env.example`
-  - `package.json`
-  - `server.js`
   - `database/`
+- `server/`
+  - `.env.example`
+  - `index.js`
+  - `package.json`
 
 ## Database Demo Assets
 
@@ -69,11 +71,12 @@ Use dates only in project documentation and session notes. Do not include times 
 Run the site and backend together:
 
 ```bash
-cd backend
+cd server
+npm install
 npm start
 ```
 
-Then open `http://localhost:3000`. Form submissions are sent through the backend to Telegram. Configure `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in the ignored `backend/.env` file or as deployment secrets.
+Then open `http://localhost:3000`. Form submissions are sent through the backend to Telegram. Configure `TELEGRAM_BOT_TOKEN` in the ignored `server/.env` file or as a deployment secret. `TELEGRAM_CHAT_ID` can be set explicitly; otherwise the server securely auto-detects it only when exactly one private chat has sent `/start` to the bot.
 
 ## Session Notes
 
