@@ -263,6 +263,12 @@ supplier matching.
 - Do not describe demo suppliers as real or verified.
 - Update chatbot knowledge with every user-facing change.
 - Keep durable implementation notes short in `docs/project-notes.md`.
+- Before every GitHub upload, review the repository changes from the current
+  session and clean up accidental structural clutter. Remove empty or temporary
+  artifact folders, keep frontend/backend naming consistent, update affected
+  documentation and paths, and inspect `git status` and `git diff` before
+  committing. Do not remove intentional files or folders merely to simplify
+  the tree.
 
 ## Verification
 
