@@ -20,9 +20,8 @@ At the beginning of every future CLI session, read:
 - `WedWise protected site brief.txt` contains the site brief and execution instructions.
 - Do not rewrite, reorganize, remove, or otherwise change `WedWise protected site brief.txt` unless the user explicitly asks for that exact change.
 - `README.md` is the single place for durable project context and important session notes.
-- `frontend/index.html` and `frontend/styles.css` are intentionally empty placeholders for the future site build.
-- `script.js` is a placeholder JavaScript entry point for the future site build.
-- `.env.example` documents local environment variables. Copy it to `.env` and fill real secrets only on the local machine.
+- `frontend/` contains the active static website files.
+- `backend/.env.example` documents backend environment variables. Copy it to `backend/.env` and fill real secrets only on the local machine.
 - `PROJECT_NOTES.md` keeps short durable implementation notes separate from the protected brief.
 
 ## Memory Policy
@@ -36,22 +35,22 @@ Use dates only in project documentation and session notes. Do not include times 
 ## Current Status
 
 - Initial project setup and synthetic demo database assets are in place.
-- Site implementation has not started yet.
-- Basic project support files are in place: `.gitignore`, `.env.example`, `PROJECT_NOTES.md`, and `script.js`.
+- The first static frontend implementation is in place.
+- Basic project support files are in place: `.gitignore`, `backend/.env.example`, and `PROJECT_NOTES.md`.
 
 ## Project Structure
 
 - `README.md`
 - `.gitignore`
-- `.env.example`
 - `PROJECT_NOTES.md`
 - `WedWise protected site brief.txt`
 - `frontend/`
   - `index.html`
   - `styles.css`
+  - `script.js`
 - `backend/`
+  - `.env.example`
   - `database/`
-- `script.js`
 
 ## Database Demo Assets
 
@@ -68,3 +67,4 @@ Use dates only in project documentation and session notes. Do not include times 
 - 2026-06-25: Project created as a new repository with the initial setup and synthetic demo supplier database assets.
 - 2026-06-25: Project reorganized into `frontend/` and `backend/` directories.
 - 2026-06-25: Added basic support files for local development notes, environment documentation, ignore rules, and the future JavaScript entry point.
+- 2026-06-25: Consolidated the active website files under `frontend/` and backend configuration under `backend/`.
