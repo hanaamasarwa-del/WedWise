@@ -8,14 +8,19 @@ const imageRouter = require("./routes/image");
 const suppliersRouter = require("./routes/suppliers");
 const leadsRouter = require("./routes/leads");
 
+const path = require("path");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
-// Health check
-app.get("/", (req, res) => {
+// Serve the frontend
+app.use(express.static(path.join(__dirname, "../frontend")));
+
+// Health check (API only)
+app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "WedWise backend is running" });
 });
 

@@ -1,8 +1,10 @@
 /**
- * WedWise – Frontend v1
- * Multi-step questionnaire with mock report generation.
- * Payload shape aligns with wedding_requests + lead_submissions schema.
+ * WedWise – Frontend
+ * Multi-step questionnaire connected to the WedWise backend.
  */
+
+// Change this URL when the backend is deployed online
+const API_URL = 'http://localhost:3000';
 
 const TOTAL_STEPS = 5;
 
@@ -13,28 +15,48 @@ const REGION_NAMES = {
   '4': 'הדרום',
 };
 
-const SUPPLIER_CATEGORIES = [
-  'אולם / גן אירועים',
-  'די־ג׳יי',
-  'צילום',
-  'עיצוב ופרחים',
-  'קייטרינג',
-];
+// Maps frontend region ID to backend string
+const REGION_ID_TO_BACKEND = {
+  '1': 'jerusalem',
+  '2': 'center',
+  '3': 'north',
+  '4': 'south',
+};
+
+// Maps Hebrew style names to backend English values
+const STYLE_HE_TO_BACKEND = {
+  'רומנטי':      'romantic',
+  'אלגנטי':      'classic',
+  'כפרי':        'rustic',
+  'מודרני':      'modern',
+  'בוהו':        'boho',
+  'מינימליסטי':  'minimalist',
+  'אורבני':      'modern',
+  'מסורתי':      'traditional',
+};
+
+const BUDGET_FIT_LABELS = {
+  low:    'תקציב חסכוני',
+  medium: 'תקציב בינוני',
+  high:   'תקציב גדול',
+};
 
 let currentStep = 1;
 
-const form = document.getElementById('wedding-form');
-const formError = document.getElementById('form-error');
-const progressLabel = document.getElementById('progress-label');
-const progressFill = document.getElementById('progress-fill');
-const progressBar = document.querySelector('.progress-bar');
-const btnBack = document.getElementById('btn-back');
-const btnNext = document.getElementById('btn-next');
-const btnSubmit = document.getElementById('btn-submit');
-const btnRestart = document.getElementById('btn-restart');
+const form                 = document.getElementById('wedding-form');
+const formError            = document.getElementById('form-error');
+const progressLabel        = document.getElementById('progress-label');
+const progressFill         = document.getElementById('progress-fill');
+const progressBar          = document.querySelector('.progress-bar');
+const btnBack              = document.getElementById('btn-back');
+const btnNext              = document.getElementById('btn-next');
+const btnSubmit            = document.getElementById('btn-submit');
+const btnRestart           = document.getElementById('btn-restart');
 const questionnaireSection = document.getElementById('questionnaire');
-const reportSection = document.getElementById('report-section');
-const reportContent = document.getElementById('report-content');
+const reportSection        = document.getElementById('report-section');
+const reportContent        = document.getElementById('report-content');
+
+// ─── Helpers ────────────────────────────────────────────────────────────────
 
 function getCheckedValues(name) {
   return Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map((el) => el.value);
@@ -42,45 +64,24 @@ function getCheckedValues(name) {
 
 function getFormState() {
   const styleInput = form.querySelector('input[name="preferred_style"]:checked');
-
   return {
     estimated_budget_ils: parseInt(form.estimated_budget_ils.value, 10) || 0,
-    guest_count: parseInt(form.guest_count.value, 10) || 0,
-    region_id: form.region_id.value,
-    region_name: REGION_NAMES[form.region_id.value] || '',
-    preferred_style: styleInput ? styleInput.value : '',
-    preferred_colors: form.preferred_colors.value.trim(),
-    flowers: getCheckedValues('flowers'),
-    decorations: getCheckedValues('decorations'),
-    free_text: form.free_text.value.trim(),
-    full_name: form.full_name.value.trim(),
-    phone: form.phone.value.trim(),
-    email: form.email.value.trim(),
+    guest_count:          parseInt(form.guest_count.value, 10) || 0,
+    region_id:            form.region_id.value,
+    region_name:          REGION_NAMES[form.region_id.value] || '',
+    preferred_style:      styleInput ? styleInput.value : '',
+    preferred_colors:     form.preferred_colors.value.trim(),
+    flowers:              getCheckedValues('flowers'),
+    decorations:          getCheckedValues('decorations'),
+    free_text:            form.free_text.value.trim(),
+    full_name:            form.full_name.value.trim(),
+    phone:                form.phone.value.trim(),
+    email:                form.email.value.trim(),
   };
 }
 
-function buildWeddingRequestPayload(state) {
-  const flowersPart = state.flowers.length ? `פרחים: ${state.flowers.join(', ')}` : '';
-  const decorPart = state.decorations.length ? `קישוטים: ${state.decorations.join(', ')}` : '';
-  const flowersAndDecor = [flowersPart, decorPart].filter(Boolean).join(' | ');
-
-  return {
-    wedding_request: {
-      estimated_budget_ils: state.estimated_budget_ils,
-      guest_count: state.guest_count,
-      region_id: parseInt(state.region_id, 10),
-      preferred_styles_json: JSON.stringify([state.preferred_style]),
-      preferred_colors: state.preferred_colors,
-      flowers_and_decor: flowersAndDecor,
-      free_text: state.free_text,
-    },
-    lead: {
-      full_name: state.full_name,
-      phone: state.phone,
-      email: state.email,
-      consent_to_contact: 1,
-    },
-  };
+function formatCurrency(amount) {
+  return Number(amount).toLocaleString('he-IL') + ' ₪';
 }
 
 function showError(message) {
@@ -92,6 +93,8 @@ function clearError() {
   formError.textContent = '';
   formError.hidden = true;
 }
+
+// ─── Validation ──────────────────────────────────────────────────────────────
 
 function validateStep(stepIndex) {
   clearError();
@@ -151,6 +154,8 @@ function validateStep(stepIndex) {
   }
 }
 
+// ─── Step navigation ─────────────────────────────────────────────────────────
+
 function updateProgress(step) {
   progressLabel.textContent = `שלב ${step} מתוך ${TOTAL_STEPS}`;
   progressFill.style.width = `${(step / TOTAL_STEPS) * 100}%`;
@@ -158,160 +163,181 @@ function updateProgress(step) {
 }
 
 function updateNavButtons(step) {
-  btnBack.hidden = step === 1;
-  btnNext.hidden = step === TOTAL_STEPS;
+  btnBack.hidden   = step === 1;
+  btnNext.hidden   = step === TOTAL_STEPS;
   btnSubmit.hidden = step !== TOTAL_STEPS;
 }
 
 function goToStep(step) {
   currentStep = step;
-
   form.querySelectorAll('.form-step').forEach((fieldset) => {
     const stepNum = parseInt(fieldset.dataset.step, 10);
     fieldset.classList.toggle('active', stepNum === step);
   });
-
   updateProgress(step);
   updateNavButtons(step);
   clearError();
-
-  const activeFieldset = form.querySelector(`.form-step[data-step="${step}"]`);
-  const firstInput = activeFieldset.querySelector('input, select, textarea');
-  if (firstInput) {
-    firstInput.focus();
-  }
+  const firstInput = form.querySelector(`.form-step[data-step="${step}"] input, .form-step[data-step="${step}"] select, .form-step[data-step="${step}"] textarea`);
+  if (firstInput) firstInput.focus();
 }
 
-function formatCurrency(amount) {
-  return amount.toLocaleString('he-IL') + ' ₪';
+// ─── API calls ───────────────────────────────────────────────────────────────
+
+async function apiPost(path, body) {
+  const res = await fetch(`${API_URL}${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || `שגיאה בבקשה ל-${path}`);
+  return data;
 }
 
-function generateMockReport(payload) {
-  const wr = payload.wedding_request;
-  const lead = payload.lead;
-  const budget = wr.estimated_budget_ils;
-  const guests = wr.guest_count;
-  const perGuest = Math.round(budget / guests);
-  const style = JSON.parse(wr.preferred_styles_json)[0];
-  const region = REGION_NAMES[String(wr.region_id)] || '';
+async function apiGet(path) {
+  const res = await fetch(`${API_URL}${path}`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || `שגיאה בבקשה ל-${path}`);
+  return data;
+}
 
-  const venueBudget = Math.round(budget * 0.45);
-  const cateringBudget = Math.round(budget * 0.30);
-  const servicesBudget = Math.round(budget * 0.25);
+// ─── Submit flow ─────────────────────────────────────────────────────────────
 
-  const flowersDecor = wr.flowers_and_decor || 'לא צוין';
-  const freeTextBlock = wr.free_text
-    ? `<p><strong>במילים שלכם:</strong> "${wr.free_text}"</p>`
-    : '';
+async function submitQuestionnaire(state) {
+  // 1. Save submission
+  const submissionPayload = {
+    budget:       state.estimated_budget_ils,
+    guests:       state.guest_count,
+    region:       REGION_ID_TO_BACKEND[state.region_id] || 'center',
+    weddingStyle: STYLE_HE_TO_BACKEND[state.preferred_style] || 'romantic',
+    colors:       state.preferred_colors.split(',').map((c) => c.trim()).filter(Boolean),
+    decorations:  state.decorations,
+    flowers:      state.flowers,
+    personalText: state.free_text,
+  };
 
-  const supplierTags = SUPPLIER_CATEGORIES.map(
-    (cat) => `<span class="supplier-tag">${cat}</span>`
-  ).join('');
+  const { submissionId } = await apiPost('/api/submissions', submissionPayload);
 
-  return `
-    <div class="report-demo-banner">דוח לדוגמה — בגרסה הבאה הדוח ייווצר באמצעות בינה מלאכותית</div>
-    <h2>דוח תכנון חתונה מותאם אישית</h2>
-    <p class="report-greeting">שלום ${lead.full_name}, הנה תמונת המצב הראשונית שלכם</p>
+  // 2. Generate report + suppliers in parallel
+  const [reportData, suppliersData] = await Promise.all([
+    apiPost('/api/generate-report', { submissionId }),
+    apiGet(`/api/suppliers/recommendations?submissionId=${submissionId}`),
+  ]);
+
+  // 3. Generate image
+  const imageData = await apiPost('/api/generate-image', {
+    submissionId,
+    imagePrompt: reportData.imagePrompt,
+  });
+
+  // 4. Save lead (contact details)
+  await apiPost('/api/leads', {
+    submissionId,
+    fullName:             state.full_name,
+    phone:                state.phone,
+    email:                state.email,
+    preferredContactTime: 'לא צוין',
+  });
+
+  return { submissionId, reportData, suppliersData, imageData, state };
+}
+
+// ─── Report rendering ─────────────────────────────────────────────────────────
+
+function buildSupplierCards(suppliers) {
+  if (!suppliers || suppliers.length === 0) return '<p>לא נמצאו ספקים מתאימים.</p>';
+
+  const categoryIcons = {
+    'אולם / גן אירועים': '🏛️',
+    'די־ג׳יי':           '🎵',
+    'צילום':             '📷',
+    'עיצוב ופרחים':      '💐',
+    'קייטרינג':          '🍽️',
+  };
+
+  return suppliers.map((s) => {
+    const icon = categoryIcons[s.category] || '✨';
+    const price = s.priceUnit === 'לאורח'
+      ? `${formatCurrency(s.priceMin)}–${formatCurrency(s.priceMax)} לאורח`
+      : `${formatCurrency(s.priceMin)}–${formatCurrency(s.priceMax)} לחבילה`;
+
+    return `
+      <div class="supplier-card">
+        <div class="supplier-card-header">
+          <span class="supplier-icon">${icon}</span>
+          <div>
+            <strong class="supplier-name">${s.name}</strong>
+            <span class="supplier-category">${s.category}</span>
+          </div>
+        </div>
+        <p class="supplier-city">📍 ${s.city || s.region}</p>
+        <p class="supplier-price">💰 ${price}</p>
+        <p class="supplier-desc">${s.description}</p>
+        <p class="supplier-reason">✅ ${s.reason}</p>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderReport({ reportData, suppliersData, imageData, state }) {
+  const budget        = state.estimated_budget_ils;
+  const guests        = state.guest_count;
+  const perGuest      = Math.round(budget / guests);
+  const budgetLabel   = BUDGET_FIT_LABELS[reportData.budgetFit] || '';
+  const supplierCards = buildSupplierCards(suppliersData.suppliers);
+
+  reportContent.innerHTML = `
+    <h2>${reportData.title}</h2>
+    <p class="report-greeting">שלום ${state.full_name}, הנה דוח תכנון החתונה המותאם אישית שלכם</p>
 
     <div class="report-block">
       <h3>סיכום האירוע</h3>
-      <p>
-        חתונה בסגנון <strong>${style}</strong> באזור <strong>${region}</strong>,
-        עם כ-<strong>${guests.toLocaleString('he-IL')}</strong> אורחים
-        ותקציב משוער של <strong>${formatCurrency(budget)}</strong>.
-      </p>
+      <p>${reportData.summary}</p>
       <p>עלות משוערת לאורח: כ-<strong>${formatCurrency(perGuest)}</strong></p>
-    </div>
-
-    <div class="report-block">
-      <h3>פילוח תקציב מומלץ</h3>
-      <p>הערכה ראשונית לחלוקת התקציב — יתעדכן בדוח המלא:</p>
-      <div class="budget-breakdown">
-        <div class="budget-item">
-          <strong>${formatCurrency(venueBudget)}</strong>
-          <span>אולם / גן (~45%)</span>
-        </div>
-        <div class="budget-item">
-          <strong>${formatCurrency(cateringBudget)}</strong>
-          <span>קייטרינג (~30%)</span>
-        </div>
-        <div class="budget-item">
-          <strong>${formatCurrency(servicesBudget)}</strong>
-          <span>עיצוב, צילום ודי־ג׳יי (~25%)</span>
-        </div>
-      </div>
+      <p>מסגרת תקציב: <strong>${budgetLabel}</strong> — ${reportData.budgetNotes}</p>
     </div>
 
     <div class="report-block">
       <h3>כיוון עיצובי</h3>
-      <p><strong>צבעים:</strong> ${wr.preferred_colors}</p>
-      <p><strong>פרחים וקישוטים:</strong> ${flowersDecor}</p>
-      ${freeTextBlock}
+      <p>${reportData.designConcept}</p>
       <div class="report-visual-placeholder">
-        <span>המחשה עיצובית — בקרוב</span>
+        <img src="${imageData.imageUrl}" alt="המחשה עיצובית לחתונה" style="max-width:100%;border-radius:12px;" />
+      </div>
+    </div>
+
+    <div class="report-block">
+      <h3>ספקים מומלצים לבדיקה</h3>
+      <p>בחרנו עבורכם ספקים שמתאימים לאזור, לסגנון ולתקציב שלכם:</p>
+      <div class="supplier-cards-grid">
+        ${supplierCards}
       </div>
     </div>
 
     <div class="report-block">
       <h3>צעדים מומלצים להמשך</h3>
       <ul>
-        <li>בחירת רשימת מקומות קצרה באזור ${region}</li>
-        <li>קביעת פגישות עם 2–3 די־ג׳יי בסגנון ${style}</li>
+        <li>בחירת רשימת מקומות קצרה באזור ${state.region_name}</li>
+        <li>קביעת פגישות עם 2–3 ספקים מהרשימה למעלה</li>
         <li>בחירת צלם/ת עם סגנון שמתאים לאווירה שתיארתם</li>
-        <li>פגישת עיצוב ופרחים לפי הצבעים: ${wr.preferred_colors}</li>
         <li>הגדרת לוח זמנים ל-6–9 חודשים לפני האירוע</li>
       </ul>
-    </div>
-
-    <div class="report-block">
-      <h3>קטגוריות ספקים לבדיקה</h3>
-      <p>בדוח המלא נציג התאמות מספקי הדמו שלנו — לפי אזור, סגנון ותקציב:</p>
-      <div class="supplier-categories">${supplierTags}</div>
+      <p class="report-followup">✅ הפרטים שלכם נשמרו — נציג מהסוכנות יחזור אליכם בקרוב!</p>
     </div>
   `;
-}
 
-function renderReport(html) {
-  reportContent.innerHTML = html;
   questionnaireSection.hidden = true;
   reportSection.hidden = false;
   reportSection.scrollIntoView({ behavior: 'smooth' });
 }
 
-async function submitQuestionnaire(payload) {
-  // Future API integration:
-  // const response = await fetch('/api/wedding-requests', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(payload),
-  // });
-  // if (!response.ok) throw new Error('Submit failed');
-  // return response.json();
-
-  console.log('WedWise payload (ready for API):', payload);
-  return generateMockReport(payload);
-}
-
-function resetForm() {
-  form.reset();
-  currentStep = 1;
-  goToStep(1);
-  reportSection.hidden = true;
-  questionnaireSection.hidden = false;
-  clearError();
-  questionnaireSection.scrollIntoView({ behavior: 'smooth' });
-}
+// ─── Event listeners ──────────────────────────────────────────────────────────
 
 btnNext.addEventListener('click', () => {
-  if (validateStep(currentStep)) {
-    goToStep(currentStep + 1);
-  }
+  if (validateStep(currentStep)) goToStep(currentStep + 1);
 });
 
 btnBack.addEventListener('click', () => {
-  if (currentStep > 1) {
-    goToStep(currentStep - 1);
-  }
+  if (currentStep > 1) goToStep(currentStep - 1);
 });
 
 form.addEventListener('submit', async (e) => {
@@ -319,33 +345,76 @@ form.addEventListener('submit', async (e) => {
   if (!validateStep(currentStep)) return;
 
   const state = getFormState();
-  const payload = buildWeddingRequestPayload(state);
 
   btnSubmit.disabled = true;
-  btnSubmit.textContent = 'מייצרים את הדוח...';
+  btnSubmit.textContent = 'שומרים ומייצרים דוח...';
+  clearError();
 
   try {
-    const reportHtml = await submitQuestionnaire(payload);
-    renderReport(reportHtml);
+    const result = await submitQuestionnaire(state);
+    renderReport(result);
+  } catch (err) {
+    console.error('Submit error:', err);
+    showError('אירעה שגיאה בעת שליחת הטופס. אנא ודאו שהשרת פועל ונסו שוב.');
   } finally {
     btnSubmit.disabled = false;
     btnSubmit.textContent = 'שליחה וקבלת דוח';
   }
 });
 
-btnRestart.addEventListener('click', resetForm);
+btnRestart.addEventListener('click', () => {
+  form.reset();
+  currentStep = 1;
+  goToStep(1);
+  reportSection.hidden = true;
+  questionnaireSection.hidden = false;
+  clearError();
+  questionnaireSection.scrollIntoView({ behavior: 'smooth' });
+});
 
 form.addEventListener('keydown', (e) => {
   if (e.key !== 'Enter') return;
-  const tag = e.target.tagName.toLowerCase();
-  if (tag === 'textarea') return;
-
+  if (e.target.tagName.toLowerCase() === 'textarea') return;
   e.preventDefault();
-  if (currentStep < TOTAL_STEPS) {
-    btnNext.click();
-  } else if (currentStep === TOTAL_STEPS) {
-    btnSubmit.click();
-  }
+  if (currentStep < TOTAL_STEPS) btnNext.click();
+  else if (currentStep === TOTAL_STEPS) btnSubmit.click();
 });
+
+// ─── Add supplier card styles dynamically ────────────────────────────────────
+
+const supplierStyles = document.createElement('style');
+supplierStyles.textContent = `
+  .supplier-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .supplier-card {
+    background: #fff;
+    border: 1px solid #e8e0d5;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .supplier-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+  .supplier-icon { font-size: 1.5rem; }
+  .supplier-name { display: block; font-weight: 600; font-size: 1rem; }
+  .supplier-category { display: block; font-size: 0.8rem; color: #888; }
+  .supplier-city, .supplier-price { margin: 0; font-size: 0.9rem; }
+  .supplier-desc { margin: 0; font-size: 0.85rem; color: #555; }
+  .supplier-reason { margin: 0; font-size: 0.82rem; color: #7a9e7e; }
+  .report-followup { background: #f0f7f0; border-radius: 8px; padding: 0.75rem 1rem; margin-top: 1rem; font-weight: 500; }
+`;
+document.head.appendChild(supplierStyles);
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
 
 goToStep(1);
