@@ -6,17 +6,15 @@ function getClient() {
   if (_client) return _client;
 
   const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_ANON_KEY;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !key) {
     throw new Error(
-      "Supabase is not configured. Set SUPABASE_URL and SUPABASE_ANON_KEY in your .env file."
+      "Supabase is not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in your .env file."
     );
   }
 
-  // Use service role key on the backend to bypass RLS
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || key;
-  _client = createClient(url, serviceKey);
+  _client = createClient(url, key);
   return _client;
 }
 
