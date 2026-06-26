@@ -177,6 +177,8 @@ button, input, select, textarea {
   color: var(--color-primary-dark);
   text-decoration: none;
   letter-spacing: 0.02em;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75), 0 8px 18px rgba(26, 22, 17, 0.08);
+  -webkit-text-stroke: 0.25px rgba(26, 22, 17, 0.18);
 }
 
 .nav-links {
@@ -194,6 +196,8 @@ button, input, select, textarea {
   padding: 0.5rem 1rem;
   border-radius: var(--radius-sm);
   border-bottom: 2px solid transparent;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.78);
+  -webkit-text-stroke: 0.18px rgba(26, 22, 17, 0.18);
   transition:
     color var(--transition),
     background var(--transition),
