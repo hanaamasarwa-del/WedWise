@@ -17,9 +17,9 @@ Repository: https://github.com/hanaamasarwa-del/WedWise
 The current website lets a visitor:
 
 1. Learn how the WedWise planning process works.
-2. Complete a five-step wedding questionnaire.
+2. Complete a six-step wedding questionnaire.
 3. Enter a budget, guest count, region, style, colors, flowers, decorations,
-   personal notes, and contact details.
+   personal notes, an optional inspiration link, and contact details.
 4. Receive an initial browser-generated planning report with a suggested budget
    breakdown, design direction, supplier categories, and next steps.
 5. Send the completed questionnaire to the agency through Telegram.
@@ -36,10 +36,9 @@ the active frontend and verified.
 
 Working in the active user flow:
 
-- Responsive Hebrew landing page with a polished visual opening section.
-- Scroll-aware top navigation for the opening section, process explanation, and
-  questionnaire.
-- Five-step questionnaire with validation and back/next navigation.
+- Responsive Hebrew landing page with polished hero, inspiration, benefits, and
+  footer sections.
+- Six-step questionnaire with validation and back/next navigation.
 - Local initial report generation.
 - Telegram delivery of completed questionnaire details.
 - Closed-by-default floating chatbot.

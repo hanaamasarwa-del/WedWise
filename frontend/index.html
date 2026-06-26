@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -23,7 +23,7 @@
 
   <main>
     <section class="hero">
-      <div class="hero-image">
+      <div class="hero-bg">
         <img
           src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=2400&q=90"
           alt="זוג בחתונה אלגנטית"
@@ -37,7 +37,9 @@
           WedWise הוא אתר חכם לתכנון חתונות, שעוזר לזוגות להתחיל את התהליך בצורה מסודרת, אישית ומותאמת לתקציב.
           ממלאים שאלון קצר על החתונה שחולמים עליה — ומקבלים דוח מותאם אישית עם כיוון עיצובי והמלצות ראשוניות.
         </p>
-        <a href="#questionnaire" class="btn btn-primary btn-lg">התחילו את השאלון</a>
+        <div class="hero-actions">
+          <a href="#questionnaire" class="btn btn-primary btn-lg">התחילו את השאלון</a>
+        </div>
       </div>
     </section>
 
@@ -71,15 +73,16 @@
     <section class="inspiration-section">
       <div class="container inspiration-grid">
         <div class="inspiration-content">
+          <span class="section-kicker">עיצוב אישי</span>
           <h2>כיוון עיצובי שמרגיש אישי מהרגע הראשון</h2>
           <p>
             העיצוב מייצר חוויה עדינה, נקייה ורומנטית סביב השאלון. המטרה היא לעזור לזוגות לדמיין את האירוע
             עוד לפני בחירת אולם או ספקים בפועל.
           </p>
-          <ul class="feature-list">
-            <li>💐 התאמה לצבעים, פרחים וסגנון האירוע</li>
-            <li>👥 תכנון לפי כמות אורחים ותקציב</li>
-            <li>✨ מקום לטקסט אישי ולחלום החתונה שלכם</li>
+          <ul class="feature-list inspiration-features">
+            <li><span aria-hidden="true">01</span> התאמה לצבעים, פרחים וסגנון האירוע</li>
+            <li><span aria-hidden="true">02</span> תכנון לפי כמות אורחים ותקציב</li>
+            <li><span aria-hidden="true">03</span> מקום לטקסט אישי ולחלום החתונה שלכם</li>
           </ul>
         </div>
         <figure class="inspiration-image">
@@ -98,9 +101,9 @@
         <form id="wedding-form" novalidate>
           <div class="progress-wrapper">
             <div class="progress-text">
-              <span id="progress-label">שלב 1 מתוך 5</span>
+              <span id="progress-label">שלב 1 מתוך 6</span>
             </div>
-            <div class="progress-bar" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1">
+            <div class="progress-bar" role="progressbar" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1">
               <div id="progress-fill" class="progress-fill"></div>
             </div>
           </div>
@@ -213,8 +216,19 @@
             </div>
           </fieldset>
 
-          <!-- Step 5: Contact -->
+          <!-- Step 5: Wedding Inspiration (optional) -->
           <fieldset class="form-step" data-step="5">
+            <legend>השראה לחתונה <span class="legend-optional">(אופציונלי)</span></legend>
+            <div class="field-group">
+              <p class="field-hint">כבר אספתם השראה לחתונה? שתפו קישור לאוסף ההשראה שלכם ונצרף אותו לבקשה.</p>
+              <label for="inspiration_url">קישור להשראה</label>
+              <input type="url" id="inspiration_url" name="inspiration_url"
+                placeholder="https://www.pinterest.com/... או כל קישור השראה אחר">
+              <p class="field-hint">Pinterest, Instagram, בלוג חתונות — כל קישור מתאים. שדה זה אופציונלי לחלוטין.</p>            </div>
+          </fieldset>
+
+          <!-- Step 6: Contact -->
+          <fieldset class="form-step" data-step="6">
             <legend>פרטי יצירת קשר</legend>
             <div class="field-group">
               <label for="full_name">שם מלא</label>
@@ -233,6 +247,7 @@
           <div class="form-nav">
             <button type="button" id="btn-back" class="btn btn-secondary" hidden>חזרה</button>
             <button type="button" id="btn-next" class="btn btn-primary">הבא</button>
+            <button type="submit" id="btn-submit" class="btn btn-primary btn-nav-submit" hidden>שליחה וקבלת דוח</button>
           </div>
         </form>
       </div>
@@ -249,30 +264,39 @@
 
     <section class="why-us">
       <div class="container">
-        <h2>למה לבחור ב־ WedWise?</h2>
+        <div class="why-us-header">
+          <span class="section-kicker">WedWise</span>
+          <h2>למה לבחור ב־ WedWise?</h2>
+        </div>
         <div class="benefits-grid">
           <div class="benefit-card">
-            <h3>📋 שאלון חכם</h3>
+            <span class="benefit-icon" aria-hidden="true">01</span>
+            <h3>שאלון חכם</h3>
             <p>שאלות מדוקדקות שעוזרות לנו להבין בדיוק את החזון שלכם.</p>
           </div>
           <div class="benefit-card">
-            <h3>🤖 בינה מלאכותית</h3>
+            <span class="benefit-icon" aria-hidden="true">02</span>
+            <h3>בינה מלאכותית</h3>
             <p>ניתוח מתקדם של ההעדפות שלכם ליצירת המלצות מדויקות.</p>
           </div>
           <div class="benefit-card">
-            <h3>💰 התאמה לתקציב</h3>
+            <span class="benefit-icon" aria-hidden="true">03</span>
+            <h3>התאמה לתקציב</h3>
             <p>כל ההמלצות והספקים מותאמים לדיוק לתקציב שלכם.</p>
           </div>
           <div class="benefit-card">
-            <h3>👥 שירות אנושי</h3>
+            <span class="benefit-icon" aria-hidden="true">04</span>
+            <h3>שירות אנושי</h3>
             <p>נציג אישי שיעזור לכם בכל שלב של תהליך התכנון.</p>
           </div>
           <div class="benefit-card">
-            <h3>⏱️ חיסכון בזמן</h3>
+            <span class="benefit-icon" aria-hidden="true">05</span>
+            <h3>חיסכון בזמן</h3>
             <p>תכנון מסודר ויעיל, ללא התלבטויות וחיפוש סתום.</p>
           </div>
           <div class="benefit-card">
-            <h3>✨ חתונה ייחודית</h3>
+            <span class="benefit-icon" aria-hidden="true">06</span>
+            <h3>חתונה ייחודית</h3>
             <p>דוח אישי לחלוטין שמשקף את הסגנון והאישיות שלכם.</p>
           </div>
         </div>
