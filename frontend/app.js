@@ -167,8 +167,7 @@ function updateProgress(step) {
 
 function updateNavButtons(step) {
   btnBack.hidden = step === 1;
-  btnNext.hidden = step === TOTAL_STEPS;
-  btnNext.hidden = step !== TOTAL_STEPS;
+  btnNext.textContent = step === TOTAL_STEPS ? 'שליחה וקבלת דוח' : 'הבא';
 }
 
 function goToStep(step) {
@@ -468,9 +467,12 @@ function resetForm() {
 }
 
 btnNext.addEventListener('click', () => {
-  if (currentStep >= TOTAL_STEPS) return;
-  if (validateStep(currentStep)) {
-    goToStep(currentStep + 1);
+  if (currentStep < TOTAL_STEPS) {
+    if (validateStep(currentStep)) {
+      goToStep(currentStep + 1);
+    }
+  } else {
+    form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
   }
 });
 
@@ -495,7 +497,7 @@ form.addEventListener('submit', async (e) => {
     renderReport(reportHtml);
   } finally {
     btnNext.disabled = false;
-    btnNext.textContent = 'שליחה וקבלת דוח';
+    updateNavButtons(currentStep);
   }
 });
 
