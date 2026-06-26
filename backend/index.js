@@ -11,6 +11,7 @@ const leadsRouter = require("./routes/leads");
 const telegramLeadRouter = require("./routes/telegram-lead");
 const chatRouter = require("./routes/chat");
 const blessingRouter = require("./routes/blessing");
+const countdownDesignRouter = require("./routes/countdown-design");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,6 +33,7 @@ app.use("/api/leads", leadsRouter);
 app.use("/api/telegram-lead", telegramLeadRouter);
 app.use("/api/chat", chatRouter);
 app.use("/api", blessingRouter);
+app.use("/api", countdownDesignRouter);
 
 const frontendDirectory = path.resolve(__dirname, "..", "frontend");
 app.use(express.static(frontendDirectory));

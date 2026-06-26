@@ -13,6 +13,9 @@ const countdownCard = document.getElementById('countdown-card');
 const downloadBtn = document.getElementById('download-btn');
 const copyBtn = document.getElementById('copy-btn');
 const copyMessage = document.getElementById('copy-message');
+const generateAiBtn = document.getElementById('generate-ai-btn');
+const downloadGeneratedBtn = document.getElementById('download-generated-btn');
+let uploadedImageFile = null;
 
 // Calculate months and days between today and a target date
 function calculateCountdown(targetDate) {
@@ -204,6 +207,69 @@ form.addEventListener('reset', () => {
   noResult.hidden = false;
   hideError();
 });
+
+// Image preview
+function previewImage(input) {
+  if (input.files && input.files[0]) {
+    uploadedImageFile = input.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById('preview-img').src = e.target.result;
+      document.getElementById('image-preview').style.display = 'block';
+      generateAiBtn.style.display = 'inline-block';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+// Generate AI image
+async function generateAiImage() {
+  if (!uploadedImageFile) {
+    alert('אנא בחרו תמונת השראה');
+    return;
+  }
+
+  generateAiBtn.disabled = true;
+  generateAiBtn.textContent = 'יוצרים עיצוב...';
+
+  try {
+    const formData = new FormData();
+    formData.append('image', uploadedImageFile);
+    formData.append('coupleNames', coupleNamesInput.value);
+    formData.append('customTitle', customTitleInput.value);
+    formData.append('months', document.getElementById('months-display').textContent);
+    formData.append('days', document.getElementById('days-display').textContent);
+
+    const response = await fetch('/api/generate-countdown-design', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) throw new Error('Failed to generate image');
+
+    const data = await response.json();
+    const generatedImg = document.getElementById('generated-image');
+    generatedImg.src = 'data:image/png;base64,' + data.image;
+    document.getElementById('generated-image-container').style.display = 'block';
+  } catch (error) {
+    console.error('Error generating image:', error);
+    alert('לא הצלחנו ליצור את העיצוב. אנא נסו שוב.');
+  } finally {
+    generateAiBtn.disabled = false;
+    generateAiBtn.textContent = 'יצירת עיצוב AI';
+  }
+}
+
+// Download generated image
+downloadGeneratedBtn.addEventListener('click', () => {
+  const img = document.getElementById('generated-image');
+  const link = document.createElement('a');
+  link.href = img.src;
+  link.download = 'countdown-design-ai.png';
+  link.click();
+});
+
+generateAiBtn.addEventListener('click', generateAiImage);
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
