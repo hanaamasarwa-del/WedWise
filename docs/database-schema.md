@@ -19,6 +19,12 @@ Stores answers from the wedding questionnaire.
 | decorations | text[] | selected decoration types |
 | flowers | text[] | selected flower types |
 | personal_text | text | free-text user description |
+| inspiration_url | text | optional inspiration link |
+
+Indexes:
+
+- `idx_submissions_created_at`
+- `idx_submissions_region_style`
 
 ---
 
@@ -62,12 +68,27 @@ For future use if suppliers are migrated to Supabase. Current implementation rea
 | name | text | supplier name |
 | category | text | e.g. venue, DJ, photography |
 | region | text | geographic region |
+| city | text | supplier city |
 | min_budget | integer | minimum price |
 | max_budget | integer | maximum price |
+| price_unit | text | e.g. per guest or package |
+| guest_capacity_min | integer | optional minimum guest count |
+| guest_capacity_max | integer | optional maximum guest count |
 | style_tags | text[] | style keywords |
+| tags | text[] | additional filter tags |
 | description | text | short supplier description |
 | contact_info | text | email or phone |
+| website_url | text | supplier/demo website URL |
+| is_demo | boolean | true for synthetic demo data |
+| is_active | boolean | whether the supplier can be matched |
+| info_source | text | source/review note |
+| last_reviewed_at | date | review date |
 | created_at | timestamptz | auto-set |
+
+Indexes:
+
+- `idx_suppliers_catalog_lookup`
+- `idx_suppliers_style_tags`
 
 ---
 
@@ -82,4 +103,17 @@ Stores contact details submitted by users who want agency follow-up.
 | phone | text | contact phone |
 | email | text | optional email |
 | preferred_contact_time | text | e.g. "Evening", "Morning" |
+| consent_to_contact | boolean | explicit contact consent |
+| status | text | `new`, `in_progress`, `closed`, or `not_relevant` |
 | created_at | timestamptz | auto-set |
+
+Indexes:
+
+- `idx_leads_submission_id`
+- `idx_leads_status_created_at`
+
+Security:
+
+All public tables in `backend/database/supabase-schema.sql` enable RLS. Add
+policies that match the deployment access model before exposing these tables
+through Supabase Data API clients.

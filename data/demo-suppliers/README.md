@@ -12,7 +12,7 @@ This folder contains synthetic demo supplier data for the WedWise prototype. It 
 
 ## Dataset
 
-- 36 demo suppliers: 12 venues, 8 DJs, 8 photographers, 4 design/floral vendors, and 4 catering vendors.
+- 44 demo suppliers: 14 venues, 10 DJs, 10 photographers, 5 design/floral vendors, and 5 catering vendors.
 - 4 regions: Jerusalem area, center, north, and south.
 - 8 styles: romantic, elegant, rustic, modern, boho, minimalist, urban, and traditional.
 - 10 tags, including kosher, outdoor event, accessibility, small/large wedding fit, and video included.
