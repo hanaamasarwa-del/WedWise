@@ -18,12 +18,16 @@ The current website lets a visitor:
 
 1. Learn how the WedWise planning process works.
 2. Complete a six-step wedding questionnaire.
-3. Enter a budget, guest count, region, style, colors, flowers, decorations,
+3. Move between the main page, planning questionnaire, countdown tool, and
+   blessing helper from one consistent navigation menu.
+4. Enter a budget, guest count, region, style, colors, flowers, decorations,
    personal notes, an optional inspiration link, and contact details.
-4. Receive an initial browser-generated planning report with a suggested budget
+5. Receive an initial browser-generated planning report with a suggested budget
    breakdown, design direction, supplier categories, and next steps.
-5. Send the completed questionnaire to the agency through Telegram.
-6. Open a floating AI support chatbot for short questions about WedWise and how
+6. Create a wedding countdown card and a wedding blessing draft from dedicated
+   helper pages.
+7. Send the completed questionnaire to the agency through Telegram.
+8. Open a floating AI support chatbot for short questions about WedWise and how
    to use the website.
 
 The protected product brief also describes future work such as deeper
@@ -38,10 +42,14 @@ Working in the active user flow:
 
 - Responsive Hebrew landing page with polished hero, inspiration, benefits, and
   footer sections.
+- Shared top navigation across all frontend pages.
+- Protected landing hero image with subtle petal motion.
 - Six-step questionnaire with validation and back/next navigation.
+- Wedding countdown helper page.
+- Wedding blessing helper page.
 - Local initial report generation.
 - Telegram delivery of completed questionnaire details.
-- Closed-by-default floating chatbot.
+- Closed-by-default floating chatbot on every active frontend page.
 - OpenAI Responses API integration using `gpt-5.4-nano`.
 - Server-side API key handling.
 - Basic chatbot and form rate limiting.
@@ -130,7 +138,9 @@ Never commit `backend/.env` or any real secret.
 ## Chatbot
 
 The chatbot appears as a floating button in the corner of the screen. It is
-closed when the page loads and opens only when the visitor clicks it.
+closed when the page loads and opens only when the visitor clicks it. The active
+frontend pages all load `frontend/chat-widget.js`, which owns the widget
+behavior and normalizes older page markup.
 
 The browser sends chat history to:
 
@@ -170,6 +180,17 @@ changed:
 
 This review is part of the definition of done for every future user-facing
 change.
+
+## Protected Visual Decisions
+
+The landing hero image and floating petal animation are currently approved as
+the stable first impression of the site. Do not replace the hero image, remove
+the petal layer, or substantially change the entrance animation without explicit
+design approval. The relevant files are:
+
+- `frontend/index.html` for the protected hero markup.
+- `frontend/site.css` for `hero-petals`, `petalDrift`, and the hero entrance
+  animation.
 
 ## Telegram Setup
 

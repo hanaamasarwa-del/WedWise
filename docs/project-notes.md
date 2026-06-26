@@ -23,3 +23,4 @@
 - Telegram notifications require backend-only `TELEGRAM_BOT_TOKEN`. Set `TELEGRAM_CHAT_ID` explicitly when the bot has more than one private conversation.
 - If real suppliers are added later, store the data source and review date.
 - Keep `backend/services/chat-service.js` chatbot knowledge synchronized with every user-facing website change. This review is required before a feature change is complete.
+- The landing hero image and floating petal animation are approved brand visuals. Do not replace or remove them without explicit design approval.
