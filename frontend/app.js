@@ -27,6 +27,10 @@ const TELEGRAM_CHAT_ID = '';
 
 let currentStep = 1;
 
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
 const form = document.getElementById('wedding-form');
 const formError = document.getElementById('form-error');
 const progressLabel = document.getElementById('progress-label');
@@ -38,6 +42,36 @@ const btnRestart = document.getElementById('btn-restart');
 const questionnaireSection = document.getElementById('questionnaire');
 const reportSection = document.getElementById('report-section');
 const reportContent = document.getElementById('report-content');
+const navSectionLinks = Array.from(document.querySelectorAll('.nav-links a[href^="#"]'));
+const navSections = navSectionLinks
+  .map((link) => ({
+    link,
+    section: document.querySelector(link.getAttribute('href')),
+  }))
+  .filter((item) => item.section);
+
+function updateActiveNavLink() {
+  const headerOffset = document.querySelector('.site-header')?.offsetHeight || 0;
+  const scrollPosition = window.scrollY + headerOffset + 80;
+  let activeLink = null;
+
+  navSections.forEach(({ link, section }) => {
+    if (scrollPosition >= section.offsetTop) {
+      activeLink = link;
+    }
+  });
+
+  navSectionLinks.forEach((link) => {
+    const isActive = link === activeLink;
+    link.classList.toggle('active', isActive);
+
+    if (isActive) {
+      link.setAttribute('aria-current', 'location');
+    } else {
+      link.removeAttribute('aria-current');
+    }
+  });
+}
 
 function getCheckedValues(name) {
   return Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map((el) => el.value);
@@ -189,7 +223,9 @@ function updateNavButtons(step) {
   btnNext.textContent = step === TOTAL_STEPS ? 'שליחה וקבלת דוח' : 'הבא';
 }
 
-function goToStep(step) {
+function goToStep(step, options = {}) {
+  const { focusFirstInput = true } = options;
+
   currentStep = step;
 
   form.querySelectorAll('.form-step').forEach((fieldset) => {
@@ -201,10 +237,12 @@ function goToStep(step) {
   updateNavButtons(step);
   clearError();
 
-  const activeFieldset = form.querySelector(`.form-step[data-step="${step}"]`);
-  const firstInput = activeFieldset.querySelector('input, select, textarea');
-  if (firstInput) {
-    firstInput.focus();
+  if (focusFirstInput) {
+    const activeFieldset = form.querySelector(`.form-step[data-step="${step}"]`);
+    const firstInput = activeFieldset.querySelector('input, select, textarea');
+    if (firstInput) {
+      firstInput.focus({ preventScroll: true });
+    }
   }
 }
 
@@ -560,4 +598,13 @@ form.addEventListener('keydown', (e) => {
   btnNext.click();
 });
 
-goToStep(1);
+goToStep(1, { focusFirstInput: false });
+updateActiveNavLink();
+
+window.addEventListener('load', () => {
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  updateActiveNavLink();
+});
+window.addEventListener('scroll', updateActiveNavLink, { passive: true });
+window.addEventListener('resize', updateActiveNavLink);
+window.addEventListener('hashchange', updateActiveNavLink);

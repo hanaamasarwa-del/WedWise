@@ -14,16 +14,20 @@ budget-aware, and practical. It combines an online planning experience with
 the option of human follow-up from a wedding agency.
 
 CURRENT PAGE STRUCTURE
-- The opening section introduces WedWise and has a button that takes visitors
-  to the questionnaire.
+- The opening section introduces WedWise with a wedding photo background and has
+  a button that takes visitors to the questionnaire.
+- The top navigation has links for the opening section, "How it works", and
+  starting the questionnaire. The active link changes as the visitor scrolls.
 - The "How it works" section explains three stages: complete the questionnaire,
   receive a personalized initial report, and continue with the agency if
   desired.
+- The design inspiration section explains how colors, flowers, style, guest
+  count, budget, and personal text shape the initial direction.
 - The "Why WedWise" section explains the main benefits: a focused questionnaire,
   AI-assisted analysis, budget-aware recommendations, human service, saving
   time, and creating a wedding direction that reflects the couple.
 - The questionnaire is on the same page and visitors can move forward and back
-  between its five steps before submitting.
+  between its six steps before submitting.
 - After submission, the questionnaire is replaced by an initial report and the
   visitor can restart the process.
 
@@ -36,7 +40,8 @@ QUESTIONNAIRE DETAILS
 3. Preferred colors, flower types, and decorations.
 4. Optional free text describing the desired atmosphere and details such as
    the chuppah, tables, music, colors, flowers, and decorations.
-5. Full name, phone number, and email for contact.
+5. Optional inspiration link, such as a Pinterest board or design reference.
+6. Full name, phone number, and email for contact.
 
 CURRENT REPORT
 The current site displays an initial planning report based on the answers. It
