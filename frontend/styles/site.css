@@ -466,6 +466,88 @@ button, input, select, textarea {
   padding: 6rem 0;
 }
 
+/* Secondary page continuity */
+.subpage-flow {
+  padding: 0 0 5rem;
+}
+
+.tool-strip {
+  padding: 2rem;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(248, 244, 238, 0.94)),
+    radial-gradient(circle at 0% 0%, rgba(216, 184, 106, 0.16), transparent 34%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.tool-strip-header {
+  max-width: 640px;
+  margin-bottom: 1.5rem;
+}
+
+.tool-strip-header h2 {
+  margin-bottom: 0.35rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.55rem, 3vw, 2.2rem);
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+.tool-strip-header p {
+  color: var(--color-muted);
+}
+
+.tool-strip-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.tool-strip-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 150px;
+  padding: 1.2rem;
+  color: var(--color-text);
+  text-decoration: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-md);
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.tool-strip-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.tool-strip-card.active {
+  background: linear-gradient(135deg, rgba(232, 211, 154, 0.34), rgba(255, 255, 255, 0.92));
+  border-color: rgba(184, 150, 62, 0.42);
+}
+
+.tool-strip-card strong {
+  margin-bottom: 0.4rem;
+  font-size: 1.02rem;
+}
+
+.tool-strip-card span {
+  color: var(--color-muted);
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+
+.tool-strip-card em {
+  margin-top: auto;
+  padding-top: 1rem;
+  color: var(--color-primary-dark);
+  font-style: normal;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
 .section-heading {
   max-width: 760px;
   margin: 0 auto 3rem;
@@ -528,11 +610,22 @@ button, input, select, textarea {
   position: absolute;
   top: 1.25rem;
   left: 1.5rem;
-  color: rgba(216, 184, 106, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  color: #1A1611;
+  background: linear-gradient(135deg, #FFF7E4 0%, var(--color-primary-light) 100%);
+  border: 1px solid rgba(184, 150, 62, 0.45);
+  border-radius: var(--radius-md);
   font-family: var(--font-display);
-  font-size: 3.2rem;
+  font-size: 2.05rem;
   font-weight: 700;
   line-height: 1;
+  box-shadow: 0 10px 24px rgba(184, 150, 62, 0.18);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.72);
+  -webkit-text-stroke: 0.35px rgba(26, 22, 17, 0.24);
 }
 
 .step-card h3 {
@@ -2186,6 +2279,7 @@ select {
   .steps-grid,
   .inspiration-grid,
   .questionnaire-layout,
+  .tool-strip-grid,
   .benefits-grid {
     grid-template-columns: 1fr;
   }
@@ -2263,6 +2357,18 @@ select {
   .questionnaire,
   .report-section {
     padding: 4rem 0;
+  }
+
+  .subpage-flow {
+    padding-bottom: 4rem;
+  }
+
+  .tool-strip {
+    padding: 1.35rem;
+  }
+
+  .tool-strip-card {
+    min-height: auto;
   }
 
   .questionnaire-card,

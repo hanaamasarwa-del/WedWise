@@ -67,11 +67,11 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  background: white;
-  border-radius: 16px;
+  background: var(--color-surface-panel);
+  border-radius: var(--radius-lg);
   padding: 2.5rem;
-  box-shadow: 0 8px 32px rgba(196, 135, 126, 0.12);
-  border: 1px solid rgba(196, 135, 126, 0.2);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
 }
 
 .form-group {
@@ -88,19 +88,19 @@
 
 .form-group input {
   padding: 0.875rem 1rem;
-  border: 2px solid var(--color-border);
-  border-radius: 10px;
-  font-family: var(--font);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
   font-size: 0.95rem;
   background: var(--color-bg);
   color: var(--color-text);
-  transition: all 0.3s ease;
+  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
 }
 
 .form-group input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(184, 150, 62, 0.15);
+  box-shadow: 0 0 0 4px rgba(216, 184, 106, 0.15);
   background: white;
 }
 
@@ -117,8 +117,8 @@
 /* Countdown Card - The Beautiful Display */
 .countdown-card {
   background: linear-gradient(135deg, #FFFFFF 0%, #FBF8F4 40%, #F5EDE6 100%);
-  border: 2px solid rgba(184, 150, 62, 0.25);
-  border-radius: 24px;
+  border: 1px solid rgba(184, 150, 62, 0.32);
+  border-radius: var(--radius-lg);
   padding: 5rem 3.5rem;
   box-shadow:
     0 20px 60px rgba(196, 135, 126, 0.25),
@@ -365,7 +365,7 @@
   padding: 0.75rem 1rem;
   background: #e8f5e9;
   color: #2e7d32;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 0.9rem;
   animation: fadeIn 0.3s ease-out;
 }
@@ -374,7 +374,7 @@
   background: #ffebee;
   color: #c62828;
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   border-left: 4px solid #c62828;
   margin-top: 1rem;
 }
@@ -382,64 +382,9 @@
 .no-result {
   text-align: center;
   padding: 3rem 1rem;
-  color: var(--color-text-light);
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-border);
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Mobile Responsive */
-/* Result Actions */
-.countdown-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.countdown-actions .btn {
-  min-width: 150px;
-}
-
-.copy-success {
-  display: inline-block;
-  margin-top: 1rem;
-  padding: 0.75rem 1rem;
-  background: #e8f5e9;
-  color: #2e7d32;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  animation: fadeIn 0.3s ease-out;
-}
-
-.countdown-error {
-  background: #ffebee;
-  color: #c62828;
-  padding: 1rem;
-  border-radius: 8px;
-  border-left: 4px solid #c62828;
-  margin-top: 1rem;
-  font-weight: 500;
-}
-
-.no-result {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: var(--color-text-light);
-  background: white;
-  border-radius: 12px;
+  color: var(--color-muted);
+  background: var(--color-surface-panel);
+  border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
 }
 
