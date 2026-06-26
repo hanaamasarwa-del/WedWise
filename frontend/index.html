@@ -14,9 +14,10 @@
     <div class="container header-inner">
       <a href="#top" class="logo">WedWise</a>
       <nav class="nav-links">
-        <a href="#top">ראשי</a>
-        <a href="#how-it-works">איך זה עובד</a>
-        <a href="#questionnaire" class="nav-cta">התחילו לתכנן</a>
+        <a href="index.html">עמוד בית</a>
+        <a href="countdown.html">ספירה לאחור</a>
+        <a href="blessing-helper.html">עוזר ברכות</a>
+        <a href="questionnaire.html" class="nav-cta">התחילו לתכנן</a>
       </nav>
     </div>
   </header>
@@ -38,7 +39,7 @@
           ממלאים שאלון קצר על החתונה שחולמים עליה — ומקבלים דוח מותאם אישית עם כיוון עיצובי והמלצות ראשוניות.
         </p>
         <div class="hero-actions">
-          <a href="#questionnaire" class="btn btn-primary btn-lg">התחילו את השאלון</a>
+          <a href="questionnaire.html" class="btn btn-primary btn-lg">התחילו את השאלון</a>
         </div>
       </div>
     </section>
@@ -362,5 +363,18 @@
   </aside>
 
   <script src="app.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const navLinks = document.querySelectorAll('.nav-links a');
+      navLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href === 'index.html') {
+          link.classList.add('nav-cta');
+        } else {
+          link.classList.remove('nav-cta');
+        }
+      });
+    });
+  </script>
 </body>
 </html>
