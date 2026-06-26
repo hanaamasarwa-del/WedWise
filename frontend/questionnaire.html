@@ -217,11 +217,11 @@
               </fieldset>
 
               <div class="form-nav">
-                <button type="button" id="btn-back" class="btn btn-secondary btn-nav-back" hidden>
+                <button type="button" id="btn-back" class="btn btn-secondary btn-nav-back" hidden onclick="validateStep(currentStep) ? goToStep(currentStep - 1) : null">
                   <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
                   חזרה
                 </button>
-                <button type="button" id="btn-next" class="btn btn-primary btn-nav-next">
+                <button type="button" id="btn-next" class="btn btn-primary btn-nav-next" onclick="if (validateStep(currentStep)) { goToStep(currentStep + 1); }">
                   הבא
                   <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
                 </button>
