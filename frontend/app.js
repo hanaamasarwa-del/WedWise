@@ -34,7 +34,6 @@ const progressFill = document.getElementById('progress-fill');
 const progressBar = document.querySelector('.progress-bar');
 const btnBack = document.getElementById('btn-back');
 const btnNext = document.getElementById('btn-next');
-const btnSubmit = document.getElementById('btn-submit');
 const btnRestart = document.getElementById('btn-restart');
 const questionnaireSection = document.getElementById('questionnaire');
 const reportSection = document.getElementById('report-section');
@@ -141,7 +140,7 @@ function validateStep(stepIndex) {
 
     case 5: {
       const url = state.inspiration_url;
-      if (!url) return true; // field is optional — empty is always valid
+      if (!url) return true;
       try {
         new URL(url);
         return true;
@@ -187,8 +186,7 @@ function updateProgress(step) {
 
 function updateNavButtons(step) {
   btnBack.hidden = step === 1;
-  btnNext.hidden = step === TOTAL_STEPS;
-  btnSubmit.hidden = step !== TOTAL_STEPS;
+  btnNext.textContent = step === TOTAL_STEPS ? 'שליחה וקבלת דוח' : 'הבא';
 }
 
 function goToStep(step) {
@@ -517,9 +515,12 @@ function resetForm() {
 }
 
 btnNext.addEventListener('click', () => {
-  if (currentStep >= TOTAL_STEPS) return;
-  if (validateStep(currentStep)) {
-    goToStep(currentStep + 1);
+  if (currentStep < TOTAL_STEPS) {
+    if (validateStep(currentStep)) {
+      goToStep(currentStep + 1);
+    }
+  } else {
+    form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
   }
 });
 
@@ -536,15 +537,15 @@ form.addEventListener('submit', async (e) => {
   const state = getFormState();
   const payload = buildWeddingRequestPayload(state);
 
-  btnSubmit.disabled = true;
-  btnSubmit.textContent = 'מייצרים את הדוח...';
+  btnNext.disabled = true;
+  btnNext.textContent = 'מייצרים את הדוח...';
 
   try {
     const reportHtml = await submitQuestionnaire(payload);
     renderReport(reportHtml);
   } finally {
-    btnSubmit.disabled = false;
-    btnSubmit.textContent = 'שליחה וקבלת דוח';
+    btnNext.disabled = false;
+    updateNavButtons(currentStep);
   }
 });
 
@@ -556,11 +557,7 @@ form.addEventListener('keydown', (e) => {
   if (tag === 'textarea') return;
 
   e.preventDefault();
-  if (currentStep < TOTAL_STEPS) {
-    btnNext.click();
-  } else if (currentStep === TOTAL_STEPS) {
-    btnSubmit.click();
-  }
+  btnNext.click();
 });
 
 goToStep(1);
