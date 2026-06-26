@@ -89,6 +89,7 @@ CREATE TABLE wedding_requests (
     preferred_colors TEXT,
     flowers_and_decor TEXT,
     free_text TEXT,
+    inspiration_url TEXT,
     FOREIGN KEY (region_id) REFERENCES regions(id)
 );
 

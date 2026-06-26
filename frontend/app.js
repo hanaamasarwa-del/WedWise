@@ -4,7 +4,7 @@
  * Payload shape aligns with wedding_requests + lead_submissions schema.
  */
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 6;
 
 const REGION_NAMES = {
   '1': 'ירושלים והסביבה',
@@ -20,6 +20,10 @@ const SUPPLIER_CATEGORIES = [
   'עיצוב ופרחים',
   'קייטרינג',
 ];
+
+// Telegram — fill in from .env before use; leave empty to disable
+const TELEGRAM_BOT_TOKEN = '';
+const TELEGRAM_CHAT_ID = '';
 
 let currentStep = 1;
 
@@ -56,6 +60,7 @@ function getFormState() {
     full_name: form.full_name.value.trim(),
     phone: form.phone.value.trim(),
     email: form.email.value.trim(),
+    inspiration_url: form.inspiration_url.value.trim(),
   };
 }
 
@@ -73,6 +78,7 @@ function buildWeddingRequestPayload(state) {
       preferred_colors: state.preferred_colors,
       flowers_and_decor: flowersAndDecor,
       free_text: state.free_text,
+      inspiration_url: state.inspiration_url || null,
     },
     lead: {
       full_name: state.full_name,
@@ -133,7 +139,19 @@ function validateStep(stepIndex) {
     case 4:
       return true;
 
-    case 5:
+    case 5: {
+      const url = state.inspiration_url;
+      if (!url) return true; // field is optional — empty is always valid
+      try {
+        new URL(url);
+        return true;
+      } catch {
+        showError('נא להזין קישור תקין (לדוגמה: https://www.pinterest.com/...) או לרוקן את השדה ולדלג.');
+        return false;
+      }
+    }
+
+    case 6: {
       if (!state.full_name) {
         showError('נא להזין שם מלא.');
         return false;
@@ -148,6 +166,7 @@ function validateStep(stepIndex) {
         return false;
       }
       return true;
+    }
 
     default:
       return true;
@@ -257,6 +276,21 @@ function generateMockReport(payload) {
       <span class="rpt-supplier-name">${cat}</span>
     </div>`).join('');
 
+  // Optional inspiration link block — only rendered when a URL was provided
+  const inspirationBlock = wr.inspiration_url ? `
+    <div class="rpt-divider" aria-hidden="true"></div>
+
+    <div class="rpt-block">
+      <div class="rpt-block-title">
+        <span class="material-symbols-outlined" aria-hidden="true">link</span>
+        <h3>השראה לחתונה</h3>
+      </div>
+      <a href="${wr.inspiration_url}" target="_blank" rel="noopener noreferrer" class="rpt-inspiration-link">
+        <span class="material-symbols-outlined" aria-hidden="true">open_in_new</span>
+        ${wr.inspiration_url}
+      </a>
+    </div>` : '';
+
   return `
     <div class="rpt-header">
       <span class="rpt-demo-badge">
@@ -341,6 +375,8 @@ function generateMockReport(payload) {
       ${freeTextBlock}
     </div>
 
+    ${inspirationBlock}
+
     <div class="rpt-divider" aria-hidden="true"></div>
 
     <div class="rpt-block">
@@ -409,8 +445,55 @@ function renderReport(html) {
   reportSection.scrollIntoView({ behavior: 'smooth' });
 }
 
+function formatTelegramMessage(payload) {
+  const wr = payload.wedding_request;
+  const lead = payload.lead;
+  const style = (() => { try { return JSON.parse(wr.preferred_styles_json || '[]')[0] || '—'; } catch { return '—'; } })();
+
+  const lines = [
+    '🌿 *ליד חדש — WedWise*',
+    '',
+    `👤 *שם:* ${lead.full_name}`,
+    `📞 *טלפון:* ${lead.phone}`,
+    `📧 *אימייל:* ${lead.email || '—'}`,
+    '',
+    `💰 *תקציב:* ₪${wr.estimated_budget_ils.toLocaleString('he-IL')}`,
+    `👥 *אורחים:* ${wr.guest_count}`,
+    `📍 *אזור:* ${REGION_NAMES[String(wr.region_id)] || '—'}`,
+    `🎨 *סגנון:* ${style}`,
+    `🌸 *פרחים / עיצוב:* ${wr.flowers_and_decor || '—'}`,
+    `🖊 *חזון אישי:* ${wr.free_text || '—'}`,
+  ];
+
+  if (wr.inspiration_url) {
+    lines.push('', `🔗 *השראה:* ${wr.inspiration_url}`);
+  }
+
+  return lines.join('\n');
+}
+
+async function sendTelegramNotification(payload) {
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
+  try {
+    await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text: formatTelegramMessage(payload),
+        parse_mode: 'Markdown',
+      }),
+    });
+  } catch {
+    // Non-blocking — Telegram failure must never prevent the report from showing
+  }
+}
+
 async function submitQuestionnaire(payload) {
-  // Future API integration:
+  // Telegram notification — fires in background, does not block report rendering
+  sendTelegramNotification(payload);
+
+  // Future Supabase API integration:
   // const response = await fetch('/api/wedding-requests', {
   //   method: 'POST',
   //   headers: { 'Content-Type': 'application/json' },
