@@ -472,6 +472,78 @@ function formatTelegramMessage(payload) {
   return lines.join('\n');
 }
 
+async function submitQuestionnaire(payload) {
+  // Future API integration:
+  // const response = await fetch('/api/wedding-requests', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify(payload),
+  // });
+  // if (!response.ok) throw new Error('Submit failed');
+  // return response.json();
+
+  console.log('WedWise payload (ready for API):', payload);
+  return generateMockReport(payload);
+}
+
+function resetForm() {
+  form.reset();
+  currentStep = 1;
+  goToStep(1);
+  reportSection.hidden = true;
+  questionnaireSection.hidden = false;
+  clearError();
+  questionnaireSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+btnNext.addEventListener('click', () => {
+  if (validateStep(currentStep)) {
+    goToStep(currentStep + 1);
+  }
+});
+
+btnBack.addEventListener('click', () => {
+  if (currentStep > 1) {
+    goToStep(currentStep - 1);
+  }
+});
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!validateStep(currentStep)) return;
+
+  const state = getFormState();
+  const payload = buildWeddingRequestPayload(state);
+
+  btnSubmit.disabled = true;
+  btnSubmit.textContent = 'מייצרים את הדוח...';
+
+  try {
+    const reportHtml = await submitQuestionnaire(payload);
+    renderReport(reportHtml);
+  } finally {
+    btnSubmit.disabled = false;
+    btnSubmit.textContent = 'שליחה וקבלת דוח';
+  }
+});
+
+btnRestart.addEventListener('click', resetForm);
+
+form.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  const tag = e.target.tagName.toLowerCase();
+  if (tag === 'textarea') return;
+
+  e.preventDefault();
+  if (currentStep < TOTAL_STEPS) {
+    btnNext.click();
+  } else if (currentStep === TOTAL_STEPS) {
+    btnSubmit.click();
+  }
+});
+
+goToStep(1);
+
 async function sendTelegramNotification(payload) {
   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
   try {
