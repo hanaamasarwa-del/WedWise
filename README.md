@@ -36,7 +36,9 @@ the active frontend and verified.
 
 Working in the active user flow:
 
-- Responsive Hebrew landing page.
+- Responsive Hebrew landing page with a polished visual opening section.
+- Scroll-aware top navigation for the opening section, process explanation, and
+  questionnaire.
 - Five-step questionnaire with validation and back/next navigation.
 - Local initial report generation.
 - Telegram delivery of completed questionnaire details.
@@ -284,13 +286,3 @@ git diff --check
 
 For chatbot changes, also run a live relevant-question test and an unrelated
 question test when an OpenAI key and network access are available.
-
-## Milestones
-
-- 2026-06-25: Created the repository and protected product brief.
-- 2026-06-25: Added the responsive frontend and questionnaire.
-- 2026-06-25: Added synthetic supplier database assets.
-- 2026-06-25: Added Express, Supabase-oriented routes, and Telegram form
-  notifications.
-- 2026-06-25: Added the floating `gpt-5.4-nano` support chatbot and durable
-  chatbot-maintenance rules.
