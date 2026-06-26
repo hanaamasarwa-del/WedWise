@@ -4,29 +4,6 @@
  * Payload shape aligns with wedding_requests + lead_submissions schema.
  */
 
-if ('scrollRestoration' in history) {
-  history.scrollRestoration = 'manual';
-}
-
-function startPageAtTop() {
-  const root = document.documentElement;
-  const previousScrollBehavior = root.style.scrollBehavior;
-
-  root.style.scrollBehavior = 'auto';
-  window.scrollTo(0, 0);
-  root.style.scrollBehavior = previousScrollBehavior;
-
-  if (window.location.hash) {
-    history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
-  }
-}
-
-startPageAtTop();
-window.addEventListener('pageshow', () => {
-  startPageAtTop();
-  window.setTimeout(startPageAtTop, 0);
-});
-
 const TOTAL_STEPS = 5;
 
 const REGION_NAMES = {
@@ -53,51 +30,11 @@ const progressFill = document.getElementById('progress-fill');
 const progressBar = document.querySelector('.progress-bar');
 const btnBack = document.getElementById('btn-back');
 const btnNext = document.getElementById('btn-next');
+const btnSubmit = document.getElementById('btn-submit');
 const btnRestart = document.getElementById('btn-restart');
 const questionnaireSection = document.getElementById('questionnaire');
 const reportSection = document.getElementById('report-section');
 const reportContent = document.getElementById('report-content');
-const siteHeader = document.querySelector('.site-header');
-const howItWorksNav = document.querySelector('.nav-links a[href="#how-it-works"]');
-const questionnaireNav = document.querySelector('.nav-links a[href="#questionnaire"]');
-
-function setActiveNav(activeLink) {
-  [howItWorksNav, questionnaireNav].forEach((link) => {
-    const isActive = link === activeLink;
-    link.classList.toggle('is-active', isActive);
-
-    if (isActive) {
-      link.setAttribute('aria-current', 'location');
-    } else {
-      link.removeAttribute('aria-current');
-    }
-  });
-}
-
-function updateActiveNav() {
-  const headerHeight = siteHeader.offsetHeight;
-  const questionnaireStart = questionnaireSection.offsetTop - headerHeight - 80;
-  const activeLink = window.scrollY >= questionnaireStart
-    ? questionnaireNav
-    : howItWorksNav;
-
-  setActiveNav(activeLink);
-}
-
-let navUpdateRequested = false;
-window.addEventListener('scroll', () => {
-  if (navUpdateRequested) return;
-
-  navUpdateRequested = true;
-  window.requestAnimationFrame(() => {
-    updateActiveNav();
-    navUpdateRequested = false;
-  });
-}, { passive: true });
-
-window.addEventListener('resize', updateActiveNav);
-howItWorksNav.addEventListener('click', () => setActiveNav(howItWorksNav));
-questionnaireNav.addEventListener('click', () => setActiveNav(questionnaireNav));
 
 function getCheckedValues(name) {
   return Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map((el) => el.value);
@@ -132,11 +69,8 @@ function buildWeddingRequestPayload(state) {
       estimated_budget_ils: state.estimated_budget_ils,
       guest_count: state.guest_count,
       region_id: parseInt(state.region_id, 10),
-      region_name: state.region_name,
       preferred_styles_json: JSON.stringify([state.preferred_style]),
       preferred_colors: state.preferred_colors,
-      flowers: state.flowers,
-      decorations: state.decorations,
       flowers_and_decor: flowersAndDecor,
       free_text: state.free_text,
     },
@@ -152,6 +86,9 @@ function buildWeddingRequestPayload(state) {
 function showError(message) {
   formError.textContent = message;
   formError.hidden = false;
+  formError.classList.remove('error-shake');
+  void formError.offsetWidth; // force reflow to restart the animation
+  formError.classList.add('error-shake');
 }
 
 function clearError() {
@@ -221,13 +158,18 @@ function updateProgress(step) {
   progressLabel.textContent = `שלב ${step} מתוך ${TOTAL_STEPS}`;
   progressFill.style.width = `${(step / TOTAL_STEPS) * 100}%`;
   progressBar.setAttribute('aria-valuenow', String(step));
+
+  document.querySelectorAll('.step-pip').forEach((pip) => {
+    const pipStep = parseInt(pip.dataset.step, 10);
+    pip.classList.toggle('completed', pipStep < step);
+    pip.classList.toggle('active', pipStep === step);
+  });
 }
 
 function updateNavButtons(step) {
   btnBack.hidden = step === 1;
-  btnNext.hidden = false;
-  btnNext.disabled = false;
-  btnNext.textContent = step === TOTAL_STEPS ? 'שליחה וקבלת דוח' : 'הבא';
+  btnNext.hidden = step === TOTAL_STEPS;
+  btnSubmit.hidden = step !== TOTAL_STEPS;
 }
 
 function goToStep(step) {
@@ -262,78 +204,200 @@ function generateMockReport(payload) {
   const style = JSON.parse(wr.preferred_styles_json)[0];
   const region = REGION_NAMES[String(wr.region_id)] || '';
 
-  const venueBudget = Math.round(budget * 0.45);
+  const venueBudget    = Math.round(budget * 0.45);
   const cateringBudget = Math.round(budget * 0.30);
   const servicesBudget = Math.round(budget * 0.25);
 
-  const flowersDecor = wr.flowers_and_decor || 'לא צוין';
+  // Parse "פרחים: x, y | קישוטים: a, b" into separate groups
+  const fdParts = Object.fromEntries(
+    (wr.flowers_and_decor || '').split(' | ')
+      .map((p) => p.split(': '))
+      .filter((a) => a.length === 2)
+  );
+
+  // Color chips from comma-separated text
+  const colorTags = (wr.preferred_colors || '')
+    .split(',')
+    .map((c) => c.trim())
+    .filter(Boolean)
+    .map((c) => `<span class="rpt-color-tag">${c}</span>`)
+    .join('');
+
+  // Generic chip builder
+  const chips = (text) =>
+    (text || '').split(', ').filter(Boolean)
+      .map((t) => `<span class="rpt-chip">${t.trim()}</span>`).join('');
+
+  const flowerChips = chips(fdParts['פרחים']);
+  const decorChips  = chips(fdParts['קישוטים']);
+
+  const flowersSection = (flowerChips || decorChips) ? `
+    <div class="rpt-design-row">
+      ${flowerChips ? `<div class="rpt-design-item"><span class="rpt-design-label">פרחים</span><div class="rpt-chips">${flowerChips}</div></div>` : ''}
+      ${decorChips  ? `<div class="rpt-design-item"><span class="rpt-design-label">קישוטים</span><div class="rpt-chips">${decorChips}</div></div>`  : ''}
+    </div>` : '';
+
+  // Free text as a styled quote
   const freeTextBlock = wr.free_text
-    ? `<p><strong>במילים שלכם:</strong> "${wr.free_text}"</p>`
+    ? `<blockquote class="rpt-quote"><p>״${wr.free_text}״</p></blockquote>`
     : '';
 
-  const supplierTags = SUPPLIER_CATEGORIES.map(
-    (cat) => `<span class="supplier-tag">${cat}</span>`
-  ).join('');
+  // Supplier cards with icons
+  const SUPPLIER_ICONS = {
+    'אולם / גן אירועים': 'location_city',
+    'די־ג׳יי':           'music_note',
+    'צילום':              'photo_camera',
+    'עיצוב ופרחים':      'local_florist',
+    'קייטרינג':           'restaurant',
+  };
+
+  const supplierCards = SUPPLIER_CATEGORIES.map((cat) => `
+    <div class="rpt-supplier-card">
+      <span class="material-symbols-outlined rpt-supplier-icon" aria-hidden="true">${SUPPLIER_ICONS[cat] || 'storefront'}</span>
+      <span class="rpt-supplier-name">${cat}</span>
+    </div>`).join('');
 
   return `
-    <div class="report-demo-banner">דוח לדוגמה — בגרסה הבאה הדוח ייווצר באמצעות בינה מלאכותית</div>
-    <h2>דוח תכנון חתונה מותאם אישית</h2>
-    <p class="report-greeting">שלום ${lead.full_name}, הנה תמונת המצב הראשונית שלכם</p>
-
-    <div class="report-block">
-      <h3>סיכום האירוע</h3>
-      <p>
-        חתונה בסגנון <strong>${style}</strong> באזור <strong>${region}</strong>,
-        עם כ-<strong>${guests.toLocaleString('he-IL')}</strong> אורחים
-        ותקציב משוער של <strong>${formatCurrency(budget)}</strong>.
-      </p>
-      <p>עלות משוערת לאורח: כ-<strong>${formatCurrency(perGuest)}</strong></p>
+    <div class="rpt-header">
+      <span class="rpt-demo-badge">
+        <span class="material-symbols-outlined" aria-hidden="true">science</span>
+        דוח לדוגמה — בגרסה הבאה ייווצר באמצעות AI
+      </span>
+      <div class="rpt-title-row">
+        <span class="rpt-ornament" aria-hidden="true">✦</span>
+        <h2>דוח תכנון חתונה</h2>
+        <span class="rpt-ornament" aria-hidden="true">✦</span>
+      </div>
+      <p class="rpt-subtitle">שלום <strong>${lead.full_name}</strong>, הנה תמונת המצב הראשונית שלכם</p>
     </div>
 
-    <div class="report-block">
-      <h3>פילוח תקציב מומלץ</h3>
-      <p>הערכה ראשונית לחלוקת התקציב — יתעדכן בדוח המלא:</p>
-      <div class="budget-breakdown">
-        <div class="budget-item">
-          <strong>${formatCurrency(venueBudget)}</strong>
-          <span>אולם / גן (~45%)</span>
+    <div class="rpt-divider" aria-hidden="true"></div>
+
+    <div class="rpt-stats">
+      <div class="rpt-stat">
+        <span class="material-symbols-outlined rpt-stat-icon" aria-hidden="true">groups</span>
+        <strong class="rpt-stat-value">${guests.toLocaleString('he-IL')}</strong>
+        <span class="rpt-stat-label">אורחים</span>
+      </div>
+      <div class="rpt-stat">
+        <span class="material-symbols-outlined rpt-stat-icon" aria-hidden="true">payments</span>
+        <strong class="rpt-stat-value">${formatCurrency(budget)}</strong>
+        <span class="rpt-stat-label">תקציב כולל</span>
+      </div>
+      <div class="rpt-stat">
+        <span class="material-symbols-outlined rpt-stat-icon" aria-hidden="true">person</span>
+        <strong class="rpt-stat-value">${formatCurrency(perGuest)}</strong>
+        <span class="rpt-stat-label">עלות לאורח</span>
+      </div>
+      <div class="rpt-stat">
+        <span class="material-symbols-outlined rpt-stat-icon" aria-hidden="true">location_on</span>
+        <strong class="rpt-stat-value">${region}</strong>
+        <span class="rpt-stat-label">אזור</span>
+      </div>
+    </div>
+
+    <div class="rpt-divider" aria-hidden="true"></div>
+
+    <div class="rpt-block">
+      <div class="rpt-block-title">
+        <span class="material-symbols-outlined" aria-hidden="true">pie_chart</span>
+        <h3>פילוח תקציב מומלץ</h3>
+      </div>
+      <p class="rpt-block-sub">הערכה ראשונית — יתעדכן בדוח המלא</p>
+      <div class="rpt-budget-bars">
+        <div class="rpt-budget-row">
+          <div class="rpt-budget-meta"><span>אולם / גן אירועים</span><strong>${formatCurrency(venueBudget)}</strong></div>
+          <div class="rpt-bar-wrap"><div class="rpt-bar-track"><div class="rpt-bar-fill" style="width:45%"></div></div><span class="rpt-bar-pct">45%</span></div>
         </div>
-        <div class="budget-item">
-          <strong>${formatCurrency(cateringBudget)}</strong>
-          <span>קייטרינג (~30%)</span>
+        <div class="rpt-budget-row">
+          <div class="rpt-budget-meta"><span>קייטרינג</span><strong>${formatCurrency(cateringBudget)}</strong></div>
+          <div class="rpt-bar-wrap"><div class="rpt-bar-track"><div class="rpt-bar-fill" style="width:30%"></div></div><span class="rpt-bar-pct">30%</span></div>
         </div>
-        <div class="budget-item">
-          <strong>${formatCurrency(servicesBudget)}</strong>
-          <span>עיצוב, צילום ודי־ג׳יי (~25%)</span>
+        <div class="rpt-budget-row">
+          <div class="rpt-budget-meta"><span>עיצוב, צילום ודי־ג׳יי</span><strong>${formatCurrency(servicesBudget)}</strong></div>
+          <div class="rpt-bar-wrap"><div class="rpt-bar-track"><div class="rpt-bar-fill" style="width:25%"></div></div><span class="rpt-bar-pct">25%</span></div>
         </div>
       </div>
     </div>
 
-    <div class="report-block">
-      <h3>כיוון עיצובי</h3>
-      <p><strong>צבעים:</strong> ${wr.preferred_colors}</p>
-      <p><strong>פרחים וקישוטים:</strong> ${flowersDecor}</p>
+    <div class="rpt-divider" aria-hidden="true"></div>
+
+    <div class="rpt-block">
+      <div class="rpt-block-title">
+        <span class="material-symbols-outlined" aria-hidden="true">palette</span>
+        <h3>כיוון עיצובי</h3>
+      </div>
+      <div class="rpt-design-grid">
+        <div class="rpt-design-item">
+          <span class="rpt-design-label">סגנון</span>
+          <span class="rpt-style-badge">${style}</span>
+        </div>
+        <div class="rpt-design-item">
+          <span class="rpt-design-label">צבעים</span>
+          <div class="rpt-chips">${colorTags}</div>
+        </div>
+      </div>
+      ${flowersSection}
       ${freeTextBlock}
-      <div class="report-visual-placeholder">
-        <span>המחשה עיצובית — בקרוב</span>
+    </div>
+
+    <div class="rpt-divider" aria-hidden="true"></div>
+
+    <div class="rpt-block">
+      <div class="rpt-block-title">
+        <span class="material-symbols-outlined" aria-hidden="true">checklist</span>
+        <h3>צעדים מומלצים להמשך</h3>
+      </div>
+      <div class="rpt-timeline">
+        <div class="rpt-tl-item">
+          <div class="rpt-tl-marker" aria-hidden="true">1</div>
+          <div class="rpt-tl-body">
+            <h4>בחירת אולם / גן אירועים</h4>
+            <p>ריכוז 3–5 מקומות באזור ${region} התואמים לתקציב ולסגנון ${style}.</p>
+          </div>
+        </div>
+        <div class="rpt-tl-item">
+          <div class="rpt-tl-marker" aria-hidden="true">2</div>
+          <div class="rpt-tl-body">
+            <h4>פגישות עם ספקי מוזיקה</h4>
+            <p>קביעת 2–3 פגישות עם די־ג׳יי בעלי רפרטואר שמתאים לאווירה שתיארתם.</p>
+          </div>
+        </div>
+        <div class="rpt-tl-item">
+          <div class="rpt-tl-marker" aria-hidden="true">3</div>
+          <div class="rpt-tl-body">
+            <h4>בחירת צלם/ת</h4>
+            <p>חפשו צלם/ת עם תיק עבודות שמשדר את הסגנון ${style}.</p>
+          </div>
+        </div>
+        <div class="rpt-tl-item">
+          <div class="rpt-tl-marker" aria-hidden="true">4</div>
+          <div class="rpt-tl-body">
+            <h4>פגישת עיצוב ופרחים</h4>
+            <p>הציגו לעצב/ת את צבעי הקונספט: ${wr.preferred_colors}.</p>
+          </div>
+        </div>
+        <div class="rpt-tl-item">
+          <div class="rpt-tl-marker" aria-hidden="true">5</div>
+          <div class="rpt-tl-body">
+            <h4>בניית לוח זמנים</h4>
+            <p>הגדירו לוח זמנים של 6–9 חודשים לפני האירוע עם נקודות ציון לכל ספק.</p>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="report-block">
-      <h3>צעדים מומלצים להמשך</h3>
-      <ul>
-        <li>בחירת רשימת מקומות קצרה באזור ${region}</li>
-        <li>קביעת פגישות עם 2–3 די־ג׳יי בסגנון ${style}</li>
-        <li>בחירת צלם/ת עם סגנון שמתאים לאווירה שתיארתם</li>
-        <li>פגישת עיצוב ופרחים לפי הצבעים: ${wr.preferred_colors}</li>
-        <li>הגדרת לוח זמנים ל-6–9 חודשים לפני האירוע</li>
-      </ul>
-    </div>
+    <div class="rpt-divider" aria-hidden="true"></div>
 
-    <div class="report-block">
-      <h3>קטגוריות ספקים לבדיקה</h3>
-      <p>בדוח המלא נציג התאמות מספקי הדמו שלנו — לפי אזור, סגנון ותקציב:</p>
-      <div class="supplier-categories">${supplierTags}</div>
+    <div class="rpt-block">
+      <div class="rpt-block-title">
+        <span class="material-symbols-outlined" aria-hidden="true">storefront</span>
+        <h3>קטגוריות ספקים לבדיקה</h3>
+      </div>
+      <p class="rpt-block-sub">בדוח המלא נציג התאמות לפי אזור, סגנון ותקציב</p>
+      <div class="rpt-suppliers">
+        ${supplierCards}
+      </div>
     </div>
   `;
 }
@@ -346,22 +410,16 @@ function renderReport(html) {
 }
 
 async function submitQuestionnaire(payload) {
-  const apiBaseUrl = window.location.protocol === 'file:' ? 'http://localhost:3000' : '';
+  // Future API integration:
+  // const response = await fetch('/api/wedding-requests', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify(payload),
+  // });
+  // if (!response.ok) throw new Error('Submit failed');
+  // return response.json();
 
-  try {
-    const response = await fetch(`${apiBaseUrl}/api/telegram-lead`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      console.warn('Telegram delivery failed, showing local report');
-    }
-  } catch (error) {
-    console.warn('Backend not available, showing local report:', error);
-  }
-
+  console.log('WedWise payload (ready for API):', payload);
   return generateMockReport(payload);
 }
 
@@ -376,12 +434,9 @@ function resetForm() {
 }
 
 btnNext.addEventListener('click', () => {
-  if (!validateStep(currentStep)) return;
-
-  if (currentStep < TOTAL_STEPS) {
+  if (currentStep >= TOTAL_STEPS) return;
+  if (validateStep(currentStep)) {
     goToStep(currentStep + 1);
-  } else if (currentStep === TOTAL_STEPS) {
-    form.dispatchEvent(new Event('submit'));
   }
 });
 
@@ -398,17 +453,15 @@ form.addEventListener('submit', async (e) => {
   const state = getFormState();
   const payload = buildWeddingRequestPayload(state);
 
-  btnNext.disabled = true;
-  btnNext.textContent = 'מייצרים את הדוח...';
+  btnSubmit.disabled = true;
+  btnSubmit.textContent = 'מייצרים את הדוח...';
 
   try {
     const reportHtml = await submitQuestionnaire(payload);
     renderReport(reportHtml);
-  } catch {
-    showError('לא הצלחנו לשלוח את הטופס כרגע. אנא נסו שוב בעוד רגע.');
   } finally {
-    btnNext.disabled = false;
-    btnNext.textContent = 'שליחה וקבלת דוח';
+    btnSubmit.disabled = false;
+    btnSubmit.textContent = 'שליחה וקבלת דוח';
   }
 });
 
@@ -428,106 +481,3 @@ form.addEventListener('keydown', (e) => {
 });
 
 goToStep(1);
-
-const chatPanel = document.getElementById('chat-panel');
-const chatLauncher = document.getElementById('chat-launcher');
-const chatClose = document.getElementById('chat-close');
-const chatForm = document.getElementById('chat-form');
-const chatInput = document.getElementById('chat-input');
-const chatSend = document.getElementById('chat-send');
-const chatMessages = document.getElementById('chat-messages');
-const chatHistory = [];
-
-function setChatOpen(isOpen) {
-  chatPanel.hidden = !isOpen;
-  chatPanel.setAttribute('aria-hidden', String(!isOpen));
-  chatLauncher.setAttribute('aria-expanded', String(isOpen));
-  chatLauncher.hidden = isOpen;
-
-  if (isOpen) {
-    window.requestAnimationFrame(() => chatInput.focus());
-  } else {
-    chatLauncher.focus();
-  }
-}
-
-function addChatMessage(role, text, extraClass = '') {
-  const message = document.createElement('div');
-  message.className = `chat-message chat-message--${role} ${extraClass}`.trim();
-  message.textContent = text;
-  chatMessages.appendChild(message);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-  return message;
-}
-
-function setChatLoading(isLoading) {
-  chatInput.disabled = isLoading;
-  chatSend.disabled = isLoading;
-}
-
-async function sendChatMessage(message) {
-  chatHistory.push({ role: 'user', content: message });
-  addChatMessage('user', message);
-  setChatLoading(true);
-
-  const typingMessage = addChatMessage('assistant', 'כותב תשובה…', 'chat-message--typing');
-
-  try {
-    const apiBaseUrl = window.location.protocol === 'file:' ? 'http://localhost:3000' : '';
-    const response = await fetch(`${apiBaseUrl}/api/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: chatHistory.slice(-10) }),
-    });
-    const data = await response.json().catch(() => ({}));
-
-    if (!response.ok) {
-      throw new Error(data.error || 'Chat request failed');
-    }
-
-    typingMessage.remove();
-    chatHistory.push({ role: 'assistant', content: data.reply });
-    addChatMessage('assistant', data.reply);
-  } catch (error) {
-    typingMessage.remove();
-    const serverUnavailable = error instanceof TypeError;
-    const errorMessage = serverUnavailable
-      ? 'השרת של WedWise לא פועל כרגע. יש להפעיל את האתר דרך השרת ולפתוח http://localhost:3000.'
-      : 'מצטערים, הצ׳אט לא זמין כרגע. אפשר לנסות שוב בעוד רגע.';
-
-    addChatMessage(
-      'assistant',
-      errorMessage,
-      'chat-message--error'
-    );
-    console.warn('Chat request failed:', error);
-  } finally {
-    setChatLoading(false);
-    chatInput.focus();
-  }
-}
-
-chatLauncher.addEventListener('click', () => setChatOpen(true));
-chatClose.addEventListener('click', () => setChatOpen(false));
-
-chatForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-  const message = chatInput.value.trim();
-  if (!message || chatInput.disabled) return;
-
-  chatInput.value = '';
-  sendChatMessage(message);
-});
-
-chatInput.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter' && !event.shiftKey) {
-    event.preventDefault();
-    chatForm.requestSubmit();
-  }
-});
-
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && !chatPanel.hidden) {
-    setChatOpen(false);
-  }
-});
