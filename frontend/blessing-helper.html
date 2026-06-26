@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>עוזר כתיבת ברכות לחתונה – WedWise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="site.css">
+  <link rel="stylesheet" href="blessing-helper.css">
+</head>
+<body id="top">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">WedWise</a>
+      <nav class="nav-links">
+        <a href="index.html">עמוד בית</a>
+        <a href="countdown.html">ספירה לאחור</a>
+        <a href="blessing-helper.html">עוזר ברכות</a>
+        <a href="questionnaire.html">התחילו לתכנן</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="blessing-hero">
+      <div class="container">
+        <h1>עוזר כתיבת ברכות לחתונה</h1>
+        <p class="blessing-subtitle">צרו ברכה אישית, טבעית ומרגשת בכמה צעדים פשוטים</p>
+      </div>
+    </section>
+
+    <section class="blessing-container">
+      <div class="container">
+        <div class="blessing-wrapper">
+          <!-- Form -->
+          <div class="blessing-form-section">
+            <form id="blessing-form" class="blessing-form">
+              <div class="form-group">
+                <label for="speaker">מי מברך/ת?</label>
+                <select id="speaker" required>
+                  <option value="">בחרו מי מדבר</option>
+                  <option value="חברה-טובה">חברה טובה</option>
+                  <option value="חבר-טוב">חבר טוב</option>
+                  <option value="אחות">אחות</option>
+                  <option value="אח">אח</option>
+                  <option value="אמא">אמא</option>
+                  <option value="אבא">אבא</option>
+                  <option value="בן-משפחה">בן משפחה</option>
+                  <option value="בת-משפחה">בת משפחה</option>
+                  <option value="מלווה">מלווה</option>
+                  <option value="אורח">אורח</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="bride-name">שם הכלה</label>
+                <input type="text" id="bride-name" placeholder="לדוגמה: רחל" required>
+              </div>
+
+              <div class="form-group">
+                <label for="groom-name">שם החתן</label>
+                <input type="text" id="groom-name" placeholder="לדוגמה: דוד" required>
+              </div>
+
+              <div class="form-group">
+                <label for="tone">סגנון הברכה</label>
+                <select id="tone" required>
+                  <option value="">בחרו סגנון</option>
+                  <option value="מרגש">מרגש</option>
+                  <option value="קליל-וחם">קליל וחם</option>
+                  <option value="אלגנטי">אלגנטי</option>
+                  <option value="מצחיק">מצחיק בעדינות</option>
+                  <option value="קצר-ופשוט">קצר ופשוט</option>
+                  <option value="אישי">אישי ומשפחתי</option>
+                  <option value="מסורתי">מסורתי ועדין</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="length">אורך הברכה</label>
+                <select id="length" required>
+                  <option value="">בחרו אורך</option>
+                  <option value="קצר-מאוד">קצר מאוד (עד 3 משפטים)</option>
+                  <option value="קצר">קצר (כ-5-7 משפטים)</option>
+                  <option value="בינוני">בינוני (כ-10-12 משפטים)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="details">פרטים אישיים (אופציונלי)</label>
+                <textarea id="details" placeholder="לדוגמה: שמות בני הזוג, זיכרון משותף, תכונה יפה שלהם, איחולים מיוחדים..."></textarea>
+              </div>
+
+              <div class="button-group">
+                <button type="submit" class="btn btn-primary">יצירת ברכה</button>
+                <button type="reset" class="btn btn-secondary">ניקוי</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Result -->
+          <div class="blessing-result-section">
+            <div id="result-container" class="blessing-result" hidden>
+              <div class="result-card">
+                <div id="blessing-output" class="blessing-text"></div>
+                <div class="result-actions">
+                  <button id="copy-btn" class="btn btn-primary">העתקת הברכה</button>
+                  <button id="regenerate-btn" class="btn btn-secondary">יצירה מחדש</button>
+                </div>
+                <p class="result-note">💡 מומלץ לעבור על הטקסט ולהוסיף נגיעות אישיות לפני ההקראה.</p>
+              </div>
+            </div>
+
+            <div id="no-result" class="no-result" hidden>
+              <p>מלאו את הטופס וקליקו על "יצירת ברכה" כדי ליצור ברכה אישית</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 WedWise. כל הזכויות שמורות.</p>
+    </div>
+  </footer>
+
+  <script src="blessing-helper.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const navLinks = document.querySelectorAll('.nav-links a');
+      navLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href === 'blessing-helper.html') {
+          link.classList.add('nav-cta');
+        } else {
+          link.classList.remove('nav-cta');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
