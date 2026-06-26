@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ספירה לאחור לחתונה – WedWise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="site.css">
+  <link rel="stylesheet" href="countdown.css">
+</head>
+<body id="top">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">WedWise</a>
+      <nav class="nav-links">
+        <a href="index.html">עמוד בית</a>
+        <a href="countdown.html">ספירה לאחור</a>
+        <a href="blessing-helper.html">עוזר ברכות</a>
+        <a href="questionnaire.html">התחילו לתכנן</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="countdown-hero">
+      <div class="container">
+        <h1>ספירה לאחור לחתונה</h1>
+        <p class="countdown-subtitle">בחרו תאריך וקבלו ספירה לאחור מעוצבת ליום הגדול</p>
+      </div>
+    </section>
+
+    <section class="countdown-container">
+      <div class="container">
+        <div class="countdown-wrapper">
+          <!-- Form Section -->
+          <div class="countdown-form-section">
+            <form id="countdown-form">
+              <div class="form-group">
+                <label for="wedding-date">תאריך החתונה *</label>
+                <input type="date" id="wedding-date" name="wedding-date" required>
+              </div>
+
+              <div class="form-group">
+                <label for="couple-names">שמות בני הזוג (אופציונלי)</label>
+                <input type="text" id="couple-names" name="couple-names" placeholder="לדוגמה: רחל ודוד">
+              </div>
+
+              <div class="form-group">
+                <label for="custom-title">כותרת אישית (אופציונלי)</label>
+                <input type="text" id="custom-title" name="custom-title" placeholder="לדוגמה: עד היום הגדול">
+              </div>
+
+              <div class="button-group">
+                <button type="submit" class="btn btn-primary">יצירת ספירה</button>
+                <button type="reset" class="btn btn-secondary">ניקוי</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Result Section -->
+          <div class="countdown-result-section">
+            <div id="result-container" class="countdown-result" hidden>
+              <!-- Countdown card will be rendered here -->
+              <div id="countdown-card" class="countdown-card">
+                <div class="countdown-card-content">
+                  <div id="card-title" class="countdown-card-title" style="display: none;"></div>
+                  <div id="card-couple" class="countdown-card-couple" style="display: none;"></div>
+
+                  <div class="countdown-display">
+                    <div class="countdown-number-group">
+                      <div class="countdown-number" id="months-display">0</div>
+                      <div class="countdown-label">חודשים</div>
+                    </div>
+                    <div class="countdown-separator">:</div>
+                    <div class="countdown-number-group">
+                      <div class="countdown-number" id="days-display">0</div>
+                      <div class="countdown-label">ימים</div>
+                    </div>
+                  </div>
+
+                  <div id="card-footer" class="countdown-card-footer" style="display: none;"></div>
+                </div>
+
+                <!-- Decorative elements -->
+                <div class="countdown-decoration countdown-decoration-top" aria-hidden="true"></div>
+                <div class="countdown-decoration countdown-decoration-bottom" aria-hidden="true"></div>
+              </div>
+
+              <div class="countdown-actions">
+                <button type="button" id="download-btn" class="btn btn-primary">הורדת התמונה</button>
+                <button type="button" id="copy-btn" class="btn btn-secondary">העתקה</button>
+              </div>
+
+              <p id="copy-message" class="copy-success" style="display: none;">✓ התמונה הועתקה!</p>
+            </div>
+
+            <div id="no-result" class="no-result" hidden>
+              <p>בחרו תאריך לחתונה וקליקו על "יצירת ספירה"</p>
+            </div>
+
+            <div id="error-message" class="countdown-error" hidden></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 WedWise. כל הזכויות שמורות.</p>
+    </div>
+  </footer>
+
+  <aside class="chat-widget" id="chat-widget">
+    <section
+      class="chat-panel"
+      id="chat-panel" hidden
+      aria-labelledby="chat-title"
+      aria-hidden="true"
+      hidden
+    >
+      <header class="chat-header">
+        <div>
+          <h2 id="chat-title">העוזר של WedWise</h2>
+          <p><span class="chat-status-dot" aria-hidden="true"></span> כאן כדי לעזור</p>
+        </div>
+        <button type="button" class="chat-close" id="chat-close" aria-label="סגירת הצ'אט" onclick="document.getElementById('chat-panel').setAttribute('hidden', '');">×</button>
+      </header>
+
+      <div class="chat-messages" id="chat-messages" aria-live="polite">
+        <div class="chat-message chat-message--assistant">
+          שלום! אני העוזר של WedWise. אפשר לשאול אותי על האתר, השאלון או תכנון החתונה.
+        </div>
+      </div>
+
+      <form class="chat-form" id="chat-form">
+        <label class="sr-only" for="chat-input">כתבו הודעה</label>
+        <textarea
+          id="chat-input"
+          rows="1"
+          maxlength="2000"
+          placeholder="איך אפשר לעזור?"
+          required
+        ></textarea>
+        <button type="submit" class="chat-send" id="chat-send" aria-label="שליחת הודעה">
+          <span aria-hidden="true">➤</span>
+        </button>
+      </form>
+    </section>
+
+    <button
+      type="button"
+      class="chat-launcher"
+      id="chat-launcher"
+      aria-label="פתיחת הצ'אט"
+      aria-controls="chat-panel"
+      aria-expanded="false"
+      onclick="var p = document.getElementById('chat-panel'); p.hasAttribute('hidden') ? p.removeAttribute('hidden') : p.setAttribute('hidden', '');"
+    >
+      <span class="chat-launcher-icon" aria-hidden="true">💬</span>
+      <span class="chat-launcher-label">אפשר לעזור?</span>
+    </button>
+  </aside>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="countdown.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const navLinks = document.querySelectorAll('.nav-links a');
+      navLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href === 'countdown.html') {
+          link.classList.add('nav-cta');
+        } else {
+          link.classList.remove('nav-cta');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -10,6 +10,7 @@ const suppliersRouter = require("./routes/suppliers");
 const leadsRouter = require("./routes/leads");
 const telegramLeadRouter = require("./routes/telegram-lead");
 const chatRouter = require("./routes/chat");
+const blessingRouter = require("./routes/blessing");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,6 +31,7 @@ app.use("/api/suppliers", suppliersRouter);
 app.use("/api/leads", leadsRouter);
 app.use("/api/telegram-lead", telegramLeadRouter);
 app.use("/api/chat", chatRouter);
+app.use("/api", blessingRouter);
 
 const frontendDirectory = path.resolve(__dirname, "..", "frontend");
 app.use(express.static(frontendDirectory));

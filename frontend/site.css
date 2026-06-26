@@ -1645,3 +1645,65 @@ select {
     margin-right: 0;
   }
 }
+
+/* Normal Chat Widget */
+.chat-launcher {
+  position: fixed !important;
+  right: 20px !important;
+  bottom: 20px !important;
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 50% !important;
+  background: #D4A5A0 !important;
+  border: none !important;
+  color: white !important;
+  font-size: 24px !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 1000 !important;
+  padding: 0 !important;
+}
+
+.chat-launcher:hover { background: #B88B86 !important; }
+
+.chat-launcher-label { display: none; }
+
+.chat-panel {
+  position: fixed !important;
+  right: 20px !important;
+  bottom: 80px !important;
+  width: 380px !important;
+  height: 500px !important;
+  background: white !important;
+  border: 1px solid #ddd !important;
+  border-radius: 8px !important;
+  box-shadow: 0 5px 40px rgba(0,0,0,0.16) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  z-index: 1000 !important;
+}
+
+.chat-panel[hidden] {
+  display: none !important;
+}
+
+.chat-header { background: #D4A5A0 !important; color: white !important; padding: 15px !important; }
+.chat-header h2 { margin: 0 !important; font-size: 16px !important; }
+.chat-header p { margin: 5px 0 0 0 !important; font-size: 12px !important; }
+.chat-close { background: none !important; border: none !important; color: white !important; cursor: pointer !important; }
+
+.chat-messages { flex: 1 !important; overflow-y: auto !important; padding: 15px !important; background: #f9f9f9 !important; }
+.chat-message { margin-bottom: 10px !important; padding: 10px !important; border-radius: 6px !important; }
+.chat-message--assistant { background: white !important; border: 1px solid #ddd !important; }
+.chat-message--user { background: #D4A5A0 !important; color: white !important; }
+
+.chat-form { display: flex !important; gap: 10px !important; padding: 15px !important; border-top: 1px solid #ddd !important; }
+.chat-form textarea { flex: 1 !important; padding: 8px !important; border: 1px solid #ddd !important; border-radius: 4px !important; resize: none !important; }
+.chat-send { background: #D4A5A0 !important; border: none !important; color: white !important; width: 40px !important; height: 40px !important; border-radius: 4px !important; cursor: pointer !important; }
+
+@media (max-width: 768px) {
+  .chat-panel { width: calc(100vw - 40px) !important; }
+}
