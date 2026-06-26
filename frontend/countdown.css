@@ -111,23 +111,23 @@
 
 /* Countdown Card - The Beautiful Display */
 .countdown-card {
-  background: linear-gradient(135deg, #FFFFFF 0%, #FBF8F4 60%, #F5EDE6 100%);
-  border: 3px solid rgba(212, 165, 160, 0.4);
-  border-radius: 20px;
-  padding: 4rem 3rem;
+  background: linear-gradient(135deg, #FFFFFF 0%, #FBF8F4 40%, #F5EDE6 100%);
+  border: 2px solid rgba(184, 150, 62, 0.25);
+  border-radius: 24px;
+  padding: 5rem 3.5rem;
   box-shadow:
-    0 10px 40px rgba(196, 135, 126, 0.2),
-    0 0 60px rgba(212, 165, 160, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    0 20px 60px rgba(196, 135, 126, 0.25),
+    0 0 80px rgba(212, 165, 160, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9);
   text-align: center;
   position: relative;
   overflow: hidden;
-  min-height: 580px;
+  min-height: 620px;
   display: flex;
   align-items: center;
   justify-content: center;
   aspect-ratio: 1 / 1.2;
-  max-width: 500px;
+  max-width: 520px;
   margin: 0 auto;
 }
 
@@ -137,8 +137,19 @@
   top: 0;
   left: 0;
   right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(184, 150, 62, 0.4) 50%, transparent 100%);
+  z-index: 2;
+}
+
+.countdown-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(184, 150, 62, 0.3), transparent);
+  background: linear-gradient(90deg, transparent 0%, rgba(212, 165, 160, 0.2) 50%, transparent 100%);
   z-index: 2;
 }
 
@@ -152,21 +163,57 @@
 }
 
 .countdown-card-title {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: var(--color-primary);
-  letter-spacing: 0.5px;
-  margin-bottom: 0.5rem;
+  letter-spacing: 1px;
+  margin-bottom: 0.75rem;
   text-transform: uppercase;
   font-style: italic;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.75rem;
+}
+
+.countdown-card-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
 }
 
 .countdown-card-couple {
-  font-size: 1.35rem;
-  font-weight: 500;
+  font-size: 1.5rem;
+  font-weight: 600;
   color: var(--color-secondary);
-  margin-bottom: 0.5rem;
-  letter-spacing: 0.5px;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.8px;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.5rem;
+}
+
+.countdown-card-couple::before,
+.countdown-card-couple::after {
+  content: '♦';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  color: var(--color-primary);
+  opacity: 0.6;
+}
+
+.countdown-card-couple::before {
+  left: -1.5rem;
+}
+
+.countdown-card-couple::after {
+  right: -1.5rem;
 }
 
 .countdown-display {
@@ -174,51 +221,87 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem;
-  margin: 1.5rem 0 2rem 0;
+  gap: 2.5rem;
+  margin: 2rem 0 2.5rem 0;
   width: 100%;
+  perspective: 1000px;
 }
 
 .countdown-number-group {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
+  flex: 1;
+  position: relative;
+}
+
+.countdown-number-group::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+  opacity: 0.4;
 }
 
 .countdown-label {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--color-primary);
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--color-secondary);
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 2.5px;
   order: -1;
+  margin-bottom: 0.25rem;
 }
 
 .countdown-number {
-  font-size: 4.5rem;
-  font-weight: 800;
+  font-size: 5rem;
+  font-weight: 900;
   color: var(--color-primary);
   line-height: 1;
-  letter-spacing: -2px;
+  letter-spacing: -3px;
   font-family: 'Heebo', sans-serif;
+  position: relative;
+  padding: 0.5rem 0;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #A58535 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .countdown-separator {
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: 300;
-  color: rgba(184, 150, 62, 0.3);
+  color: rgba(184, 150, 62, 0.25);
   margin: 0;
   align-self: center;
+  margin-top: 1rem;
 }
 
 .countdown-card-footer {
-  font-size: 1rem;
+  font-size: 1.05rem;
   color: var(--color-secondary);
-  margin-top: 1.5rem;
+  margin-top: 2rem;
   font-style: italic;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   font-weight: 500;
+  position: relative;
+  padding-top: 1.5rem;
+}
+
+.countdown-card-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-secondary), transparent);
 }
 
 /* Decorative elements */
@@ -228,30 +311,34 @@
 }
 
 .countdown-decoration-top {
-  top: 30px;
-  right: 30px;
-  width: 80px;
-  height: 80px;
-  border: 3px solid rgba(212, 165, 160, 0.15);
+  top: 25px;
+  right: 25px;
+  width: 100px;
+  height: 100px;
+  border: 2px solid rgba(212, 165, 160, 0.2);
   border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(184, 150, 62, 0.08), transparent);
+  animation: floatDecoration 6s ease-in-out infinite;
 }
 
 .countdown-decoration-bottom {
-  bottom: 30px;
-  left: 30px;
-  width: 60px;
-  height: 60px;
-  border: 2px solid rgba(196, 135, 126, 0.1);
+  bottom: 25px;
+  left: 25px;
+  width: 80px;
+  height: 80px;
+  border: 2px solid rgba(196, 135, 126, 0.15);
   border-radius: 50%;
+  background: radial-gradient(circle at 70% 70%, rgba(196, 135, 126, 0.06), transparent);
+  animation: floatDecoration 8s ease-in-out infinite reverse;
 }
 
-.countdown-decoration::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  opacity: 0.05;
-  background: radial-gradient(circle at 30% 30%, var(--color-primary), transparent);
+@keyframes floatDecoration {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
 }
 
 /* Result Actions */
