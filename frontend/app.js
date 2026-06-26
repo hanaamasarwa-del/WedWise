@@ -27,6 +27,10 @@ const TELEGRAM_CHAT_ID = '';
 
 let currentStep = 1;
 
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
 const form = document.getElementById('wedding-form');
 const formError = document.getElementById('form-error');
 const progressLabel = document.getElementById('progress-label');
@@ -34,11 +38,40 @@ const progressFill = document.getElementById('progress-fill');
 const progressBar = document.querySelector('.progress-bar');
 const btnBack = document.getElementById('btn-back');
 const btnNext = document.getElementById('btn-next');
-const btnSubmit = document.getElementById('btn-submit');
 const btnRestart = document.getElementById('btn-restart');
 const questionnaireSection = document.getElementById('questionnaire');
 const reportSection = document.getElementById('report-section');
 const reportContent = document.getElementById('report-content');
+const navSectionLinks = Array.from(document.querySelectorAll('.nav-links a[href^="#"]'));
+const navSections = navSectionLinks
+  .map((link) => ({
+    link,
+    section: document.querySelector(link.getAttribute('href')),
+  }))
+  .filter((item) => item.section);
+
+function updateActiveNavLink() {
+  const headerOffset = document.querySelector('.site-header')?.offsetHeight || 0;
+  const scrollPosition = window.scrollY + headerOffset + 80;
+  let activeLink = null;
+
+  navSections.forEach(({ link, section }) => {
+    if (scrollPosition >= section.offsetTop) {
+      activeLink = link;
+    }
+  });
+
+  navSectionLinks.forEach((link) => {
+    const isActive = link === activeLink;
+    link.classList.toggle('active', isActive);
+
+    if (isActive) {
+      link.setAttribute('aria-current', 'location');
+    } else {
+      link.removeAttribute('aria-current');
+    }
+  });
+}
 
 function getCheckedValues(name) {
   return Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map((el) => el.value);
@@ -141,7 +174,7 @@ function validateStep(stepIndex) {
 
     case 5: {
       const url = state.inspiration_url;
-      if (!url) return true; // field is optional — empty is always valid
+      if (!url) return true;
       try {
         new URL(url);
         return true;
@@ -187,11 +220,12 @@ function updateProgress(step) {
 
 function updateNavButtons(step) {
   btnBack.hidden = step === 1;
-  btnNext.hidden = step === TOTAL_STEPS;
-  btnSubmit.hidden = step !== TOTAL_STEPS;
+  btnNext.textContent = step === TOTAL_STEPS ? 'שליחה וקבלת דוח' : 'הבא';
 }
 
-function goToStep(step) {
+function goToStep(step, options = {}) {
+  const { focusFirstInput = true } = options;
+
   currentStep = step;
 
   form.querySelectorAll('.form-step').forEach((fieldset) => {
@@ -203,10 +237,12 @@ function goToStep(step) {
   updateNavButtons(step);
   clearError();
 
-  const activeFieldset = form.querySelector(`.form-step[data-step="${step}"]`);
-  const firstInput = activeFieldset.querySelector('input, select, textarea');
-  if (firstInput) {
-    firstInput.focus();
+  if (focusFirstInput) {
+    const activeFieldset = form.querySelector(`.form-step[data-step="${step}"]`);
+    const firstInput = activeFieldset.querySelector('input, select, textarea');
+    if (firstInput) {
+      firstInput.focus({ preventScroll: true });
+    }
   }
 }
 
@@ -472,8 +508,28 @@ function formatTelegramMessage(payload) {
   return lines.join('\n');
 }
 
+async function sendTelegramNotification(payload) {
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
+  try {
+    await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text: formatTelegramMessage(payload),
+        parse_mode: 'Markdown',
+      }),
+    });
+  } catch {
+    // Non-blocking — Telegram failure must never prevent the report from showing
+  }
+}
+
 async function submitQuestionnaire(payload) {
-  // Future API integration:
+  // Telegram notification — fires in background, does not block report rendering
+  sendTelegramNotification(payload);
+
+  // Future Supabase API integration:
   // const response = await fetch('/api/wedding-requests', {
   //   method: 'POST',
   //   headers: { 'Content-Type': 'application/json' },
@@ -497,8 +553,12 @@ function resetForm() {
 }
 
 btnNext.addEventListener('click', () => {
-  if (validateStep(currentStep)) {
-    goToStep(currentStep + 1);
+  if (currentStep < TOTAL_STEPS) {
+    if (validateStep(currentStep)) {
+      goToStep(currentStep + 1);
+    }
+  } else {
+    form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
   }
 });
 
@@ -515,15 +575,15 @@ form.addEventListener('submit', async (e) => {
   const state = getFormState();
   const payload = buildWeddingRequestPayload(state);
 
-  btnSubmit.disabled = true;
-  btnSubmit.textContent = 'מייצרים את הדוח...';
+  btnNext.disabled = true;
+  btnNext.textContent = 'מייצרים את הדוח...';
 
   try {
     const reportHtml = await submitQuestionnaire(payload);
     renderReport(reportHtml);
   } finally {
-    btnSubmit.disabled = false;
-    btnSubmit.textContent = 'שליחה וקבלת דוח';
+    btnNext.disabled = false;
+    updateNavButtons(currentStep);
   }
 });
 
@@ -535,27 +595,16 @@ form.addEventListener('keydown', (e) => {
   if (tag === 'textarea') return;
 
   e.preventDefault();
-  if (currentStep < TOTAL_STEPS) {
-    btnNext.click();
-  } else if (currentStep === TOTAL_STEPS) {
-    btnSubmit.click();
-  }
+  btnNext.click();
 });
 
-goToStep(1);
+goToStep(1, { focusFirstInput: false });
+updateActiveNavLink();
 
-async function sendTelegramNotification(payload) {
-  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
-  try {
-    await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
-        text: formatTelegramMessage(payload),
-      }),
-    });
-  } catch (error) {
-    console.error('Telegram notification error:', error);
-  }
-}
+window.addEventListener('load', () => {
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  updateActiveNavLink();
+});
+window.addEventListener('scroll', updateActiveNavLink, { passive: true });
+window.addEventListener('resize', updateActiveNavLink);
+window.addEventListener('hashchange', updateActiveNavLink);
