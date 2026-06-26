@@ -30,7 +30,6 @@ const progressFill = document.getElementById('progress-fill');
 const progressBar = document.querySelector('.progress-bar');
 const btnBack = document.getElementById('btn-back');
 const btnNext = document.getElementById('btn-next');
-const btnSubmit = document.getElementById('btn-submit');
 const btnRestart = document.getElementById('btn-restart');
 const questionnaireSection = document.getElementById('questionnaire');
 const reportSection = document.getElementById('report-section');
@@ -169,7 +168,7 @@ function updateProgress(step) {
 function updateNavButtons(step) {
   btnBack.hidden = step === 1;
   btnNext.hidden = step === TOTAL_STEPS;
-  btnSubmit.hidden = step !== TOTAL_STEPS;
+  btnNext.hidden = step !== TOTAL_STEPS;
 }
 
 function goToStep(step) {
@@ -453,15 +452,15 @@ form.addEventListener('submit', async (e) => {
   const state = getFormState();
   const payload = buildWeddingRequestPayload(state);
 
-  btnSubmit.disabled = true;
-  btnSubmit.textContent = 'מייצרים את הדוח...';
+  btnNext.disabled = true;
+  btnNext.textContent = 'מייצרים את הדוח...';
 
   try {
     const reportHtml = await submitQuestionnaire(payload);
     renderReport(reportHtml);
   } finally {
-    btnSubmit.disabled = false;
-    btnSubmit.textContent = 'שליחה וקבלת דוח';
+    btnNext.disabled = false;
+    btnNext.textContent = 'שליחה וקבלת דוח';
   }
 });
 
@@ -476,8 +475,121 @@ form.addEventListener('keydown', (e) => {
   if (currentStep < TOTAL_STEPS) {
     btnNext.click();
   } else if (currentStep === TOTAL_STEPS) {
-    btnSubmit.click();
+    btnNext.click();
   }
 });
 
 goToStep(1);
+
+/* ===== Chat Widget ===== */
+const chatLauncher = document.getElementById('chat-launcher');
+const chatPanel = document.getElementById('chat-panel');
+const chatClose = document.getElementById('chat-close');
+const chatForm = document.getElementById('chat-form');
+const chatInput = document.getElementById('chat-input');
+const chatMessages = document.getElementById('chat-messages');
+const chatSend = document.getElementById('chat-send');
+
+console.log('Chat elements loaded:', { chatLauncher, chatPanel, chatClose });
+
+let chatHistory = [];
+
+function openChat() {
+  chatPanel.removeAttribute('hidden');
+  chatPanel.removeAttribute('aria-hidden');
+  chatLauncher.setAttribute('aria-expanded', 'true');
+  chatInput.focus();
+}
+
+function closeChat() {
+  chatPanel.setAttribute('hidden', '');
+  chatPanel.setAttribute('aria-hidden', 'true');
+  chatLauncher.setAttribute('aria-expanded', 'false');
+}
+
+function toggleChat() {
+  if (chatPanel.hasAttribute('hidden')) {
+    openChat();
+  } else {
+    closeChat();
+  }
+}
+
+function addChatMessage(text, isUser = false) {
+  const messageEl = document.createElement('div');
+  messageEl.className = isUser ? 'chat-message chat-message--user' : 'chat-message chat-message--assistant';
+  messageEl.textContent = text;
+  chatMessages.appendChild(messageEl);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+async function sendChatMessage(text) {
+  chatHistory.push({ role: 'user', content: text });
+  addChatMessage(text, true);
+  
+  chatInput.value = '';
+  chatInput.style.height = 'auto';
+  chatSend.disabled = true;
+
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: chatHistory }),
+    });
+
+    if (!response.ok) throw new Error(`API error: ${response.status}`);
+    
+    const data = await response.json();
+    const botMessage = data.reply || 'סוריה, לא קיבלתי תשובה.';
+    
+    chatHistory.push({ role: 'assistant', content: botMessage });
+    addChatMessage(botMessage, false);
+  } catch (error) {
+    console.error('Chat error:', error);
+    addChatMessage('סוריה, קרתה שגיאה. אנא נסו שוב.', false);
+  } finally {
+    chatSend.disabled = false;
+    chatInput.focus();
+  }
+}
+
+if (chatLauncher) {
+  chatLauncher.addEventListener('click', (e) => {
+    e.preventDefault();
+    console.log('Launcher clicked');
+    toggleChat();
+  });
+}
+
+if (chatClose) {
+  chatClose.addEventListener('click', (e) => {
+    e.preventDefault();
+    console.log('Close clicked');
+    closeChat();
+  });
+}
+
+if (chatForm) {
+  chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = chatInput.value.trim();
+    if (text) {
+      sendChatMessage(text);
+    }
+  });
+}
+
+if (chatInput) {
+  chatInput.addEventListener('input', () => {
+    chatInput.style.height = 'auto';
+    chatInput.style.height = Math.min(chatInput.scrollHeight, 168) + 'px';
+  });
+
+  chatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      chatForm.dispatchEvent(new Event('submit'));
+    }
+  });
+}
