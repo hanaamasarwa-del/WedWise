@@ -139,6 +139,8 @@
                   <div class="step-pip" data-step="4"><span>4</span></div>
                   <div class="step-track-line"></div>
                   <div class="step-pip" data-step="5"><span>5</span></div>
+                  <div class="step-track-line"></div>
+                  <div class="step-pip" data-step="6"><span>6</span></div>
                 </div>
                 <div class="progress-text">
                   <span id="progress-label">שלב 1 מתוך 5</span>
@@ -260,7 +262,7 @@
                 </div>
               </fieldset>
 
-              <fieldset class="form-step" data-step="5">
+              <fieldset class="form-step" data-step="6">
                 <legend>פרטי יצירת קשר</legend>
                 <div class="field-grid">
                   <div class="field-group">
@@ -275,6 +277,23 @@
                 <div class="field-group">
                   <label for="email">אימייל</label>
                   <input type="email" id="email" name="email" autocomplete="email" placeholder="name@example.com" required>
+                </div>
+              </fieldset>
+
+              <fieldset class="form-step" data-step="5">
+                <legend>השראה לחתונה <span class="legend-optional">(אופציונלי)</span></legend>
+                <div class="inspiration-intro">
+                  <span class="material-symbols-outlined inspiration-intro-icon" aria-hidden="true">link</span>
+                  <div>
+                    <p>כבר אספתם השראה לחתונה? שתפו קישור לאוסף ההשראה שלכם ונצרף אותו לבקשה.</p>
+                    <p class="field-hint">Pinterest, Instagram, בלוג חתונות, לוח mood board — כל קישור מתאים.</p>
+                  </div>
+                </div>
+                <div class="field-group">
+                  <label for="inspiration_url">קישור להשראה</label>
+                  <input type="url" id="inspiration_url" name="inspiration_url"
+                    placeholder="https://www.pinterest.com/... או כל קישור השראה אחר">
+                  <p class="field-hint">שדה זה אופציונלי לחלוטין — ניתן לדלג ולשלוח ישירות.</p>
                 </div>
               </fieldset>
 
