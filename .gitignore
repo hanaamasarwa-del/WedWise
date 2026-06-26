@@ -1,25 +1,28 @@
-# Local environment files
+# Environment variables - never commit these
 .env
 .env.*
+backend/.env
 !.env.example
-
-# Operating system files
-.DS_Store
-Thumbs.db
-
-# Editor and IDE folders
-.idea/
-.vscode/
 
 # Dependencies and build output
 node_modules/
+backend/node_modules/
 dist/
 build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor folders
+.idea/
+.vscode/
 
 # Logs and temporary files
 *.log
 tmp/
 temp/
+.fresh-upload/
 
 # Local database working copies
 *.sqlite-journal
