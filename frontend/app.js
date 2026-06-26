@@ -4,7 +4,7 @@
  * Payload shape aligns with wedding_requests + lead_submissions schema.
  */
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 6;
 
 const REGION_NAMES = {
   '1': 'ירושלים והסביבה',
@@ -21,6 +21,10 @@ const SUPPLIER_CATEGORIES = [
   'קייטרינג',
 ];
 
+// Telegram — fill in from .env before use; leave empty to disable
+const TELEGRAM_BOT_TOKEN = '';
+const TELEGRAM_CHAT_ID = '';
+
 let currentStep = 1;
 
 const form = document.getElementById('wedding-form');
@@ -30,6 +34,7 @@ const progressFill = document.getElementById('progress-fill');
 const progressBar = document.querySelector('.progress-bar');
 const btnBack = document.getElementById('btn-back');
 const btnNext = document.getElementById('btn-next');
+const btnSubmit = document.getElementById('btn-submit');
 const btnRestart = document.getElementById('btn-restart');
 const questionnaireSection = document.getElementById('questionnaire');
 const reportSection = document.getElementById('report-section');
@@ -55,6 +60,7 @@ function getFormState() {
     full_name: form.full_name.value.trim(),
     phone: form.phone.value.trim(),
     email: form.email.value.trim(),
+    inspiration_url: form.inspiration_url.value.trim(),
   };
 }
 
@@ -72,6 +78,7 @@ function buildWeddingRequestPayload(state) {
       preferred_colors: state.preferred_colors,
       flowers_and_decor: flowersAndDecor,
       free_text: state.free_text,
+      inspiration_url: state.inspiration_url || null,
     },
     lead: {
       full_name: state.full_name,
@@ -132,7 +139,19 @@ function validateStep(stepIndex) {
     case 4:
       return true;
 
-    case 5:
+    case 5: {
+      const url = state.inspiration_url;
+      if (!url) return true; // field is optional — empty is always valid
+      try {
+        new URL(url);
+        return true;
+      } catch {
+        showError('נא להזין קישור תקין (לדוגמה: https://www.pinterest.com/...) או לרוקן את השדה ולדלג.');
+        return false;
+      }
+    }
+
+    case 6: {
       if (!state.full_name) {
         showError('נא להזין שם מלא.');
         return false;
@@ -147,6 +166,7 @@ function validateStep(stepIndex) {
         return false;
       }
       return true;
+    }
 
     default:
       return true;
@@ -167,7 +187,8 @@ function updateProgress(step) {
 
 function updateNavButtons(step) {
   btnBack.hidden = step === 1;
-  btnNext.textContent = step === TOTAL_STEPS ? 'שליחה וקבלת דוח' : 'הבא';
+  btnNext.hidden = step === TOTAL_STEPS;
+  btnSubmit.hidden = step !== TOTAL_STEPS;
 }
 
 function goToStep(step) {
@@ -193,7 +214,7 @@ function formatCurrency(amount) {
   return amount.toLocaleString('he-IL') + ' ₪';
 }
 
-function generateMockReport(payload, suppliers = []) {
+function generateMockReport(payload) {
   const wr = payload.wedding_request;
   const lead = payload.lead;
   const budget = wr.estimated_budget_ils;
@@ -249,24 +270,26 @@ function generateMockReport(payload, suppliers = []) {
     'קייטרינג':           'restaurant',
   };
 
-  const supplierCards = suppliers.length > 0
-    ? suppliers.map((s) => `
-    <div class="rpt-supplier-card">
-      <div class="rpt-supplier-header">
-        <span class="rpt-supplier-name">${s.name}</span>
-        <span class="material-symbols-outlined rpt-supplier-icon" aria-hidden="true">${SUPPLIER_ICONS[s.category] || 'storefront'}</span>
-      </div>
-      <div class="rpt-supplier-category">${s.category}</div>
-      <div class="rpt-supplier-detail">📍 ${s.city}</div>
-      <div class="rpt-supplier-detail">💰 ${s.priceMin.toLocaleString('he-IL')} ₪–${s.priceMax.toLocaleString('he-IL')} ₪ ${s.priceUnit}</div>
-      <p class="rpt-supplier-desc">${s.description}</p>
-      ${s.reason ? `<div class="rpt-supplier-reason">✅ ${s.reason}</div>` : ''}
-    </div>`).join('')
-    : SUPPLIER_CATEGORIES.map((cat) => `
+  const supplierCards = SUPPLIER_CATEGORIES.map((cat) => `
     <div class="rpt-supplier-card">
       <span class="material-symbols-outlined rpt-supplier-icon" aria-hidden="true">${SUPPLIER_ICONS[cat] || 'storefront'}</span>
       <span class="rpt-supplier-name">${cat}</span>
     </div>`).join('');
+
+  // Optional inspiration link block — only rendered when a URL was provided
+  const inspirationBlock = wr.inspiration_url ? `
+    <div class="rpt-divider" aria-hidden="true"></div>
+
+    <div class="rpt-block">
+      <div class="rpt-block-title">
+        <span class="material-symbols-outlined" aria-hidden="true">link</span>
+        <h3>השראה לחתונה</h3>
+      </div>
+      <a href="${wr.inspiration_url}" target="_blank" rel="noopener noreferrer" class="rpt-inspiration-link">
+        <span class="material-symbols-outlined" aria-hidden="true">open_in_new</span>
+        ${wr.inspiration_url}
+      </a>
+    </div>` : '';
 
   return `
     <div class="rpt-header">
@@ -352,6 +375,8 @@ function generateMockReport(payload, suppliers = []) {
       ${freeTextBlock}
     </div>
 
+    ${inspirationBlock}
+
     <div class="rpt-divider" aria-hidden="true"></div>
 
     <div class="rpt-block">
@@ -403,9 +428,9 @@ function generateMockReport(payload, suppliers = []) {
     <div class="rpt-block">
       <div class="rpt-block-title">
         <span class="material-symbols-outlined" aria-hidden="true">storefront</span>
-        <h3>${suppliers.length > 0 ? 'ספקים מומלצים לבדיקה' : 'קטגוריות ספקים לבדיקה'}</h3>
+        <h3>קטגוריות ספקים לבדיקה</h3>
       </div>
-      <p class="rpt-block-sub">${suppliers.length > 0 ? 'בחרנו עבורכם ספקים שמתאימים לאזור, לסגנון ולתקציב שלכם:' : 'בדוח המלא נציג התאמות לפי אזור, סגנון ותקציב'}</p>
+      <p class="rpt-block-sub">בדוח המלא נציג התאמות לפי אזור, סגנון ותקציב</p>
       <div class="rpt-suppliers">
         ${supplierCards}
       </div>
@@ -420,67 +445,65 @@ function renderReport(html) {
   reportSection.scrollIntoView({ behavior: 'smooth' });
 }
 
-async function submitQuestionnaire(payload, state) {
-  // 1. Save questionnaire answers to Supabase
-  let submissionId = null;
+function formatTelegramMessage(payload) {
+  const wr = payload.wedding_request;
+  const lead = payload.lead;
+  const style = (() => { try { return JSON.parse(wr.preferred_styles_json || '[]')[0] || '—'; } catch { return '—'; } })();
+
+  const lines = [
+    '🌿 *ליד חדש — WedWise*',
+    '',
+    `👤 *שם:* ${lead.full_name}`,
+    `📞 *טלפון:* ${lead.phone}`,
+    `📧 *אימייל:* ${lead.email || '—'}`,
+    '',
+    `💰 *תקציב:* ₪${wr.estimated_budget_ils.toLocaleString('he-IL')}`,
+    `👥 *אורחים:* ${wr.guest_count}`,
+    `📍 *אזור:* ${REGION_NAMES[String(wr.region_id)] || '—'}`,
+    `🎨 *סגנון:* ${style}`,
+    `🌸 *פרחים / עיצוב:* ${wr.flowers_and_decor || '—'}`,
+    `🖊 *חזון אישי:* ${wr.free_text || '—'}`,
+  ];
+
+  if (wr.inspiration_url) {
+    lines.push('', `🔗 *השראה:* ${wr.inspiration_url}`);
+  }
+
+  return lines.join('\n');
+}
+
+async function sendTelegramNotification(payload) {
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
   try {
-    const subRes = await fetch('/api/submissions', {
+    await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        budget: state.estimated_budget_ils,
-        guests: state.guest_count,
-        region: state.region_name,
-        weddingStyle: state.preferred_style,
-        colors: state.preferred_colors.split(',').map((c) => c.trim()).filter(Boolean),
-        decorations: state.decorations,
-        flowers: state.flowers,
-        personalText: state.free_text,
+        chat_id: TELEGRAM_CHAT_ID,
+        text: formatTelegramMessage(payload),
+        parse_mode: 'Markdown',
       }),
     });
-    if (subRes.ok) {
-      const subData = await subRes.json();
-      submissionId = subData.submissionId;
-    } else {
-      console.warn('Submission save failed:', await subRes.text());
-    }
-  } catch (err) {
-    console.warn('Submission save error:', err.message);
+  } catch {
+    // Non-blocking — Telegram failure must never prevent the report from showing
   }
+}
 
-  // 2. Save contact details + trigger Telegram notification
-  if (submissionId) {
-    try {
-      await fetch('/api/leads', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          submissionId,
-          fullName: state.full_name,
-          phone: state.phone,
-          email: state.email,
-        }),
-      });
-    } catch (err) {
-      console.warn('Lead save error:', err.message);
-    }
-  }
+async function submitQuestionnaire(payload) {
+  // Telegram notification — fires in background, does not block report rendering
+  sendTelegramNotification(payload);
 
-  // 3. Fetch supplier recommendations
-  let suppliers = [];
-  if (submissionId) {
-    try {
-      const suppRes = await fetch(`/api/suppliers/recommendations?submissionId=${submissionId}`);
-      if (suppRes.ok) {
-        const suppData = await suppRes.json();
-        suppliers = suppData.suppliers || [];
-      }
-    } catch (err) {
-      console.warn('Supplier fetch error:', err.message);
-    }
-  }
+  // Future Supabase API integration:
+  // const response = await fetch('/api/wedding-requests', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify(payload),
+  // });
+  // if (!response.ok) throw new Error('Submit failed');
+  // return response.json();
 
-  return generateMockReport(payload, suppliers);
+  console.log('WedWise payload (ready for API):', payload);
+  return generateMockReport(payload);
 }
 
 function resetForm() {
@@ -494,12 +517,9 @@ function resetForm() {
 }
 
 btnNext.addEventListener('click', () => {
-  if (currentStep < TOTAL_STEPS) {
-    if (validateStep(currentStep)) {
-      goToStep(currentStep + 1);
-    }
-  } else {
-    form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+  if (currentStep >= TOTAL_STEPS) return;
+  if (validateStep(currentStep)) {
+    goToStep(currentStep + 1);
   }
 });
 
@@ -516,15 +536,15 @@ form.addEventListener('submit', async (e) => {
   const state = getFormState();
   const payload = buildWeddingRequestPayload(state);
 
-  btnNext.disabled = true;
-  btnNext.textContent = 'מייצרים את הדוח...';
+  btnSubmit.disabled = true;
+  btnSubmit.textContent = 'מייצרים את הדוח...';
 
   try {
-    const reportHtml = await submitQuestionnaire(payload, state);
+    const reportHtml = await submitQuestionnaire(payload);
     renderReport(reportHtml);
   } finally {
-    btnNext.disabled = false;
-    updateNavButtons(currentStep);
+    btnSubmit.disabled = false;
+    btnSubmit.textContent = 'שליחה וקבלת דוח';
   }
 });
 
@@ -539,121 +559,8 @@ form.addEventListener('keydown', (e) => {
   if (currentStep < TOTAL_STEPS) {
     btnNext.click();
   } else if (currentStep === TOTAL_STEPS) {
-    btnNext.click();
+    btnSubmit.click();
   }
 });
 
 goToStep(1);
-
-/* ===== Chat Widget ===== */
-const chatLauncher = document.getElementById('chat-launcher');
-const chatPanel = document.getElementById('chat-panel');
-const chatClose = document.getElementById('chat-close');
-const chatForm = document.getElementById('chat-form');
-const chatInput = document.getElementById('chat-input');
-const chatMessages = document.getElementById('chat-messages');
-const chatSend = document.getElementById('chat-send');
-
-console.log('Chat elements loaded:', { chatLauncher, chatPanel, chatClose });
-
-let chatHistory = [];
-
-function openChat() {
-  chatPanel.removeAttribute('hidden');
-  chatPanel.removeAttribute('aria-hidden');
-  chatLauncher.setAttribute('aria-expanded', 'true');
-  chatInput.focus();
-}
-
-function closeChat() {
-  chatPanel.setAttribute('hidden', '');
-  chatPanel.setAttribute('aria-hidden', 'true');
-  chatLauncher.setAttribute('aria-expanded', 'false');
-}
-
-function toggleChat() {
-  if (chatPanel.hasAttribute('hidden')) {
-    openChat();
-  } else {
-    closeChat();
-  }
-}
-
-function addChatMessage(text, isUser = false) {
-  const messageEl = document.createElement('div');
-  messageEl.className = isUser ? 'chat-message chat-message--user' : 'chat-message chat-message--assistant';
-  messageEl.textContent = text;
-  chatMessages.appendChild(messageEl);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-async function sendChatMessage(text) {
-  chatHistory.push({ role: 'user', content: text });
-  addChatMessage(text, true);
-  
-  chatInput.value = '';
-  chatInput.style.height = 'auto';
-  chatSend.disabled = true;
-
-  try {
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: chatHistory }),
-    });
-
-    if (!response.ok) throw new Error(`API error: ${response.status}`);
-    
-    const data = await response.json();
-    const botMessage = data.reply || 'סוריה, לא קיבלתי תשובה.';
-    
-    chatHistory.push({ role: 'assistant', content: botMessage });
-    addChatMessage(botMessage, false);
-  } catch (error) {
-    console.error('Chat error:', error);
-    addChatMessage('סוריה, קרתה שגיאה. אנא נסו שוב.', false);
-  } finally {
-    chatSend.disabled = false;
-    chatInput.focus();
-  }
-}
-
-if (chatLauncher) {
-  chatLauncher.addEventListener('click', (e) => {
-    e.preventDefault();
-    console.log('Launcher clicked');
-    toggleChat();
-  });
-}
-
-if (chatClose) {
-  chatClose.addEventListener('click', (e) => {
-    e.preventDefault();
-    console.log('Close clicked');
-    closeChat();
-  });
-}
-
-if (chatForm) {
-  chatForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const text = chatInput.value.trim();
-    if (text) {
-      sendChatMessage(text);
-    }
-  });
-}
-
-if (chatInput) {
-  chatInput.addEventListener('input', () => {
-    chatInput.style.height = 'auto';
-    chatInput.style.height = Math.min(chatInput.scrollHeight, 168) + 'px';
-  });
-
-  chatInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      chatForm.dispatchEvent(new Event('submit'));
-    }
-  });
-}
