@@ -18,7 +18,7 @@ CURRENT PAGE STRUCTURE
   background, subtle petal motion, and a button that takes visitors to the
   questionnaire.
 - The top navigation links to: Home, planning questionnaire, countdown page,
-  blessing helper, and a "start planning" call-to-action.
+  and blessing helper.
 - The "How it works" section explains three stages: complete the questionnaire,
   receive a personalized initial report, and continue with the agency if
   desired.
@@ -36,6 +36,9 @@ CURRENT PAGE STRUCTURE
   copy/download it, and, when configured, request an AI-generated design.
 - The blessing helper page generates a wedding blessing/speech from the speaker,
   couple names, tone, length, and optional personal details.
+- The questionnaire, countdown page, and blessing helper share a matching footer,
+  chatbot, navigation style, and cross-page tool strip so visitors can move
+  between the tools without feeling like they entered a separate site.
 
 QUESTIONNAIRE DETAILS
 1. Estimated total budget in Israeli shekels and expected guest count.

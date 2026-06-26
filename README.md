@@ -139,7 +139,7 @@ Never commit `backend/.env` or any real secret.
 
 The chatbot appears as a floating button in the corner of the screen. It is
 closed when the page loads and opens only when the visitor clicks it. The active
-frontend pages all load `frontend/chat-widget.js`, which owns the widget
+frontend pages all load `frontend/scripts/chat-widget.js`, which owns the widget
 behavior and normalizes older page markup.
 
 The browser sends chat history to:
@@ -189,7 +189,7 @@ the petal layer, or substantially change the entrance animation without explicit
 design approval. The relevant files are:
 
 - `frontend/index.html` for the protected hero markup.
-- `frontend/site.css` for `hero-petals`, `petalDrift`, and the hero entrance
+- `frontend/styles/site.css` for `hero-petals`, `petalDrift`, and the hero entrance
   animation.
 
 ## Telegram Setup
@@ -248,28 +248,35 @@ dataset changes.
 
 ```text
 WedWise/
-├── frontend/
-│   ├── index.html
-│   ├── app.js
-│   └── site.css
-├── backend/
-│   ├── database/
-│   ├── routes/
-│   ├── services/
-│   ├── .env.example
-│   ├── index.js
-│   └── package.json
-├── docs/
-│   ├── api-contracts.md
-│   ├── database-schema.md
-│   └── project-notes.md
-├── data/
-│   └── demo-suppliers/
-├── WedWise Protected Site Brief.txt
-└── README.md
+|-- frontend/
+|   |-- index.html
+|   |-- questionnaire.html
+|   |-- countdown.html
+|   |-- blessing-helper.html
+|   |-- scripts/
+|   `-- styles/
+|-- backend/
+|   |-- database/
+|   |-- routes/
+|   |-- services/
+|   |-- .env.example
+|   |-- index.js
+|   `-- package.json
+|-- docs/
+|   |-- api-contracts.md
+|   |-- archive/
+|   |-- database-schema.md
+|   `-- project-notes.md
+|-- data/
+|   `-- demo-suppliers/
+|-- WedWise Protected Site Brief.txt
+`-- README.md
 ```
 
-`frontend/` and `backend/` contain the active application. `data/demo-suppliers/`
+`frontend/` and `backend/` contain the active application. Frontend pages stay
+as separate static entry points, while shared CSS and browser JavaScript are
+organized under `frontend/styles/` and `frontend/scripts/`. `docs/archive/`
+keeps legacy snapshots out of the active frontend. `data/demo-suppliers/`
 contains clearly separated synthetic data assets for development and planned
 supplier matching.
 
@@ -300,7 +307,7 @@ Before considering a relevant change complete:
 node --check backend/index.js
 node --check backend/routes/chat.js
 node --check backend/services/chat-service.js
-node --check frontend/app.js
+node --check frontend/scripts/app.js
 git diff --check
 ```
 
