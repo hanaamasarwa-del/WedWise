@@ -193,7 +193,7 @@ function formatCurrency(amount) {
   return amount.toLocaleString('he-IL') + ' ₪';
 }
 
-function generateMockReport(payload) {
+function generateMockReport(payload, suppliers = []) {
   const wr = payload.wedding_request;
   const lead = payload.lead;
   const budget = wr.estimated_budget_ils;
@@ -249,7 +249,20 @@ function generateMockReport(payload) {
     'קייטרינג':           'restaurant',
   };
 
-  const supplierCards = SUPPLIER_CATEGORIES.map((cat) => `
+  const supplierCards = suppliers.length > 0
+    ? suppliers.map((s) => `
+    <div class="rpt-supplier-card">
+      <div class="rpt-supplier-header">
+        <span class="rpt-supplier-name">${s.name}</span>
+        <span class="material-symbols-outlined rpt-supplier-icon" aria-hidden="true">${SUPPLIER_ICONS[s.category] || 'storefront'}</span>
+      </div>
+      <div class="rpt-supplier-category">${s.category}</div>
+      <div class="rpt-supplier-detail">📍 ${s.city}</div>
+      <div class="rpt-supplier-detail">💰 ${s.priceMin.toLocaleString('he-IL')} ₪–${s.priceMax.toLocaleString('he-IL')} ₪ ${s.priceUnit}</div>
+      <p class="rpt-supplier-desc">${s.description}</p>
+      ${s.reason ? `<div class="rpt-supplier-reason">✅ ${s.reason}</div>` : ''}
+    </div>`).join('')
+    : SUPPLIER_CATEGORIES.map((cat) => `
     <div class="rpt-supplier-card">
       <span class="material-symbols-outlined rpt-supplier-icon" aria-hidden="true">${SUPPLIER_ICONS[cat] || 'storefront'}</span>
       <span class="rpt-supplier-name">${cat}</span>
@@ -390,9 +403,9 @@ function generateMockReport(payload) {
     <div class="rpt-block">
       <div class="rpt-block-title">
         <span class="material-symbols-outlined" aria-hidden="true">storefront</span>
-        <h3>קטגוריות ספקים לבדיקה</h3>
+        <h3>${suppliers.length > 0 ? 'ספקים מומלצים לבדיקה' : 'קטגוריות ספקים לבדיקה'}</h3>
       </div>
-      <p class="rpt-block-sub">בדוח המלא נציג התאמות לפי אזור, סגנון ותקציב</p>
+      <p class="rpt-block-sub">${suppliers.length > 0 ? 'בחרנו עבורכם ספקים שמתאימים לאזור, לסגנון ולתקציב שלכם:' : 'בדוח המלא נציג התאמות לפי אזור, סגנון ותקציב'}</p>
       <div class="rpt-suppliers">
         ${supplierCards}
       </div>
@@ -453,7 +466,21 @@ async function submitQuestionnaire(payload, state) {
     }
   }
 
-  return generateMockReport(payload);
+  // 3. Fetch supplier recommendations
+  let suppliers = [];
+  if (submissionId) {
+    try {
+      const suppRes = await fetch(`/api/suppliers/recommendations?submissionId=${submissionId}`);
+      if (suppRes.ok) {
+        const suppData = await suppRes.json();
+        suppliers = suppData.suppliers || [];
+      }
+    } catch (err) {
+      console.warn('Supplier fetch error:', err.message);
+    }
+  }
+
+  return generateMockReport(payload, suppliers);
 }
 
 function resetForm() {

@@ -1438,7 +1438,7 @@ select {
 /* Supplier cards */
 .rpt-suppliers {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
   margin-top: 1rem;
 }
@@ -1446,13 +1446,12 @@ select {
 .rpt-supplier-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1.1rem 0.75rem;
-  background: var(--color-surface-soft);
+  gap: 0.35rem;
+  padding: 1.1rem 1.25rem;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  text-align: center;
+  text-align: right;
   transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
 
@@ -1462,16 +1461,47 @@ select {
   border-color: var(--color-primary);
 }
 
+.rpt-supplier-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .rpt-supplier-icon {
   color: var(--color-primary);
-  font-size: 1.6rem !important;
+  font-size: 1.4rem !important;
 }
 
 .rpt-supplier-name {
-  font-size: 0.82rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--color-text);
   line-height: 1.3;
+}
+
+.rpt-supplier-category {
+  font-size: 0.82rem;
+  color: var(--color-muted);
+}
+
+.rpt-supplier-detail {
+  font-size: 0.88rem;
+  color: var(--color-text);
+}
+
+.rpt-supplier-desc {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  line-height: 1.5;
+  margin: 0.2rem 0 0;
+}
+
+.rpt-supplier-reason {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  margin-top: auto;
+  padding-top: 0.5rem;
 }
 
 @media (max-width: 640px) {
