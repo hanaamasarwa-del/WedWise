@@ -1,9 +1,12 @@
 /* Countdown Page Styling */
 
 .countdown-hero {
-  padding: 5rem 0;
+  padding: clamp(4.5rem, 8vw, 6rem) 0;
   text-align: center;
-  background: linear-gradient(180deg, #FBF8F4 0%, #F5EDE6 50%, #FFFFFF 100%);
+  background:
+    linear-gradient(180deg, rgba(253, 251, 247, 0.96) 0%, rgba(248, 244, 238, 0.96) 100%),
+    radial-gradient(circle at 50% 0%, rgba(216, 184, 106, 0.24), transparent 44%);
+  border-bottom: 1px solid var(--color-border-soft);
   position: relative;
   overflow: hidden;
 }
@@ -21,22 +24,24 @@
 }
 
 .countdown-hero h1 {
-  font-size: 3rem;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
   font-weight: 700;
   margin-bottom: 1rem;
-  color: var(--color-primary);
+  color: var(--color-text);
   position: relative;
   z-index: 1;
-  letter-spacing: -1px;
+  letter-spacing: 0;
 }
 
 .countdown-subtitle {
   font-size: 1.15rem;
-  color: var(--color-text-light);
-  margin: 0;
+  color: var(--color-muted);
+  max-width: 620px;
+  margin: 0 auto;
   position: relative;
   z-index: 1;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .countdown-container {

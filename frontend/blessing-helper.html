@@ -10,15 +10,16 @@
   <link rel="stylesheet" href="site.css">
   <link rel="stylesheet" href="blessing-helper.css">
 </head>
-<body id="top">
+<body id="top" class="subpage">
   <header class="site-header">
     <div class="container header-inner">
       <a href="index.html" class="logo">WedWise</a>
       <nav class="nav-links">
-        <a href="index.html">עמוד בית</a>
-        <a href="countdown.html">ספירה לאחור</a>
-        <a href="blessing-helper.html">עוזר ברכות</a>
-        <a href="questionnaire.html">התחילו לתכנן</a>
+        <a href="index.html">&#1512;&#1488;&#1513;&#1497;</a>
+        <a href="questionnaire.html">&#1513;&#1488;&#1500;&#1493;&#1503; &#1514;&#1499;&#1504;&#1493;&#1503;</a>
+        <a href="countdown.html">&#1505;&#1508;&#1497;&#1512;&#1492; &#1500;&#1488;&#1495;&#1493;&#1512;</a>
+        <a href="blessing-helper.html" class="active" aria-current="page">&#1506;&#1493;&#1494;&#1512; &#1489;&#1512;&#1499;&#1493;&#1514;</a>
+        <a href="questionnaire.html#questionnaire" class="nav-cta">&#1492;&#1514;&#1495;&#1497;&#1500;&#1493; &#1500;&#1514;&#1499;&#1504;&#1503;</a>
       </nav>
     </div>
   </header>
@@ -129,18 +130,6 @@
   </footer>
 
   <script src="blessing-helper.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const navLinks = document.querySelectorAll('.nav-links a');
-      navLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (href === 'blessing-helper.html') {
-          link.classList.add('nav-cta');
-        } else {
-          link.classList.remove('nav-cta');
-        }
-      });
-    });
-  </script>
+  <script src="chat-widget.js" defer></script>
 </body>
 </html>

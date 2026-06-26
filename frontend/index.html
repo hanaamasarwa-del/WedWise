@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -12,11 +12,13 @@
 <body id="top">
   <header class="site-header">
     <div class="container header-inner">
-      <a href="#top" class="logo">WedWise</a>
+      <a href="index.html" class="logo">WedWise</a>
       <nav class="nav-links">
-        <a href="#top">ראשי</a>
-        <a href="#how-it-works">איך זה עובד</a>
-        <a href="#questionnaire" class="nav-cta">התחילו לתכנן</a>
+        <a href="index.html" class="active" aria-current="page">&#1512;&#1488;&#1513;&#1497;</a>
+        <a href="questionnaire.html">&#1513;&#1488;&#1500;&#1493;&#1503; &#1514;&#1499;&#1504;&#1493;&#1503;</a>
+        <a href="countdown.html">&#1505;&#1508;&#1497;&#1512;&#1492; &#1500;&#1488;&#1495;&#1493;&#1512;</a>
+        <a href="blessing-helper.html">&#1506;&#1493;&#1494;&#1512; &#1489;&#1512;&#1499;&#1493;&#1514;</a>
+        <a href="questionnaire.html#questionnaire" class="nav-cta">&#1492;&#1514;&#1495;&#1497;&#1500;&#1493; &#1500;&#1514;&#1499;&#1504;&#1503;</a>
       </nav>
     </div>
   </header>
@@ -24,11 +26,20 @@
   <main>
     <section class="hero">
       <div class="hero-bg">
+        <!-- Protected brand hero: keep this image and petal layer unless the design owner approves a replacement. -->
         <img
           src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=2400&q=90"
           alt="זוג בחתונה אלגנטית"
           fetchpriority="high"
         >
+        <div class="hero-petals" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </div>
       <div class="container hero-content">
         <p class="hero-eyebrow">תכנון חתונות חכם ואישי</p>
@@ -265,7 +276,6 @@
     <section class="why-us">
       <div class="container">
         <div class="why-us-header">
-          <span class="section-kicker">WedWise</span>
           <h2>למה לבחור ב־ WedWise?</h2>
         </div>
         <div class="benefits-grid">
@@ -362,5 +372,6 @@
   </aside>
 
   <script src="app.js" defer></script>
+  <script src="chat-widget.js" defer></script>
 </body>
 </html>
