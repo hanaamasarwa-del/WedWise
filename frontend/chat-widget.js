@@ -1,17 +1,23 @@
 (() => {
-  const defaultGreeting = 'שלום! אני העוזר של WedWise. אפשר לשאול אותי על האתר, השאלון או תכנון החתונה.';
+  const defaultGreeting = 'שלום! אני כאן כדי לעזור בקצרה עם WedWise, השאלון, הדוח וכלי האתר.';
+
   const fallbackWidget = `
     <aside class="chat-widget" id="chat-widget">
       <section class="chat-panel" id="chat-panel" aria-labelledby="chat-title" aria-hidden="true" hidden>
         <header class="chat-header">
-          <div>
-            <h2 id="chat-title">העוזר של WedWise</h2>
-            <p><span class="chat-status-dot" aria-hidden="true"></span> כאן כדי לעזור</p>
+          <div class="chat-brand">
+            <span class="chat-avatar" aria-hidden="true">W</span>
+            <h2 id="chat-title">WedWise Assistant</h2>
           </div>
           <button type="button" class="chat-close" id="chat-close" aria-label="סגירת הצ'אט">×</button>
         </header>
         <div class="chat-messages" id="chat-messages" aria-live="polite">
           <div class="chat-message chat-message--assistant">${defaultGreeting}</div>
+          <div class="chat-suggestions" aria-label="שאלות מהירות">
+            <button type="button" data-chat-prompt="מה WedWise עושה?">מה WedWise עושה?</button>
+            <button type="button" data-chat-prompt="איך מתחילים את השאלון?">איך מתחילים?</button>
+            <button type="button" data-chat-prompt="מה כולל הדוח הראשוני?">מה כולל הדוח?</button>
+          </div>
         </div>
         <form class="chat-form" id="chat-form">
           <label class="sr-only" for="chat-input">כתבו הודעה</label>
@@ -44,6 +50,45 @@
     return message;
   }
 
+  function normalizeWidgetCopy(panel, launcher, closeButton, messagesEl, input, sendButton) {
+    const header = panel.querySelector('.chat-header');
+    if (header && !header.querySelector('.chat-brand')) {
+      header.innerHTML = `
+        <div class="chat-brand">
+          <span class="chat-avatar" aria-hidden="true">W</span>
+          <h2 id="chat-title">WedWise Assistant</h2>
+        </div>
+      `;
+      if (closeButton) header.appendChild(closeButton);
+    }
+
+    const title = document.getElementById('chat-title');
+    const launcherIcon = launcher.querySelector('.chat-launcher-icon');
+    const launcherLabel = launcher.querySelector('.chat-launcher-label');
+    const firstMessage = messagesEl.querySelector('.chat-message--assistant');
+    const sendIcon = sendButton.querySelector('[aria-hidden="true"]');
+
+    if (title) title.textContent = 'WedWise Assistant';
+    if (launcherIcon) launcherIcon.textContent = '✦';
+    if (launcherLabel) launcherLabel.textContent = 'אפשר לעזור?';
+    if (firstMessage) firstMessage.textContent = defaultGreeting;
+    if (closeButton) closeButton.textContent = '×';
+    if (sendIcon) sendIcon.textContent = '➤';
+    input.placeholder = 'איך אפשר לעזור?';
+
+    if (!messagesEl.querySelector('.chat-suggestions')) {
+      const suggestions = document.createElement('div');
+      suggestions.className = 'chat-suggestions';
+      suggestions.setAttribute('aria-label', 'שאלות מהירות');
+      suggestions.innerHTML = `
+        <button type="button" data-chat-prompt="מה WedWise עושה?">מה WedWise עושה?</button>
+        <button type="button" data-chat-prompt="איך מתחילים את השאלון?">איך מתחילים?</button>
+        <button type="button" data-chat-prompt="מה כולל הדוח הראשוני?">מה כולל הדוח?</button>
+      `;
+      messagesEl.appendChild(suggestions);
+    }
+  }
+
   function initChatWidget() {
     const widget = ensureWidget();
     if (widget.dataset.ready === 'true') return;
@@ -62,25 +107,7 @@
 
     launcher.removeAttribute('onclick');
     closeButton?.removeAttribute('onclick');
-
-    const title = document.getElementById('chat-title');
-    const status = document.querySelector('.chat-header p');
-    const launcherIcon = launcher.querySelector('.chat-launcher-icon');
-    const launcherLabel = launcher.querySelector('.chat-launcher-label');
-    const firstMessage = messagesEl.querySelector('.chat-message--assistant');
-    const closeText = closeButton?.firstChild;
-    const sendIcon = sendButton.querySelector('[aria-hidden="true"]');
-
-    if (title) title.textContent = 'העוזר של WedWise';
-    if (status) {
-      status.innerHTML = '<span class="chat-status-dot" aria-hidden="true"></span> כאן כדי לעזור';
-    }
-    if (launcherIcon) launcherIcon.textContent = '✦';
-    if (launcherLabel) launcherLabel.textContent = 'אפשר לעזור?';
-    if (firstMessage) firstMessage.textContent = defaultGreeting;
-    if (closeText) closeText.textContent = '×';
-    if (sendIcon) sendIcon.textContent = '➤';
-    input.placeholder = 'איך אפשר לעזור?';
+    normalizeWidgetCopy(panel, launcher, closeButton, messagesEl, input, sendButton);
 
     function setOpen(isOpen) {
       panel.hidden = !isOpen;
@@ -109,6 +136,13 @@
     input.addEventListener('input', () => {
       input.style.height = 'auto';
       input.style.height = `${Math.min(input.scrollHeight, 112)}px`;
+    });
+
+    messagesEl.addEventListener('click', (event) => {
+      const promptButton = event.target.closest('[data-chat-prompt]');
+      if (!promptButton || input.disabled) return;
+      input.value = promptButton.dataset.chatPrompt || '';
+      form.requestSubmit();
     });
 
     form.addEventListener('submit', async (event) => {
