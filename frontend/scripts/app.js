@@ -261,6 +261,7 @@ function generateMockReport(payload) {
   const venueBudget    = Math.round(budget * 0.45);
   const cateringBudget = Math.round(budget * 0.30);
   const servicesBudget = Math.round(budget * 0.25);
+  const budgetDeviation = Math.round(budget * 0.08);
 
   // Parse "פרחים: x, y | קישוטים: a, b" into separate groups
   const fdParts = Object.fromEntries(
@@ -296,180 +297,202 @@ function generateMockReport(payload) {
     ? `<blockquote class="rpt-quote"><p>״${wr.free_text}״</p></blockquote>`
     : '';
 
-  // Supplier cards with icons
-  const SUPPLIER_ICONS = {
-    'אולם / גן אירועים': 'location_city',
-    'די־ג׳יי':           'music_note',
-    'צילום':              'photo_camera',
-    'עיצוב ופרחים':      'local_florist',
-    'קייטרינג':           'restaurant',
-  };
-
   const supplierCards = SUPPLIER_CATEGORIES.map((cat) => `
     <div class="rpt-supplier-card">
-      <span class="material-symbols-outlined rpt-supplier-icon" aria-hidden="true">${SUPPLIER_ICONS[cat] || 'storefront'}</span>
       <span class="rpt-supplier-name">${cat}</span>
     </div>`).join('');
 
+  const reportDate = new Date().toLocaleDateString('he-IL');
+  const reportId = `#WW-${String(Date.now()).slice(-6)}`;
+
   // Optional inspiration link block — only rendered when a URL was provided
   const inspirationBlock = wr.inspiration_url ? `
-    <div class="rpt-divider" aria-hidden="true"></div>
-
-    <div class="rpt-block">
-      <div class="rpt-block-title">
-        <span class="material-symbols-outlined" aria-hidden="true">link</span>
+    <section class="rpt-section">
+      <div class="rpt-section-heading">
+        <span class="rpt-mark" aria-hidden="true">↗</span>
         <h3>השראה לחתונה</h3>
       </div>
       <a href="${wr.inspiration_url}" target="_blank" rel="noopener noreferrer" class="rpt-inspiration-link">
-        <span class="material-symbols-outlined" aria-hidden="true">open_in_new</span>
+        <span aria-hidden="true">↗</span>
         ${wr.inspiration_url}
       </a>
-    </div>` : '';
+    </section>` : '';
 
   return `
-    <div class="rpt-header">
-      <span class="rpt-demo-badge">
-        <span class="material-symbols-outlined" aria-hidden="true">science</span>
-        דוח לדוגמה — בגרסה הבאה ייווצר באמצעות AI
-      </span>
-      <div class="rpt-title-row">
-        <span class="rpt-ornament" aria-hidden="true">✦</span>
-        <h2>דוח תכנון חתונה</h2>
-        <span class="rpt-ornament" aria-hidden="true">✦</span>
-      </div>
-      <p class="rpt-subtitle">שלום <strong>${lead.full_name}</strong>, הנה תמונת המצב הראשונית שלכם</p>
-    </div>
+    <article class="rpt-document" aria-label="דוח תכנון חתונה">
+      <div class="rpt-floral rpt-floral-top" aria-hidden="true"></div>
+      <div class="rpt-floral rpt-floral-bottom" aria-hidden="true"></div>
 
-    <div class="rpt-divider" aria-hidden="true"></div>
-
-    <div class="rpt-stats">
-      <div class="rpt-stat">
-        <span class="material-symbols-outlined rpt-stat-icon" aria-hidden="true">groups</span>
-        <strong class="rpt-stat-value">${guests.toLocaleString('he-IL')}</strong>
-        <span class="rpt-stat-label">אורחים</span>
-      </div>
-      <div class="rpt-stat">
-        <span class="material-symbols-outlined rpt-stat-icon" aria-hidden="true">payments</span>
-        <strong class="rpt-stat-value">${formatCurrency(budget)}</strong>
-        <span class="rpt-stat-label">תקציב כולל</span>
-      </div>
-      <div class="rpt-stat">
-        <span class="material-symbols-outlined rpt-stat-icon" aria-hidden="true">person</span>
-        <strong class="rpt-stat-value">${formatCurrency(perGuest)}</strong>
-        <span class="rpt-stat-label">עלות לאורח</span>
-      </div>
-      <div class="rpt-stat">
-        <span class="material-symbols-outlined rpt-stat-icon" aria-hidden="true">location_on</span>
-        <strong class="rpt-stat-value">${region}</strong>
-        <span class="rpt-stat-label">אזור</span>
-      </div>
-    </div>
-
-    <div class="rpt-divider" aria-hidden="true"></div>
-
-    <div class="rpt-block">
-      <div class="rpt-block-title">
-        <span class="material-symbols-outlined" aria-hidden="true">pie_chart</span>
-        <h3>פילוח תקציב מומלץ</h3>
-      </div>
-      <p class="rpt-block-sub">הערכה ראשונית — יתעדכן בדוח המלא</p>
-      <div class="rpt-budget-bars">
-        <div class="rpt-budget-row">
-          <div class="rpt-budget-meta"><span>אולם / גן אירועים</span><strong>${formatCurrency(venueBudget)}</strong></div>
-          <div class="rpt-bar-wrap"><div class="rpt-bar-track"><div class="rpt-bar-fill" style="width:45%"></div></div><span class="rpt-bar-pct">45%</span></div>
+      <header class="rpt-doc-header">
+        <div class="rpt-brand-block">
+          <h2>WedWise</h2>
         </div>
-        <div class="rpt-budget-row">
-          <div class="rpt-budget-meta"><span>קייטרינג</span><strong>${formatCurrency(cateringBudget)}</strong></div>
-          <div class="rpt-bar-wrap"><div class="rpt-bar-track"><div class="rpt-bar-fill" style="width:30%"></div></div><span class="rpt-bar-pct">30%</span></div>
+        <div class="rpt-doc-meta">
+          <span>מספר דוח: ${reportId}</span>
+          <span>תאריך הפקה: ${reportDate}</span>
         </div>
-        <div class="rpt-budget-row">
-          <div class="rpt-budget-meta"><span>עיצוב, צילום ודי־ג׳יי</span><strong>${formatCurrency(servicesBudget)}</strong></div>
-          <div class="rpt-bar-wrap"><div class="rpt-bar-track"><div class="rpt-bar-fill" style="width:25%"></div></div><span class="rpt-bar-pct">25%</span></div>
+      </header>
+
+      <div class="rpt-report-title">
+        <h3>סיכום תכנון אסטרטגי</h3>
+        <p>שלום <strong>${lead.full_name}</strong>, הנה תמונת המצב הראשונית שלכם לפי התשובות בשאלון.</p>
+      </div>
+
+      <section class="rpt-section">
+        <div class="rpt-section-heading">
+          <span class="rpt-mark" aria-hidden="true">♥</span>
+          <h3>סקירת חתונה</h3>
         </div>
-      </div>
-    </div>
-
-    <div class="rpt-divider" aria-hidden="true"></div>
-
-    <div class="rpt-block">
-      <div class="rpt-block-title">
-        <span class="material-symbols-outlined" aria-hidden="true">palette</span>
-        <h3>כיוון עיצובי</h3>
-      </div>
-      <div class="rpt-design-grid">
-        <div class="rpt-design-item">
-          <span class="rpt-design-label">סגנון</span>
-          <span class="rpt-style-badge">${style}</span>
-        </div>
-        <div class="rpt-design-item">
-          <span class="rpt-design-label">צבעים</span>
-          <div class="rpt-chips">${colorTags}</div>
-        </div>
-      </div>
-      ${flowersSection}
-      ${freeTextBlock}
-    </div>
-
-    ${inspirationBlock}
-
-    <div class="rpt-divider" aria-hidden="true"></div>
-
-    <div class="rpt-block">
-      <div class="rpt-block-title">
-        <span class="material-symbols-outlined" aria-hidden="true">checklist</span>
-        <h3>צעדים מומלצים להמשך</h3>
-      </div>
-      <div class="rpt-timeline">
-        <div class="rpt-tl-item">
-          <div class="rpt-tl-marker" aria-hidden="true">1</div>
-          <div class="rpt-tl-body">
-            <h4>בחירת אולם / גן אירועים</h4>
-            <p>ריכוז 3–5 מקומות באזור ${region} התואמים לתקציב ולסגנון ${style}.</p>
+        <div class="rpt-overview-grid">
+          <div>
+            <span>איש קשר</span>
+            <strong>${lead.full_name}</strong>
+          </div>
+          <div>
+            <span>כמות מוזמנים</span>
+            <strong>${guests.toLocaleString('he-IL')} אורחים</strong>
+          </div>
+          <div>
+            <span>מיקום מועדף</span>
+            <strong>${region}</strong>
           </div>
         </div>
-        <div class="rpt-tl-item">
-          <div class="rpt-tl-marker" aria-hidden="true">2</div>
-          <div class="rpt-tl-body">
-            <h4>פגישות עם ספקי מוזיקה</h4>
-            <p>קביעת 2–3 פגישות עם די־ג׳יי בעלי רפרטואר שמתאים לאווירה שתיארתם.</p>
-          </div>
-        </div>
-        <div class="rpt-tl-item">
-          <div class="rpt-tl-marker" aria-hidden="true">3</div>
-          <div class="rpt-tl-body">
-            <h4>בחירת צלם/ת</h4>
-            <p>חפשו צלם/ת עם תיק עבודות שמשדר את הסגנון ${style}.</p>
-          </div>
-        </div>
-        <div class="rpt-tl-item">
-          <div class="rpt-tl-marker" aria-hidden="true">4</div>
-          <div class="rpt-tl-body">
-            <h4>פגישת עיצוב ופרחים</h4>
-            <p>הציגו לעצב/ת את צבעי הקונספט: ${wr.preferred_colors}.</p>
-          </div>
-        </div>
-        <div class="rpt-tl-item">
-          <div class="rpt-tl-marker" aria-hidden="true">5</div>
-          <div class="rpt-tl-body">
-            <h4>בניית לוח זמנים</h4>
-            <p>הגדירו לוח זמנים של 6–9 חודשים לפני האירוע עם נקודות ציון לכל ספק.</p>
-          </div>
-        </div>
-      </div>
-    </div>
+      </section>
 
-    <div class="rpt-divider" aria-hidden="true"></div>
+      <section class="rpt-section">
+        <div class="rpt-section-heading">
+          <span class="rpt-mark" aria-hidden="true">§</span>
+          <h3>פרטי תכנון מהשאלון</h3>
+        </div>
+        <div class="rpt-details-grid">
+          <div class="rpt-detail-row">
+            <span>תקציב יעד</span>
+            <strong>${formatCurrency(budget)}</strong>
+          </div>
+          <div class="rpt-detail-row">
+            <span>עלות משוערת לאורח</span>
+            <strong>${formatCurrency(perGuest)}</strong>
+          </div>
+          <div class="rpt-detail-row">
+            <span>סגנון עיצובי</span>
+            <strong>${style}</strong>
+          </div>
+          <div class="rpt-detail-row">
+            <span>צבעים מועדפים</span>
+            <strong>${wr.preferred_colors || 'לא צוין'}</strong>
+          </div>
+        </div>
+      </section>
 
-    <div class="rpt-block">
-      <div class="rpt-block-title">
-        <span class="material-symbols-outlined" aria-hidden="true">storefront</span>
-        <h3>קטגוריות ספקים לבדיקה</h3>
-      </div>
-      <p class="rpt-block-sub">בדוח המלא נציג התאמות לפי אזור, סגנון ותקציב</p>
-      <div class="rpt-suppliers">
-        ${supplierCards}
-      </div>
-    </div>
+      <section class="rpt-section">
+        <div class="rpt-section-heading">
+          <span class="rpt-mark" aria-hidden="true">✦</span>
+          <h3>כיוון עיצובי</h3>
+        </div>
+        <div class="rpt-design-summary">
+          <div>
+            <span class="rpt-design-label">סגנון</span>
+            <span class="rpt-style-badge">${style}</span>
+          </div>
+          <div>
+            <span class="rpt-design-label">צבעים</span>
+            <div class="rpt-chips">${colorTags || '<span class="rpt-chip">לא צוין</span>'}</div>
+          </div>
+          ${flowersSection}
+        </div>
+        ${freeTextBlock}
+      </section>
+
+      ${inspirationBlock}
+
+      <section class="rpt-section">
+        <div class="rpt-section-heading">
+          <span class="rpt-mark" aria-hidden="true">◇</span>
+          <h3>סדר פעולות מומלץ</h3>
+        </div>
+        <div class="rpt-timeline-grid">
+          <div>
+            <span>שלב פתיחה</span>
+            <p>בחירת מקום, בדיקת צילום, די־ג׳יי וקייטרינג לפי דחיפות האירוע.</p>
+          </div>
+          <div>
+            <span>שלב המשך</span>
+            <p>גיבוש עיצוב, פרחים, לוח השראה וסגירת ספקים מרכזיים לפי לוח הזמנים שלכם.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="rpt-section rpt-budget-analysis">
+        <div class="rpt-section-heading">
+          <span class="rpt-mark" aria-hidden="true">₪</span>
+          <h3>ניתוח תקציבי מקצועי</h3>
+        </div>
+        <div class="rpt-budget-layout">
+          <div class="rpt-budget-bars">
+            <div class="rpt-budget-row">
+              <div class="rpt-budget-meta"><span>אולם / גן אירועים</span><strong>${formatCurrency(venueBudget)}</strong></div>
+              <div class="rpt-bar-wrap"><div class="rpt-bar-track"><div class="rpt-bar-fill" style="width:45%"></div></div><span class="rpt-bar-pct">45%</span></div>
+            </div>
+            <div class="rpt-budget-row">
+              <div class="rpt-budget-meta"><span>קייטרינג</span><strong>${formatCurrency(cateringBudget)}</strong></div>
+              <div class="rpt-bar-wrap"><div class="rpt-bar-track"><div class="rpt-bar-fill" style="width:30%"></div></div><span class="rpt-bar-pct">30%</span></div>
+            </div>
+            <div class="rpt-budget-row">
+              <div class="rpt-budget-meta"><span>עיצוב, צילום ודי־ג׳יי</span><strong>${formatCurrency(servicesBudget)}</strong></div>
+              <div class="rpt-bar-wrap"><div class="rpt-bar-track"><div class="rpt-bar-fill" style="width:25%"></div></div><span class="rpt-bar-pct">25%</span></div>
+            </div>
+          </div>
+          <div class="rpt-budget-summary">
+            <div>
+              <span>תקציב יעד</span>
+              <strong>${formatCurrency(budget)}</strong>
+            </div>
+            <div>
+              <span>רמת היתכנות</span>
+              <strong>ראשונית</strong>
+            </div>
+            <div class="rpt-budget-deviation">
+              <span>אפשרות סטייה מהתקציב</span>
+              <strong>± ${formatCurrency(budgetDeviation)} (עד 8%)</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="rpt-section">
+        <div class="rpt-section-heading">
+          <span class="rpt-mark" aria-hidden="true">✓</span>
+          <h3>קטגוריות ספקים לבדיקה</h3>
+        </div>
+        <p class="rpt-block-sub">בדוח המלא נציג התאמות לפי אזור, סגנון ותקציב.</p>
+        <div class="rpt-suppliers">
+          ${supplierCards}
+        </div>
+      </section>
+
+      <section class="rpt-section">
+        <div class="rpt-section-heading">
+          <span class="rpt-mark" aria-hidden="true">•</span>
+          <h3>צעדים הבאים</h3>
+        </div>
+        <ul class="rpt-next-list">
+          <li>תיאום בדיקה עם 3 ספקים מובילים באזור ${region}.</li>
+          <li>איסוף השראה עיצובית נוספת לפי סגנון ${style}.</li>
+          <li>עדכון רשימת מוזמנים ראשונית לפני פגישת המשך.</li>
+        </ul>
+      </section>
+
+      <footer class="rpt-doc-footer">
+        <div class="rpt-footer-notes">
+          <p>* דוח זה הופק באופן אוטומטי על ידי מערכת WedWise.</p>
+          <p>הנתונים הם הערכה ראשונית ואינם מהווים הצעת מחיר או אישור ספק.</p>
+        </div>
+        <div class="rpt-seal" aria-label="חותמת אימות WedWise">
+          <span aria-hidden="true">✓</span>
+          <strong>מאומת<br>על ידי<br>WedWise</strong>
+        </div>
+      </footer>
+    </article>
   `;
 }
 
