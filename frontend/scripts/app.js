@@ -525,20 +525,49 @@ async function sendTelegramNotification(payload) {
   }
 }
 
-async function submitQuestionnaire(payload) {
+async function submitQuestionnaire(payload, state) {
   // Telegram notification — fires in background, does not block report rendering
   sendTelegramNotification(payload);
 
-  // Future Supabase API integration:
-  // const response = await fetch('/api/wedding-requests', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(payload),
-  // });
-  // if (!response.ok) throw new Error('Submit failed');
-  // return response.json();
+  // Save to Supabase — non-blocking, failure does not prevent report from showing
+  try {
+    const wr = payload.wedding_request;
+    const lead = payload.lead;
 
-  console.log('WedWise payload (ready for API):', payload);
+    const submissionBody = {
+      budget: wr.estimated_budget_ils,
+      guests: wr.guest_count,
+      region: REGION_NAMES[String(wr.region_id)] || String(wr.region_id),
+      weddingStyle: JSON.parse(wr.preferred_styles_json)[0] || '',
+      colors: (wr.preferred_colors || '').split(',').map((c) => c.trim()).filter(Boolean),
+      flowers: state.flowers,
+      decorations: state.decorations,
+      personalText: wr.free_text,
+    };
+
+    const subRes = await fetch('/api/submissions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(submissionBody),
+    });
+
+    if (subRes.ok) {
+      const { submissionId } = await subRes.json();
+      await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          submissionId,
+          fullName: lead.full_name,
+          phone: lead.phone,
+          email: lead.email,
+        }),
+      });
+    }
+  } catch (err) {
+    console.warn('WedWise: Supabase save failed (non-blocking):', err.message);
+  }
+
   return generateMockReport(payload);
 }
 
@@ -579,7 +608,7 @@ form.addEventListener('submit', async (e) => {
   btnNext.textContent = 'מייצרים את הדוח...';
 
   try {
-    const reportHtml = await submitQuestionnaire(payload);
+    const reportHtml = await submitQuestionnaire(payload, state);
     renderReport(reportHtml);
   } finally {
     btnNext.disabled = false;
