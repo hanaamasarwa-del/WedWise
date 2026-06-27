@@ -226,12 +226,32 @@
           <!-- Step 5: Wedding Inspiration (optional) -->
           <fieldset class="form-step" data-step="5">
             <legend>השראה לחתונה <span class="legend-optional">(אופציונלי)</span></legend>
-            <div class="field-group">
-              <p class="field-hint">כבר אספתם השראה לחתונה? שתפו קישור לאוסף ההשראה שלכם ונצרף אותו לבקשה.</p>
-              <label for="inspiration_url">קישור להשראה</label>
-              <input type="url" id="inspiration_url" name="inspiration_url"
-                placeholder="https://www.pinterest.com/... או כל קישור השראה אחר">
-              <p class="field-hint">Pinterest, Instagram, בלוג חתונות — כל קישור מתאים. שדה זה אופציונלי לחלוטין.</p>            </div>
+            <div class="inspiration-link-panel">
+              <div class="inspiration-intro">
+                <span class="inspiration-intro-icon" aria-hidden="true">↗</span>
+                <div>
+                  <p class="inspiration-intro-title">יש לכם לוח Pinterest או השראה שאספתם?</p>
+                  <p>שתפו קישור אחד ונצרף אותו לבקשה, כדי שהכיוון העיצובי יהיה קרוב יותר למה שאתם אוהבים.</p>
+                </div>
+              </div>
+
+              <div class="inspiration-source-list" aria-label="סוגי קישורי השראה לדוגמה">
+                <span>Pinterest</span>
+                <span>Instagram</span>
+                <span>Mood board</span>
+                <span>בלוג חתונות</span>
+              </div>
+
+              <div class="field-group inspiration-url-field">
+                <label for="inspiration_url">קישור להשראה</label>
+                <div class="url-input-shell">
+                  <span aria-hidden="true">⌁</span>
+                  <input type="url" id="inspiration_url" name="inspiration_url"
+                    placeholder="https://www.pinterest.com/... או כל קישור השראה אחר">
+                </div>
+                <p class="field-hint">השדה אופציונלי לחלוטין. אפשר להשאיר ריק ולהמשיך לשלב הבא.</p>
+              </div>
+            </div>
           </fieldset>
 
           <!-- Step 6: Contact -->

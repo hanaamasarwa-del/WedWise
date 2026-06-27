@@ -997,6 +997,18 @@ button, input, select, textarea {
   color: var(--color-subtle);
 }
 
+.inspiration-link-panel {
+  display: grid;
+  gap: 1.1rem;
+  padding: clamp(1.1rem, 2.5vw, 1.45rem);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.84), rgba(246, 243, 232, 0.78)),
+    radial-gradient(circle at 100% 0%, rgba(244, 223, 216, 0.62), transparent 34%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
 .inspiration-intro {
   display: flex;
   align-items: flex-start;
@@ -1008,11 +1020,32 @@ button, input, select, textarea {
   margin-bottom: 1.75rem;
 }
 
+.inspiration-link-panel .inspiration-intro {
+  margin-bottom: 0;
+  background: rgba(255, 255, 255, 0.62);
+  border-color: var(--color-border-soft);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.70);
+}
+
 .inspiration-intro-icon {
-  color: var(--color-primary);
-  font-size: 1.6rem !important;
+  display: inline-grid;
+  place-items: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  color: var(--color-primary-dark);
+  background: linear-gradient(135deg, #FFF8F4, var(--color-secondary-soft));
+  border: 1px solid rgba(141, 118, 104, 0.18);
+  border-radius: 50%;
+  font-size: 1.15rem !important;
+  font-weight: 800;
   flex-shrink: 0;
-  margin-top: 0.1rem;
+  margin-top: 0.05rem;
+}
+
+.inspiration-intro-title {
+  margin-bottom: 0.25rem !important;
+  color: var(--color-text) !important;
+  font-weight: 800;
 }
 
 .inspiration-intro p {
@@ -1024,6 +1057,69 @@ button, input, select, textarea {
 
 .inspiration-intro .field-hint {
   margin-top: 0.4rem;
+}
+
+.inspiration-source-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.inspiration-source-list span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.78rem;
+  color: var(--color-primary-dark);
+  background: rgba(255, 255, 255, 0.70);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(105, 92, 80, 0.05);
+}
+
+.inspiration-url-field {
+  margin-bottom: 0;
+}
+
+.url-input-shell {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0 0.95rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+}
+
+.url-input-shell:focus-within {
+  background: var(--color-surface);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(185, 133, 125, 0.16);
+}
+
+.url-input-shell > span {
+  color: var(--color-secondary);
+  font-size: 1.2rem;
+  font-weight: 800;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+
+.url-input-shell input[type="url"] {
+  min-width: 0;
+  padding-right: 0;
+  padding-left: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.url-input-shell input[type="url"]:focus {
+  box-shadow: none;
 }
 
 .field-grid {
@@ -1056,6 +1152,7 @@ input[type="text"],
 input[type="number"],
 input[type="tel"],
 input[type="email"],
+input[type="url"],
 select,
 textarea {
   width: 100%;
@@ -2623,6 +2720,7 @@ input[type="text"],
 input[type="number"],
 input[type="tel"],
 input[type="email"],
+input[type="url"],
 select,
 textarea {
   width: 100%;
