@@ -1,10 +1,5 @@
 const { createClient } = require("@supabase/supabase-js");
 
-// ws is a transitive dep of @supabase/realtime-js — polyfill for Node < 22
-if (!globalThis.WebSocket) {
-  globalThis.WebSocket = require("ws");
-}
-
 let _client = null;
 
 function getClient() {
