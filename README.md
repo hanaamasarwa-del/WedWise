@@ -123,15 +123,18 @@ The active backend reads `backend/.env`.
 | Variable | Required | Purpose |
 | --- | --- | --- |
 | `PORT` | No | Local server port. Defaults to `3000`. |
-| `OPENAI_API_KEY` | For chatbot | OpenAI API key. Never expose it in frontend code. |
+| `OPENAI_API_KEY` | For AI features | OpenAI API key for chatbot and wedding image generation. Never expose it in frontend code. |
 | `OPENAI_CHAT_MODEL` | No | Chatbot model override. Defaults to `gpt-5.4-nano`. |
+| `OPENAI_IMAGE_MODEL` | No | Image generation model override. Defaults to `gpt-image-1`. |
+| `OPENAI_IMAGE_SIZE` | No | Image generation size override. Defaults to `1024x1024`. |
+| `OPENAI_IMAGE_QUALITY` | No | Image generation quality override. Defaults to `medium`. |
 | `TELEGRAM_BOT_TOKEN` | For form delivery | Telegram bot credential used by the server. |
 | `TELEGRAM_CHAT_ID` | Sometimes | Destination chat. Optional only when exactly one private chat has sent `/start` to the bot. |
 | `SUPABASE_URL` | For Supabase routes | Supabase project URL. |
 | `SUPABASE_ANON_KEY` | Optional | Supabase anonymous key where applicable. |
 | `SUPABASE_SERVICE_ROLE_KEY` | For privileged persistence | Server-only Supabase service role key. |
-| `AI_API_KEY` | Legacy fallback | Accepted as a fallback by the chatbot if `OPENAI_API_KEY` is absent. Prefer `OPENAI_API_KEY`. |
-| `IMAGE_API_KEY` | Future | Reserved for future image generation. |
+| `AI_API_KEY` | Legacy fallback | Accepted as a fallback by AI routes if `OPENAI_API_KEY` is absent. Prefer `OPENAI_API_KEY`. |
+| `IMAGE_API_KEY` | Legacy fallback | Accepted as a fallback by image generation if `OPENAI_API_KEY` is absent. Prefer `OPENAI_API_KEY`. |
 
 Never commit `backend/.env` or any real secret.
 

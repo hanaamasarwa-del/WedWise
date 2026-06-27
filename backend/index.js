@@ -1,7 +1,8 @@
-require("dotenv").config();
+const path = require("path");
+
+require("dotenv").config({ path: path.resolve(__dirname, ".env") });
 const express = require("express");
 const cors = require("cors");
-const path = require("path");
 
 const submissionsRouter = require("./routes/submissions");
 const aiReportRouter = require("./routes/ai-report");

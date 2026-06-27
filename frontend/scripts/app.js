@@ -22,6 +22,9 @@ const SUPPLIER_CATEGORIES = [
 ];
 
 let currentStep = 1;
+let latestReportText = '';
+let latestQuestionnaire = null;
+let isReportConfirmed = false;
 
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
@@ -35,9 +38,12 @@ const progressBar = document.querySelector('.progress-bar');
 const btnBack = document.getElementById('btn-back');
 const btnNext = document.getElementById('btn-next');
 const btnRestart = document.getElementById('btn-restart');
+const btnConfirmReport = document.getElementById('btn-confirm-report');
+const btnGenerateImage = document.getElementById('btn-generate-image');
 const questionnaireSection = document.getElementById('questionnaire');
 const reportSection = document.getElementById('report-section');
 const reportContent = document.getElementById('report-content');
+const weddingImageResult = document.getElementById('wedding-image-result');
 const navSectionLinks = Array.from(document.querySelectorAll('.nav-links a[href^="#"]'));
 const navSections = navSectionLinks
   .map((link) => ({
@@ -498,9 +504,95 @@ function generateMockReport(payload) {
 
 function renderReport(html) {
   reportContent.innerHTML = html;
+  latestReportText = reportContent.innerText.replace(/\s+/g, ' ').trim();
+  isReportConfirmed = false;
+  if (btnConfirmReport) {
+    btnConfirmReport.disabled = false;
+    btnConfirmReport.textContent = 'אישור הדוח';
+  }
+  if (btnGenerateImage) {
+    btnGenerateImage.disabled = true;
+    btnGenerateImage.textContent = 'יצירת תמונת חתונה';
+  }
+  if (weddingImageResult) {
+    weddingImageResult.hidden = true;
+    weddingImageResult.className = 'wedding-image-result';
+    weddingImageResult.innerHTML = '';
+  }
   questionnaireSection.hidden = true;
   reportSection.hidden = false;
   reportSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+function buildImageQuestionnaire(state) {
+  return {
+    budget: state.estimated_budget_ils,
+    guestCount: state.guest_count,
+    regionName: state.region_name,
+    style: state.preferred_style,
+    colors: state.preferred_colors,
+    flowers: state.flowers.join(', '),
+    decorations: state.decorations.join(', '),
+    freeText: state.free_text,
+    inspirationUrl: state.inspiration_url,
+  };
+}
+
+function setWeddingImageStatus(type, html) {
+  if (!weddingImageResult) return;
+  weddingImageResult.hidden = false;
+  weddingImageResult.className = `wedding-image-result ${type ? `is-${type}` : ''}`;
+  weddingImageResult.innerHTML = html;
+}
+
+async function generateWeddingImageFromReport() {
+  if (!latestReportText || !latestQuestionnaire) {
+    setWeddingImageStatus('error', '<p>לא מצאנו דוח מוכן ליצירת תמונה. נסו למלא את השאלון מחדש.</p>');
+    return;
+  }
+
+  if (!isReportConfirmed) {
+    setWeddingImageStatus('error', '<p>לפני יצירת תמונה צריך לאשר שהדוח נראה נכון.</p>');
+    return;
+  }
+
+  btnGenerateImage.disabled = true;
+  btnGenerateImage.textContent = 'יוצרים תמונה...';
+  setWeddingImageStatus('loading', `
+    <div class="wedding-image-loading" role="status">
+      <span aria-hidden="true"></span>
+      <p>יוצרים הדמיית חתונה לפי הדוח שלכם...</p>
+    </div>
+  `);
+
+  try {
+    const response = await fetch('/api/generate-image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        reportText: latestReportText,
+        questionnaire: latestQuestionnaire,
+      }),
+    });
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.imageUrl) {
+      throw new Error(data.message || data.error || 'Image generation failed');
+    }
+
+    setWeddingImageStatus('ready', `
+      <figure class="wedding-image-card">
+        <img src="${data.imageUrl}" alt="הדמיית חתונה שנוצרה לפי הדוח">
+        <figcaption>הדמיית חתונה ראשונית לפי הדוח המאושר.</figcaption>
+      </figure>
+    `);
+  } catch (error) {
+    console.error('WedWise: wedding image generation failed:', error);
+    setWeddingImageStatus('error', '<p>לא הצלחנו ליצור תמונה כרגע. בדקו שה־OpenAI API key מוגדר בשרת ונסו שוב.</p>');
+  } finally {
+    btnGenerateImage.disabled = false;
+    btnGenerateImage.textContent = 'יצירת תמונת חתונה';
+  }
 }
 
 function formatTelegramMessage(payload) {
@@ -597,9 +689,16 @@ async function submitQuestionnaire(payload, state) {
 function resetForm() {
   form.reset();
   currentStep = 1;
+  latestReportText = '';
+  latestQuestionnaire = null;
+  isReportConfirmed = false;
   goToStep(1);
   reportSection.hidden = true;
   questionnaireSection.hidden = false;
+  if (weddingImageResult) {
+    weddingImageResult.hidden = true;
+    weddingImageResult.innerHTML = '';
+  }
   clearError();
   questionnaireSection.scrollIntoView({ behavior: 'smooth' });
 }
@@ -626,6 +725,7 @@ form.addEventListener('submit', async (e) => {
 
   const state = getFormState();
   const payload = buildWeddingRequestPayload(state);
+  latestQuestionnaire = buildImageQuestionnaire(state);
 
   btnNext.disabled = true;
   btnNext.textContent = 'מייצרים את הדוח...';
@@ -640,6 +740,20 @@ form.addEventListener('submit', async (e) => {
 });
 
 btnRestart.addEventListener('click', resetForm);
+
+if (btnConfirmReport) {
+  btnConfirmReport.addEventListener('click', () => {
+    isReportConfirmed = true;
+    btnConfirmReport.disabled = true;
+    btnConfirmReport.textContent = 'הדוח אושר';
+    if (btnGenerateImage) btnGenerateImage.disabled = false;
+    setWeddingImageStatus('confirmed', '<p>הדוח אושר. עכשיו אפשר ליצור הדמיית חתונה לפי התוכן שלו.</p>');
+  });
+}
+
+if (btnGenerateImage) {
+  btnGenerateImage.addEventListener('click', generateWeddingImageFromReport);
+}
 
 form.addEventListener('keydown', (e) => {
   if (e.key !== 'Enter') return;
