@@ -262,6 +262,7 @@ function generateMockReport(payload) {
   const venueBudget    = Math.round(budget * 0.45);
   const cateringBudget = Math.round(budget * 0.30);
   const servicesBudget = Math.round(budget * 0.25);
+  const budgetDeviation = Math.round(budget * 0.08);
 
   // Parse "פרחים: x, y | קישוטים: a, b" into separate groups
   const fdParts = Object.fromEntries(
@@ -297,18 +298,8 @@ function generateMockReport(payload) {
     ? `<blockquote class="rpt-quote"><p>״${wr.free_text}״</p></blockquote>`
     : '';
 
-  // Supplier cards with icons
-  const SUPPLIER_ICONS = {
-    'אולם / גן אירועים': 'location_city',
-    'די־ג׳יי':           'music_note',
-    'צילום':              'photo_camera',
-    'עיצוב ופרחים':      'local_florist',
-    'קייטרינג':           'restaurant',
-  };
-
   const supplierCards = SUPPLIER_CATEGORIES.map((cat) => `
     <div class="rpt-supplier-card">
-      <span class="material-symbols-outlined rpt-supplier-icon" aria-hidden="true">${SUPPLIER_ICONS[cat] || 'storefront'}</span>
       <span class="rpt-supplier-name">${cat}</span>
     </div>`).join('');
 
@@ -319,11 +310,11 @@ function generateMockReport(payload) {
   const inspirationBlock = wr.inspiration_url ? `
     <section class="rpt-section">
       <div class="rpt-section-heading">
-        <span class="material-symbols-outlined" aria-hidden="true">link</span>
+        <span class="rpt-mark" aria-hidden="true">↗</span>
         <h3>השראה לחתונה</h3>
       </div>
       <a href="${wr.inspiration_url}" target="_blank" rel="noopener noreferrer" class="rpt-inspiration-link">
-        <span class="material-symbols-outlined" aria-hidden="true">open_in_new</span>
+        <span aria-hidden="true">↗</span>
         ${wr.inspiration_url}
       </a>
     </section>` : '';
@@ -334,9 +325,8 @@ function generateMockReport(payload) {
       <div class="rpt-floral rpt-floral-bottom" aria-hidden="true"></div>
 
       <header class="rpt-doc-header">
-        <div>
+        <div class="rpt-brand-block">
           <h2>WedWise</h2>
-          <p>Luxury Planning Intelligence</p>
         </div>
         <div class="rpt-doc-meta">
           <span>מספר דוח: ${reportId}</span>
@@ -345,17 +335,13 @@ function generateMockReport(payload) {
       </header>
 
       <div class="rpt-report-title">
-        <span class="rpt-demo-badge">
-          <span class="material-symbols-outlined" aria-hidden="true">science</span>
-          דוח לדוגמה — בגרסה הבאה ייווצר באמצעות AI
-        </span>
         <h3>סיכום תכנון אסטרטגי</h3>
         <p>שלום <strong>${lead.full_name}</strong>, הנה תמונת המצב הראשונית שלכם לפי התשובות בשאלון.</p>
       </div>
 
       <section class="rpt-section">
         <div class="rpt-section-heading">
-          <span class="material-symbols-outlined" aria-hidden="true">favorite</span>
+          <span class="rpt-mark" aria-hidden="true">♥</span>
           <h3>סקירת חתונה</h3>
         </div>
         <div class="rpt-overview-grid">
@@ -376,7 +362,7 @@ function generateMockReport(payload) {
 
       <section class="rpt-section">
         <div class="rpt-section-heading">
-          <span class="material-symbols-outlined" aria-hidden="true">assignment</span>
+          <span class="rpt-mark" aria-hidden="true">§</span>
           <h3>פרטי תכנון מהשאלון</h3>
         </div>
         <div class="rpt-details-grid">
@@ -401,7 +387,7 @@ function generateMockReport(payload) {
 
       <section class="rpt-section">
         <div class="rpt-section-heading">
-          <span class="material-symbols-outlined" aria-hidden="true">palette</span>
+          <span class="rpt-mark" aria-hidden="true">✦</span>
           <h3>כיוון עיצובי</h3>
         </div>
         <div class="rpt-design-summary">
@@ -422,24 +408,24 @@ function generateMockReport(payload) {
 
       <section class="rpt-section">
         <div class="rpt-section-heading">
-          <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-          <h3>סקירת לוחות זמנים</h3>
+          <span class="rpt-mark" aria-hidden="true">◇</span>
+          <h3>סדר פעולות מומלץ</h3>
         </div>
         <div class="rpt-timeline-grid">
           <div>
-            <span>חודש 1-3</span>
-            <p>בחירת מקום, בדיקת צילום, די־ג׳יי וקייטרינג.</p>
+            <span>שלב פתיחה</span>
+            <p>בחירת מקום, בדיקת צילום, די־ג׳יי וקייטרינג לפי דחיפות האירוע.</p>
           </div>
           <div>
-            <span>חודש 4-6</span>
-            <p>גיבוש עיצוב, פרחים, לוח השראה וסגירת ספקים מרכזיים.</p>
+            <span>שלב המשך</span>
+            <p>גיבוש עיצוב, פרחים, לוח השראה וסגירת ספקים מרכזיים לפי לוח הזמנים שלכם.</p>
           </div>
         </div>
       </section>
 
       <section class="rpt-section rpt-budget-analysis">
         <div class="rpt-section-heading">
-          <span class="material-symbols-outlined" aria-hidden="true">payments</span>
+          <span class="rpt-mark" aria-hidden="true">₪</span>
           <h3>ניתוח תקציבי מקצועי</h3>
         </div>
         <div class="rpt-budget-layout">
@@ -466,13 +452,17 @@ function generateMockReport(payload) {
               <span>רמת היתכנות</span>
               <strong>ראשונית</strong>
             </div>
+            <div class="rpt-budget-deviation">
+              <span>אפשרות סטייה מהתקציב</span>
+              <strong>± ${formatCurrency(budgetDeviation)} (עד 8%)</strong>
+            </div>
           </div>
         </div>
       </section>
 
       <section class="rpt-section">
         <div class="rpt-section-heading">
-          <span class="material-symbols-outlined" aria-hidden="true">verified_user</span>
+          <span class="rpt-mark" aria-hidden="true">✓</span>
           <h3>קטגוריות ספקים לבדיקה</h3>
         </div>
         <p class="rpt-block-sub">בדוח המלא נציג התאמות לפי אזור, סגנון ותקציב.</p>
@@ -483,7 +473,7 @@ function generateMockReport(payload) {
 
       <section class="rpt-section">
         <div class="rpt-section-heading">
-          <span class="material-symbols-outlined" aria-hidden="true">checklist</span>
+          <span class="rpt-mark" aria-hidden="true">•</span>
           <h3>צעדים הבאים</h3>
         </div>
         <ul class="rpt-next-list">
@@ -494,13 +484,13 @@ function generateMockReport(payload) {
       </section>
 
       <footer class="rpt-doc-footer">
-        <div>
+        <div class="rpt-footer-notes">
           <p>* דוח זה הופק באופן אוטומטי על ידי מערכת WedWise.</p>
           <p>הנתונים הם הערכה ראשונית ואינם מהווים הצעת מחיר או אישור ספק.</p>
         </div>
         <div class="rpt-seal" aria-label="חותמת אימות WedWise">
-          <span class="material-symbols-outlined" aria-hidden="true">verified</span>
-          <strong>VALIDATED<br>WEDWISE<br>SYSTEM</strong>
+          <span aria-hidden="true">✓</span>
+          <strong>מאומת<br>על ידי<br>WedWise</strong>
         </div>
       </footer>
     </article>

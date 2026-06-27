@@ -1509,7 +1509,7 @@ select {
 
 .rpt-document {
   position: relative;
-  width: min(100%, 900px);
+  width: min(100%, 210mm);
   min-height: 1100px;
   margin: 0 auto;
   padding: clamp(1.5rem, 5vw, 3rem);
@@ -1518,9 +1518,11 @@ select {
     linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.98)),
     radial-gradient(#E8D8CA 0.55px, transparent 0.6px);
   background-size: auto, 22px 22px;
-  border: 1px solid rgba(141, 118, 104, 0.18);
-  border-radius: var(--radius-md);
-  box-shadow: 0 18px 58px rgba(105, 92, 80, 0.14);
+  border: 1px solid rgba(141, 118, 104, 0.28);
+  border-radius: 2px;
+  box-shadow:
+    0 18px 58px rgba(105, 92, 80, 0.14),
+    0 0 0 6px rgba(255, 255, 255, 0.52);
 }
 
 .rpt-document::before {
@@ -1574,11 +1576,21 @@ select {
 }
 
 .rpt-doc-header {
-  display: flex;
-  justify-content: space-between;
+  direction: ltr;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "english hebrew";
   gap: 2rem;
+  align-items: start;
   padding-bottom: 1.75rem;
-  border-bottom: 2px solid var(--color-primary-light);
+  border-bottom: 2px double var(--color-primary-light);
+}
+
+.rpt-brand-block {
+  grid-area: english;
+  justify-self: start;
+  text-align: left;
+  direction: ltr;
 }
 
 .rpt-doc-header h2 {
@@ -1599,10 +1611,13 @@ select {
 }
 
 .rpt-doc-meta {
+  grid-area: hebrew;
   display: grid;
   gap: 0.4rem;
   min-width: 190px;
-  text-align: left;
+  justify-self: end;
+  text-align: right;
+  direction: rtl;
   color: var(--color-muted);
   letter-spacing: 0;
   text-transform: none;
@@ -1626,11 +1641,6 @@ select {
   font-weight: 700;
 }
 
-.rpt-demo-badge .material-symbols-outlined {
-  color: var(--color-primary);
-  font-size: 1rem !important;
-}
-
 .rpt-report-title h3 {
   margin: 0 0 0.75rem;
   padding-right: 1rem;
@@ -1650,6 +1660,7 @@ select {
 
 .rpt-section {
   margin-bottom: 2.35rem;
+  break-inside: avoid;
 }
 
 .rpt-section-heading {
@@ -1657,18 +1668,31 @@ select {
   align-items: center;
   gap: 0.55rem;
   margin-bottom: 1rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--color-border);
 }
 
-.rpt-section-heading .material-symbols-outlined {
+.rpt-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
   color: var(--color-secondary);
-  font-size: 1.35rem !important;
+  background: rgba(244, 223, 216, 0.42);
+  border: 1px solid rgba(141, 118, 104, 0.16);
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1;
+  flex: 0 0 auto;
 }
 
 .rpt-section-heading h3 {
   margin: 0;
   color: var(--color-secondary);
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1.18rem;
   font-weight: 600;
 }
 
@@ -1895,6 +1919,10 @@ select {
   color: var(--color-primary);
 }
 
+.rpt-budget-deviation strong {
+  color: var(--color-error);
+}
+
 .rpt-suppliers {
   display: grid;
   gap: 0.6rem;
@@ -1967,13 +1995,22 @@ select {
 }
 
 .rpt-doc-footer {
-  display: flex;
-  justify-content: space-between;
+  direction: ltr;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "english hebrew";
   align-items: flex-end;
   gap: 2rem;
   margin-top: 2.5rem;
   padding-top: 1.5rem;
   border-top: 1px solid var(--color-border);
+}
+
+.rpt-footer-notes {
+  grid-area: hebrew;
+  justify-self: end;
+  direction: rtl;
+  text-align: right;
 }
 
 .rpt-doc-footer p {
@@ -1984,6 +2021,8 @@ select {
 }
 
 .rpt-seal {
+  grid-area: english;
+  justify-self: start;
   position: relative;
   display: grid;
   place-items: center;
@@ -1995,13 +2034,15 @@ select {
   background: rgba(232, 216, 202, 0.14);
   transform: rotate(-12deg);
   text-align: center;
+  direction: ltr;
   flex: 0 0 auto;
 }
 
-.rpt-seal .material-symbols-outlined {
+.rpt-seal > span {
   position: absolute;
   color: currentColor;
-  font-size: 3.8rem !important;
+  font-size: 3.8rem;
+  font-weight: 800;
   opacity: 0.10;
 }
 
@@ -2020,13 +2061,17 @@ select {
   .rpt-doc-header,
   .rpt-doc-footer,
   .rpt-budget-layout {
-    flex-direction: column;
     grid-template-columns: 1fr;
+    grid-template-areas: none;
     align-items: stretch;
   }
 
-  .rpt-doc-header {
-    display: grid;
+  .rpt-brand-block,
+  .rpt-doc-meta,
+  .rpt-footer-notes,
+  .rpt-seal {
+    grid-area: auto;
+    justify-self: stretch;
   }
 
   .rpt-doc-meta {
