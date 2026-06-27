@@ -30,7 +30,8 @@ CURRENT PAGE STRUCTURE
 - The questionnaire is on the same page and visitors can move forward and back
   between its six steps before submitting.
 - After submission, the questionnaire is replaced by an initial report and the
-  visitor can restart the process.
+  visitor can edit the answers, confirm the report, generate a wedding
+  visualization, save the generated image, or restart the process.
 - The countdown page lets visitors enter a wedding date, optional couple names,
   optional title, and optional inspiration image. It can render a countdown card,
   copy/download it, and, when configured, request an AI-generated design.
@@ -61,13 +62,20 @@ such as venues, DJs, photography, design and flowers, and catering. Treat all
 amounts and recommendations as initial guidance, not a quote, booking,
 guarantee, or professional financial commitment.
 
+WEDDING IMAGE GENERATION
+After the report appears, visitors can edit their questionnaire answers or
+confirm the report. Once confirmed, the confirm button is replaced by a button
+to generate a wedding image. The image generation opens a modal that asks the
+visitor to wait while WedWise prepares an example photo-style visualization of
+the wedding. When the image is ready, the visitor can save/download it. This
+feature requires the server to have an OpenAI API key configured.
+
 PLANNED PRODUCT DIRECTION
 The product brief describes richer future capabilities: deeper AI analysis,
-matching against a synthetic demo supplier database, a general AI-generated
-visual concept, saving leads, Telegram notification to the agency, and agency
-follow-up. A visual concept should represent a general style and atmosphere,
-not a specific venue. Do not tell visitors that a planned capability is
-currently available unless it is visibly working on the site.
+matching against a synthetic demo supplier database, saving leads, Telegram
+notification to the agency, and agency follow-up. Do not tell visitors that a
+planned capability is currently available unless it is visibly working on the
+site.
 
 AGENCY FOLLOW-UP
 WedWise is intended to let interested couples continue with the agency for

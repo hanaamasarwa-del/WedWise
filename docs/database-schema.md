@@ -47,13 +47,15 @@ Stores the AI-generated (currently mock) wedding report for a submission.
 ---
 
 ## generated_images
-Stores the image result (URL) for a submission.
+Legacy optional table for persisted image results by submission. The active
+frontend flow currently calls `/api/generate-image` directly and displays the
+OpenAI image response without saving it to this table.
 
 | Column | Type | Notes |
 |--------|------|-------|
 | id | uuid PK | auto-generated |
 | submission_id | uuid FK → submissions | cascades on delete |
-| image_url | text | placeholder or real generated URL |
+| image_url | text | generated image URL or data URL if persistence is re-enabled |
 | prompt_used | text | the prompt sent to the image API |
 | created_at | timestamptz | auto-set |
 

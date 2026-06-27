@@ -24,17 +24,20 @@ The current website lets a visitor:
    personal notes, an optional inspiration link, and contact details.
 5. Receive an initial browser-generated planning report with a suggested budget
    breakdown, design direction, supplier categories, and next steps.
-6. Create a wedding countdown card and a wedding blessing draft from dedicated
+6. Review the report, edit questionnaire answers if needed, confirm the report,
+   and generate a realistic wedding visualization from the confirmed report.
+7. Save the generated wedding visualization from the preview modal.
+8. Create a wedding countdown card and a wedding blessing draft from dedicated
    helper pages.
-7. Send the completed questionnaire to the agency through Telegram.
-8. Open a floating AI support chatbot for short questions about WedWise and how
+9. Send the completed questionnaire to the agency through Telegram.
+10. Open a floating AI support chatbot for short questions about WedWise and how
    to use the website.
 
 The protected product brief also describes future work such as deeper
-AI-generated reports, generated visual concepts, database-backed supplier
-matching, saved submissions, and a more complete agency follow-up flow. These
-planned features must not be presented as complete until they are connected to
-the active frontend and verified.
+AI-generated reports, database-backed supplier matching, saved submissions, and
+a more complete agency follow-up flow. These planned features must not be
+presented as complete until they are connected to the active frontend and
+verified.
 
 ## Current Implementation Status
 
@@ -48,9 +51,12 @@ Working in the active user flow:
 - Wedding countdown helper page.
 - Wedding blessing helper page.
 - Local initial report generation.
+- Report review flow with answer editing, explicit report confirmation, wedding
+  image generation, preview modal, and image download.
 - Telegram delivery of completed questionnaire details.
 - Closed-by-default floating chatbot on every active frontend page.
 - OpenAI Responses API integration using `gpt-5.4-nano`.
+- OpenAI Images API integration using `gpt-image-1`.
 - Server-side API key handling.
 - Basic chatbot and form rate limiting.
 
@@ -58,14 +64,13 @@ Present in the backend but not connected to the active questionnaire flow:
 
 - Supabase submission and lead routes.
 - Mock report persistence.
-- Placeholder image persistence.
 - Demo supplier recommendation routes.
 
 Important limitations:
 
 - The displayed planning report is currently generated locally in the browser,
   not by an AI report service.
-- The image-generation route currently returns a placeholder image.
+- Wedding image generation requires `OPENAI_API_KEY` on the backend.
 - Supplier records are synthetic demo data and must never be presented as
   verified businesses, prices, recommendations, or availability.
 - Sending contact details requests follow-up; it does not confirm a booking,
@@ -152,6 +157,38 @@ POST /api/chat
 ```
 
 The server calls OpenAI, so the API key is never sent to the browser.
+
+## Wedding Image Generation
+
+After a visitor completes the questionnaire, the browser renders the initial
+report. The visitor can either edit the answers or confirm the report. Once the
+report is confirmed, the confirm button is replaced with the wedding image
+generation button.
+
+The frontend sends the confirmed report text and structured questionnaire
+details to:
+
+```text
+POST /api/generate-image
+```
+
+The backend builds a photorealistic wedding visualization prompt and calls the
+OpenAI Images API. The generated image is shown in a modal with a download
+button. The OpenAI API key stays server-side in `backend/.env`.
+
+Required for real image generation:
+
+```env
+OPENAI_API_KEY=
+```
+
+Optional image overrides:
+
+```env
+OPENAI_IMAGE_MODEL=gpt-image-1
+OPENAI_IMAGE_SIZE=1024x1024
+OPENAI_IMAGE_QUALITY=medium
+```
 
 Chatbot behavior:
 
@@ -243,7 +280,7 @@ dataset changes.
 | `POST` | `/api/submissions` | Available; requires Supabase. |
 | `GET` | `/api/submissions/:id` | Available; requires Supabase. |
 | `POST` | `/api/generate-report` | Available; currently uses mock report logic and Supabase. |
-| `POST` | `/api/generate-image` | Available; currently stores a placeholder image through Supabase. |
+| `POST` | `/api/generate-image` | Active OpenAI Images endpoint for confirmed report visualizations. |
 | `GET` | `/api/suppliers/recommendations` | Available; uses demo suppliers and a saved submission. |
 | `POST` | `/api/leads` | Available; requires Supabase and optionally Telegram. |
 
