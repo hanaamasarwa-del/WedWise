@@ -54,10 +54,10 @@ QUESTIONNAIRE DETAILS
 
 CURRENT REPORT
 The current site displays an initial planning report based on the answers. It
-can include an event summary, an estimated per-guest amount, a suggested budget
-breakdown, design direction, recommended next steps, and supplier categories
-to investigate such as venues, DJs, photography, design and flowers, and
-catering. Treat all amounts and recommendations as initial guidance, not a
+is presented as a soft visual report with a summary cover, key event metrics,
+budget breakdown, design direction, recommended next steps, and supplier
+categories to investigate such as venues, DJs, photography, design and flowers,
+and catering. Treat all amounts and recommendations as initial guidance, not a
 quote, booking, guarantee, or professional financial commitment.
 
 PLANNED PRODUCT DIRECTION
