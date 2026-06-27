@@ -164,7 +164,6 @@ async function createChatReply(messages) {
       model: process.env.OPENAI_CHAT_MODEL || DEFAULT_MODEL,
       instructions: SITE_CONTEXT,
       input: normalizedMessages,
-      reasoning: { effort: "none" },
       max_output_tokens: 180,
       store: false,
     }),
@@ -177,6 +176,7 @@ async function createChatReply(messages) {
     const error = new Error(responseBody.error?.message || "OpenAI request failed");
     error.code = "OPENAI_REQUEST_FAILED";
     error.status = response.status;
+    error.type = responseBody.error?.type;
     throw error;
   }
 

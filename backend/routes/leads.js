@@ -6,7 +6,7 @@ const { sendLeadNotification } = require("../services/telegram-service");
 // POST /api/leads
 router.post("/", async (req, res) => {
   try {
-    const { submissionId, fullName, phone, email, preferredContactTime } = req.body;
+    const { submissionId, fullName, phone, email, preferredContactTime, suppressTelegram } = req.body;
 
     if (!submissionId)
       return res.status(400).json({ error: "Missing required field: submissionId" });
@@ -30,13 +30,15 @@ router.post("/", async (req, res) => {
       return res.status(500).json({ error: "Failed to save lead" });
     }
 
-    let telegramStatus = "mock_logged";
-    try {
-      const result = await sendLeadNotification({ ...row, id: data.id });
-      telegramStatus = result.status;
-    } catch (telegramErr) {
-      console.error("Telegram send error:", telegramErr.message);
-      telegramStatus = "failed";
+    let telegramStatus = suppressTelegram ? "skipped" : "mock_logged";
+    if (!suppressTelegram) {
+      try {
+        const result = await sendLeadNotification({ ...row, id: data.id });
+        telegramStatus = result.status;
+      } catch (telegramErr) {
+        console.error("Telegram send error:", telegramErr.message);
+        telegramStatus = "failed";
+      }
     }
 
     res.status(201).json({ leadId: data.id, status: "saved", telegramStatus });

@@ -21,10 +21,6 @@ const SUPPLIER_CATEGORIES = [
   'קייטרינג',
 ];
 
-// Telegram — fill in from .env before use; leave empty to disable
-const TELEGRAM_BOT_TOKEN = '';
-const TELEGRAM_CHAT_ID = '';
-
 let currentStep = 1;
 
 if ('scrollRestoration' in history) {
@@ -107,8 +103,11 @@ function buildWeddingRequestPayload(state) {
       estimated_budget_ils: state.estimated_budget_ils,
       guest_count: state.guest_count,
       region_id: parseInt(state.region_id, 10),
+      region_name: state.region_name,
       preferred_styles_json: JSON.stringify([state.preferred_style]),
       preferred_colors: state.preferred_colors,
+      flowers: state.flowers,
+      decorations: state.decorations,
       flowers_and_decor: flowersAndDecor,
       free_text: state.free_text,
       inspiration_url: state.inspiration_url || null,
@@ -509,17 +508,17 @@ function formatTelegramMessage(payload) {
 }
 
 async function sendTelegramNotification(payload) {
-  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
   try {
-    await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+    const response = await fetch('/api/telegram-lead', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
-        text: formatTelegramMessage(payload),
-        parse_mode: 'Markdown',
-      }),
+      body: JSON.stringify(payload),
     });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data.error || `Telegram endpoint failed with status ${response.status}`);
+    }
   } catch {
     // Non-blocking — Telegram failure must never prevent the report from showing
   }
@@ -561,6 +560,7 @@ async function submitQuestionnaire(payload, state) {
           fullName: lead.full_name,
           phone: lead.phone,
           email: lead.email,
+          suppressTelegram: true,
         }),
       });
     }
