@@ -100,6 +100,21 @@ async function ensureLead(payload, submissionId) {
   return data.id;
 }
 
+// Sort the contact into the matching outcome table based on their decision:
+// "continue" -> secured_clients, "thinking" -> potential_clients.
+async function recordClientOutcome(payload, submissionId, leadId) {
+  const table = payload.decision === "continue" ? "secured_clients" : "potential_clients";
+  const { error } = await supabase.from(table).insert({
+    submission_id: submissionId,
+    lead_id: leadId,
+    full_name: payload.lead.fullName,
+    phone: payload.lead.phone,
+    email: payload.lead.email || null,
+  });
+
+  if (error) throw new Error(`Failed to save client outcome: ${error.message}`);
+}
+
 router.post("/", async (req, res) => {
   try {
     const payload = normalizePayload(req.body);
@@ -130,6 +145,8 @@ router.post("/", async (req, res) => {
 
       if (error) throw new Error(`Failed to save follow-up decision: ${error.message}`);
       followUpId = data.id;
+
+      await recordClientOutcome(payload, submissionId, leadId);
     } catch (dbErr) {
       console.error("Wedding follow-up database error:", dbErr.message);
       databaseStatus = "failed";
