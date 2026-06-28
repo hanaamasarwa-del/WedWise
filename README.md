@@ -179,8 +179,10 @@ The backend builds a photorealistic wedding visualization prompt and calls the
 OpenAI Images API. The generated image is shown in a modal with a download
 button. The modal also lets the visitor choose whether to continue organizing
 the wedding with WedWise or think about it first. Both choices are saved to
-Supabase and sent to the configured Telegram bot. The OpenAI API key stays
-server-side in `backend/.env`.
+Supabase and sent to the configured Telegram bot when those services are
+configured. If Supabase is unavailable but Telegram is configured, the backend
+still notifies the team and reports the database status in the API response.
+The OpenAI API key stays server-side in `backend/.env`.
 
 Required for real image generation:
 

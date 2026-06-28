@@ -261,6 +261,23 @@ submission/lead before saving the follow-up decision.
   "followUpId": "uuid",
   "submissionId": "uuid",
   "leadId": "uuid",
+  "databaseStatus": "saved",
+  "databaseError": null,
+  "telegramStatus": "sent"
+}
+```
+
+If Supabase save fails but Telegram notification succeeds, the endpoint returns
+`202` so the frontend can still show a successful team notification:
+
+```json
+{
+  "status": "notified",
+  "followUpId": null,
+  "submissionId": null,
+  "leadId": null,
+  "databaseStatus": "failed",
+  "databaseError": "Supabase is not configured...",
   "telegramStatus": "sent"
 }
 ```
@@ -269,4 +286,4 @@ submission/lead before saving the follow-up decision.
 | Code | Reason |
 |------|--------|
 | 400 | Invalid decision or missing required contact/questionnaire fields |
-| 500 | Database save failed or unexpected server error |
+| 500 | Both database save and Telegram notification failed, or unexpected server error |
