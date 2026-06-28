@@ -3391,7 +3391,8 @@ select {
 
 .invitation-preview-wrap {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   position: sticky;
   top: 104px;
 }
@@ -3641,6 +3642,32 @@ select {
   font-weight: 600;
 }
 
+.inv-download-bar {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1rem;
+  max-width: 360px;
+  margin-inline: auto;
+}
+
+.inv-download-bar .btn {
+  min-height: 28px;
+  padding: 0.25rem 0.85rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .inv-download-bar {
+    flex-direction: column;
+    max-width: 240px;
+  }
+}
+
 /* ── Responsive collapse ───────────────────────────── */
 @media (max-width: 860px) {
   .invitation-editor-layout {
@@ -3649,5 +3676,38 @@ select {
 
   .invitation-preview-wrap {
     position: static;
+  }
+}
+
+/* ── Print / PDF ────────────────────────────────────── */
+@media print {
+  .site-header,
+  .site-footer,
+  .invitation-nav,
+  .invitation-editor,
+  .inv-download-bar {
+    display: none !important;
+  }
+
+  .invitation-section {
+    padding: 0 !important;
+    background: none !important;
+  }
+
+  .invitation-editor-layout {
+    display: block !important;
+  }
+
+  .invitation-preview-wrap {
+    position: static !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  .invitation-card {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    max-width: 420px !important;
+    width: 100% !important;
   }
 }

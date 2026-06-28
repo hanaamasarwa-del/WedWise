@@ -85,6 +85,10 @@
 
           <div class="invitation-preview-wrap">
             <div class="invitation-card" id="invitation-card" aria-label="תצוגת הזמנת חתונה" aria-live="polite"></div>
+            <div class="inv-download-bar">
+              <button type="button" id="btn-download-png" class="btn btn-primary">הורדת PNG</button>
+              <button type="button" id="btn-print-pdf" class="btn btn-secondary">הדפסה / שמירה כ-PDF</button>
+            </div>
           </div>
 
         </div>
@@ -99,6 +103,7 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
   <script src="scripts/invitation.js" defer></script>
 </body>
 </html>

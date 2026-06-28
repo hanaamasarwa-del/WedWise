@@ -20,9 +20,11 @@ const invVenueInput   = document.getElementById('inv-venue');
 const invBody         = document.getElementById('inv-body');
 const invLangInputs   = Array.from(document.querySelectorAll('input[name="inv-lang"]'));
 const btnBackToReport = document.getElementById('btn-back-to-report');
+const btnDownloadPng  = document.getElementById('btn-download-png');
+const btnPrintPdf     = document.getElementById('btn-print-pdf');
 
 function buildInvitationCard() {
-  const { name1, name2, date, venue, body, lang, style, colors, flowers } = invitationData;
+  const { name1, name2, date, venue, body, lang } = invitationData;
 
   const ph = (he, en, ar) => lang === 'en' ? en : lang === 'ar' ? ar : he;
   const name1Text = name1 || ph('שם ראשון',  'First name',  'الاسم الأول');
@@ -30,17 +32,6 @@ function buildInvitationCard() {
   const dateText  = date  || ph('תאריך יקבע בקרוב',  'Date to be announced', 'يُحدَّد التاريخ قريبًا');
   const venueText = venue || ph('מיקום יקבע בהמשך',  'Venue TBC',            'المكان يُحدَّد لاحقًا');
   const bodyText  = body  || INV_DEFAULTS[lang];
-
-  const colorChips = colors
-    ? colors.split(',').map((c) => `<span class="inv-color-chip">${c.trim()}</span>`).join('')
-    : '';
-  const metaRow = (style || colorChips || flowers)
-    ? `<div class="inv-meta-row">
-        ${style      ? `<span class="inv-style-badge">${style}</span>` : ''}
-        ${colorChips ? `<div class="inv-colors-row">${colorChips}</div>` : ''}
-        ${flowers    ? `<p class="inv-flowers">${flowers}</p>` : ''}
-      </div>`
-    : '';
 
   return `
     <div class="inv-ornament" aria-hidden="true">✦</div>
@@ -53,7 +44,6 @@ function buildInvitationCard() {
     <div class="inv-divider" aria-hidden="true"></div>
     <p class="inv-date${!date ? ' inv-placeholder' : ''}">${dateText}</p>
     <p class="inv-venue${!venue ? ' inv-placeholder' : ''}">${venueText}</p>
-    ${metaRow}
     <div class="inv-ornament" aria-hidden="true">✦</div>
   `;
 }
@@ -85,6 +75,27 @@ invLangInputs.forEach((input) => {
 if (btnBackToReport) {
   btnBackToReport.addEventListener('click', () => history.back());
 }
+
+async function downloadAsPng() {
+  if (!invitationCard || typeof html2canvas === 'undefined') return;
+  if (btnDownloadPng) { btnDownloadPng.disabled = true; btnDownloadPng.textContent = 'מייצא...'; }
+  try {
+    const canvas = await html2canvas(invitationCard, {
+      backgroundColor: '#ffffff',
+      scale: 2,
+      useCORS: true,
+    });
+    const link = document.createElement('a');
+    link.download = 'wedding-invitation.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } finally {
+    if (btnDownloadPng) { btnDownloadPng.disabled = false; btnDownloadPng.textContent = 'הורדת PNG'; }
+  }
+}
+
+if (btnDownloadPng) btnDownloadPng.addEventListener('click', downloadAsPng);
+if (btnPrintPdf)    btnPrintPdf.addEventListener('click', () => window.print());
 
 function loadFromStorage() {
   try {
