@@ -54,6 +54,9 @@ const weddingImageModalContent = document.getElementById('wedding-image-modal-co
 const invitationCta = document.getElementById('invitation-cta');
 const invitationCtaNotice = document.getElementById('invitation-cta-notice');
 const btnCreateInvitation = document.getElementById('btn-create-invitation');
+const invitationSection = document.getElementById('invitation-section');
+const invitationCard = document.getElementById('invitation-card');
+const btnBackToReport = document.getElementById('btn-back-to-report');
 const navSectionLinks = Array.from(document.querySelectorAll('.nav-links a[href^="#"]'));
 const navSections = navSectionLinks
   .map((link) => ({
@@ -512,6 +515,58 @@ function generateMockReport(payload) {
   `;
 }
 
+function buildInvitationCard() {
+  const name = latestPayload?.lead?.full_name || 'שם הכלה / החתן';
+  const style = latestQuestionnaire?.style || '';
+  const colors = latestQuestionnaire?.colors || '';
+  const region = latestQuestionnaire?.regionName || '';
+  const flowers = latestQuestionnaire?.flowers || '';
+
+  const colorChips = colors
+    ? colors.split(',').map((c) => `<span class="inv-color-chip">${c.trim()}</span>`).join('')
+    : '<span class="inv-chip-placeholder">צבעים לבחירה</span>';
+
+  const venueLine = region
+    ? `<p class="inv-venue">${region}</p>`
+    : '<p class="inv-venue inv-placeholder">מיקום יקבע בהמשך</p>';
+
+  const styleLine = style
+    ? `<p class="inv-style-line">סגנון: <strong>${style}</strong></p>`
+    : '';
+
+  const flowersLine = flowers
+    ? `<p class="inv-flowers">${flowers}</p>`
+    : '';
+
+  return `
+    <div class="inv-ornament" aria-hidden="true">✦</div>
+    <p class="inv-invite-line">בשמחה רבה אנו מזמינים אתכם לחגוג עמנו</p>
+    <h2 class="inv-couple-names">
+      <span class="inv-name">${name}</span>
+      <span class="inv-ampersand" aria-hidden="true">&amp;</span>
+      <span class="inv-name inv-name--placeholder">שם בן / בת הזוג</span>
+    </h2>
+    <div class="inv-divider" aria-hidden="true"></div>
+    <p class="inv-date inv-placeholder">תאריך החתונה יקבע בקרוב</p>
+    ${venueLine}
+    ${styleLine}
+    <div class="inv-colors-row" aria-label="צבעי החתונה">${colorChips}</div>
+    ${flowersLine}
+    <div class="inv-ornament" aria-hidden="true">✦</div>
+  `;
+}
+
+function showInvitationPreview() {
+  if (invitationCard) {
+    invitationCard.innerHTML = buildInvitationCard();
+  }
+  reportSection.hidden = true;
+  if (invitationSection) {
+    invitationSection.hidden = false;
+    invitationSection.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
 function renderReport(html) {
   reportContent.innerHTML = html;
   latestReportText = reportContent.innerText.replace(/\s+/g, ' ').trim();
@@ -602,6 +657,7 @@ function editAnswersFromReport() {
     weddingImageResult.innerHTML = '';
   }
   if (invitationCta) invitationCta.hidden = true;
+  if (invitationSection) invitationSection.hidden = true;
   closeWeddingImageModal();
   reportSection.hidden = true;
   questionnaireSection.hidden = false;
@@ -669,8 +725,12 @@ async function generateWeddingImageFromReport() {
       <div class="wedding-image-modal-message">
         <h2 id="wedding-image-modal-title">לא הצלחנו ליצור תמונה כרגע</h2>
         <p>בדקו שה־OpenAI API key מוגדר בשרת ונסו שוב.</p>
+        <button type="button" class="btn btn-secondary" data-close-image-modal>סגירה וחזרה לדוח</button>
       </div>
     `);
+    weddingImageModalContent
+      ?.querySelector('[data-close-image-modal]')
+      ?.addEventListener('click', closeWeddingImageModal);
   } finally {
     btnGenerateImage.disabled = false;
     btnGenerateImage.textContent = 'יצירת תמונת חתונה';
@@ -892,6 +952,7 @@ function resetForm() {
     weddingImageResult.innerHTML = '';
   }
   if (invitationCta) invitationCta.hidden = true;
+  if (invitationSection) invitationSection.hidden = true;
   closeWeddingImageModal();
   clearError();
   questionnaireSection.scrollIntoView({ behavior: 'smooth' });
@@ -971,8 +1032,14 @@ document.addEventListener('keydown', (event) => {
 });
 
 if (btnCreateInvitation) {
-  btnCreateInvitation.addEventListener('click', () => {
-    if (invitationCtaNotice) invitationCtaNotice.hidden = false;
+  btnCreateInvitation.addEventListener('click', showInvitationPreview);
+}
+
+if (btnBackToReport) {
+  btnBackToReport.addEventListener('click', () => {
+    if (invitationSection) invitationSection.hidden = true;
+    reportSection.hidden = false;
+    reportSection.scrollIntoView({ behavior: 'smooth' });
   });
 }
 
