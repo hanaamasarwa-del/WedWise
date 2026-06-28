@@ -27,7 +27,8 @@ Save a questionnaire submission.
   "colors": ["white", "gold"],
   "decorations": ["candles", "flowers"],
   "flowers": ["white roses"],
-  "personalText": "We want a romantic evening wedding."
+  "personalText": "We want a romantic evening wedding.",
+  "inspirationUrl": "https://www.pinterest.com/..."
 }
 ```
 
@@ -59,6 +60,7 @@ Get a submission by ID.
   "decorations": ["candles"],
   "flowers": ["white roses"],
   "personalText": "...",
+  "inspirationUrl": "https://www.pinterest.com/...",
   "createdAt": "2026-06-25T10:00:00Z"
 }
 ```
@@ -104,32 +106,45 @@ Generate (or return cached) AI report for a submission. Currently uses mock logi
 ---
 
 ## POST /api/generate-image
-Generate (or return cached) placeholder image for a submission.
+Generate a realistic wedding visualization from a confirmed report or wedding
+description. The route calls the OpenAI Images API from the backend, so the API
+key is never exposed to the browser.
 
 **Request body**
 ```json
 {
-  "submissionId": "uuid",
-  "imagePrompt": "A realistic classic wedding design concept..."
+  "reportText": "Hebrew report or wedding description text...",
+  "questionnaire": {
+    "budget": 120000,
+    "guestCount": 250,
+    "regionName": "המרכז",
+    "style": "אלגנטי",
+    "colors": "ורוד עתיק, זהב, ירוק זית",
+    "flowers": "ורדים לבנים",
+    "decorations": "נרות, שולחנות ארוכים",
+    "freeText": "חופה פתוחה בשקיעה"
+  }
 }
 ```
+
+`description` is also accepted as a fallback field instead of `reportText`.
+`questionnaire` is optional but improves the generated prompt.
 
 **Response 200**
 ```json
 {
-  "imageId": "uuid",
-  "submissionId": "uuid",
-  "imageUrl": "https://placehold.co/1024x1024?text=WedWise+Wedding+Concept",
+  "imageUrl": "data:image/png;base64,...",
   "promptUsed": "...",
-  "createdAt": "..."
+  "model": "gpt-image-1"
 }
 ```
 
 **Errors**
 | Code | Reason |
 |------|--------|
-| 400 | Missing submissionId or imagePrompt |
-| 500 | Generation failed |
+| 400 | Missing or too-short `reportText` / `description` |
+| 500 | OpenAI API key is not configured, or generation failed |
+| 502 | OpenAI returned no image |
 
 ---
 
@@ -197,3 +212,61 @@ Save a contact lead and notify via Telegram.
 |------|--------|
 | 400 | Missing submissionId, fullName, or phone |
 | 500 | Database error |
+
+---
+
+## POST /api/wedding-follow-up
+Save the user's decision after the generated wedding image and send a Telegram
+notification to the team.
+
+**Request body**
+```json
+{
+  "decision": "continue",
+  "submissionId": "uuid",
+  "leadId": "uuid",
+  "lead": {
+    "fullName": "Daniel Cohen",
+    "phone": "0501234567",
+    "email": "daniel@example.com"
+  },
+  "questionnaire": {
+    "budget": 120000,
+    "guestCount": 250,
+    "regionName": "המרכז",
+    "style": "אלגנטי",
+    "colors": "ורוד עתיק, זהב, ירוק זית",
+    "flowers": "ורדים לבנים",
+    "decorations": "נרות, שולחנות ארוכים",
+    "freeText": "חופה פתוחה בשקיעה",
+    "inspirationUrl": "https://www.pinterest.com/..."
+  },
+  "reportText": "Confirmed report text...",
+  "imageGenerated": true
+}
+```
+
+`decision` must be either:
+
+- `continue` — user wants WedWise to continue organizing the wedding.
+- `thinking` — user liked the result but wants to think more.
+
+If `submissionId` or `leadId` is missing, the backend creates the missing
+submission/lead before saving the follow-up decision.
+
+**Response 201**
+```json
+{
+  "status": "saved",
+  "followUpId": "uuid",
+  "submissionId": "uuid",
+  "leadId": "uuid",
+  "telegramStatus": "sent"
+}
+```
+
+**Errors**
+| Code | Reason |
+|------|--------|
+| 400 | Invalid decision or missing required contact/questionnaire fields |
+| 500 | Database save failed or unexpected server error |
