@@ -7,12 +7,9 @@ const INV_DEFAULTS = {
 };
 
 let invitationData = {
-  name1: '',
-  name2: '',
-  date: '',
-  venue: '',
-  body: INV_DEFAULTS.he,
-  lang: 'he',
+  name1: '', name2: '', date: '', venue: '',
+  body: INV_DEFAULTS.he, lang: 'he',
+  style: '', colors: '', flowers: '',
 };
 
 const invitationCard  = document.getElementById('invitation-card');
@@ -25,7 +22,7 @@ const invLangInputs   = Array.from(document.querySelectorAll('input[name="inv-la
 const btnBackToReport = document.getElementById('btn-back-to-report');
 
 function buildInvitationCard() {
-  const { name1, name2, date, venue, body, lang } = invitationData;
+  const { name1, name2, date, venue, body, lang, style, colors, flowers } = invitationData;
 
   const ph = (he, en, ar) => lang === 'en' ? en : lang === 'ar' ? ar : he;
   const name1Text = name1 || ph('שם ראשון',  'First name',  'الاسم الأول');
@@ -33,6 +30,17 @@ function buildInvitationCard() {
   const dateText  = date  || ph('תאריך יקבע בקרוב',  'Date to be announced', 'يُحدَّد التاريخ قريبًا');
   const venueText = venue || ph('מיקום יקבע בהמשך',  'Venue TBC',            'المكان يُحدَّد لاحقًا');
   const bodyText  = body  || INV_DEFAULTS[lang];
+
+  const colorChips = colors
+    ? colors.split(',').map((c) => `<span class="inv-color-chip">${c.trim()}</span>`).join('')
+    : '';
+  const metaRow = (style || colorChips || flowers)
+    ? `<div class="inv-meta-row">
+        ${style      ? `<span class="inv-style-badge">${style}</span>` : ''}
+        ${colorChips ? `<div class="inv-colors-row">${colorChips}</div>` : ''}
+        ${flowers    ? `<p class="inv-flowers">${flowers}</p>` : ''}
+      </div>`
+    : '';
 
   return `
     <div class="inv-ornament" aria-hidden="true">✦</div>
@@ -45,6 +53,7 @@ function buildInvitationCard() {
     <div class="inv-divider" aria-hidden="true"></div>
     <p class="inv-date${!date ? ' inv-placeholder' : ''}">${dateText}</p>
     <p class="inv-venue${!venue ? ' inv-placeholder' : ''}">${venueText}</p>
+    ${metaRow}
     <div class="inv-ornament" aria-hidden="true">✦</div>
   `;
 }
@@ -77,4 +86,20 @@ if (btnBackToReport) {
   btnBackToReport.addEventListener('click', () => history.back());
 }
 
+function loadFromStorage() {
+  try {
+    const raw = localStorage.getItem('wedwise_inv');
+    if (!raw) return;
+    const saved = JSON.parse(raw);
+    if (saved.name1)   { invitationData.name1   = saved.name1;   if (invName1)      invName1.value      = saved.name1; }
+    if (saved.region)  { invitationData.venue   = saved.region;  if (invVenueInput) invVenueInput.value = saved.region; }
+    if (saved.style)   { invitationData.style   = saved.style; }
+    if (saved.colors)  { invitationData.colors  = saved.colors; }
+    if (saved.flowers) { invitationData.flowers = saved.flowers; }
+  } catch {
+    // corrupted storage — ignore
+  }
+}
+
+loadFromStorage();
 renderInvitationCard();

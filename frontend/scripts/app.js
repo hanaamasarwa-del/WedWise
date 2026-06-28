@@ -959,6 +959,7 @@ document.addEventListener('click', (event) => {
 document.addEventListener('click', (event) => {
   if (event.target.closest('[data-go-to-invitation]')) {
     closeWeddingImageModal();
+    saveInvitationData();
     window.location.href = 'invitation.html';
   }
 });
@@ -973,9 +974,24 @@ document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') closeWeddingImageModal();
 });
 
+function saveInvitationData() {
+  try {
+    localStorage.setItem('wedwise_inv', JSON.stringify({
+      name1:   latestPayload?.lead?.full_name || '',
+      region:  latestQuestionnaire?.regionName || '',
+      style:   latestQuestionnaire?.style || '',
+      colors:  latestQuestionnaire?.colors || '',
+      flowers: latestQuestionnaire?.flowers || '',
+    }));
+  } catch {
+    // storage quota — navigate anyway
+  }
+}
+
 if (btnOpenInvitationGenerator) {
   btnOpenInvitationGenerator.addEventListener('click', (event) => {
     event.preventDefault();
+    saveInvitationData();
     window.location.href = 'invitation.html';
   });
 }
