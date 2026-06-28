@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>יצירת הזמנת חתונה – WedWise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&family=Heebo:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/site.css">
+</head>
+<body class="subpage">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">WedWise</a>
+      <nav class="nav-links">
+        <a href="index.html">ראשי</a>
+        <a href="questionnaire.html">שאלון תכנון</a>
+        <a href="countdown.html">ספירה לאחור</a>
+        <a href="blessing-helper.html">עוזר ברכות</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="invitation-section">
+      <div class="container">
+
+        <div class="invitation-nav">
+          <button type="button" id="btn-back-to-report" class="btn btn-secondary">
+            <span aria-hidden="true">›</span>
+            חזרה לדוח
+          </button>
+          <span class="invitation-nav-title">💌 יצירת הזמנת החתונה</span>
+        </div>
+
+        <div class="invitation-editor-layout">
+
+          <div class="invitation-editor" aria-label="עריכת פרטי ההזמנה">
+
+            <div class="inv-editor-field-group">
+              <label class="inv-editor-label" for="inv-name1">שם ראשון (כלה / חתן)</label>
+              <input type="text" id="inv-name1" class="inv-editor-input" autocomplete="off" placeholder="שם ראשון">
+            </div>
+
+            <div class="inv-editor-field-group">
+              <label class="inv-editor-label" for="inv-name2">שם שני (בן / בת הזוג)</label>
+              <input type="text" id="inv-name2" class="inv-editor-input" autocomplete="off" placeholder="שם שני">
+            </div>
+
+            <div class="inv-editor-field-group">
+              <label class="inv-editor-label" for="inv-date">תאריך החתונה</label>
+              <input type="text" id="inv-date" class="inv-editor-input" autocomplete="off" placeholder="לדוגמה: 15.8.2026">
+            </div>
+
+            <div class="inv-editor-field-group">
+              <label class="inv-editor-label" for="inv-venue">מקום / אולם</label>
+              <input type="text" id="inv-venue" class="inv-editor-input" autocomplete="off" placeholder="שם המקום">
+            </div>
+
+            <div class="inv-editor-field-group">
+              <label class="inv-editor-label" for="inv-body">טקסט ההזמנה</label>
+              <textarea id="inv-body" class="inv-editor-input inv-editor-textarea" rows="3" placeholder="בשמחה רבה אנו מזמינים אתכם..."></textarea>
+            </div>
+
+            <div class="inv-editor-field-group">
+              <span class="inv-editor-label">שפת ההזמנה</span>
+              <div class="inv-lang-group" role="radiogroup" aria-label="בחירת שפת ההזמנה">
+                <label class="inv-lang-option">
+                  <input type="radio" name="inv-lang" value="he" checked>
+                  <span>עברית</span>
+                </label>
+                <label class="inv-lang-option">
+                  <input type="radio" name="inv-lang" value="en">
+                  <span>English</span>
+                </label>
+                <label class="inv-lang-option">
+                  <input type="radio" name="inv-lang" value="ar">
+                  <span>عربية</span>
+                </label>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="invitation-preview-wrap">
+            <div class="invitation-card" id="invitation-card" aria-label="תצוגת הזמנת חתונה" aria-live="polite"></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span class="footer-logo">WedWise</span>
+      <p>&copy; 2026 WedWise. כל הזכויות שמורות.</p>
+    </div>
+  </footer>
+
+  <script src="scripts/invitation.js" defer></script>
+</body>
+</html>

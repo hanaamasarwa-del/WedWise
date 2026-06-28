@@ -3369,40 +3369,31 @@ select {
 
 /* ── Invitation Section ────────────────────────────── */
 .invitation-section {
-  padding: 6rem 0;
+  padding: 2.5rem 0 4rem;
   background:
     radial-gradient(circle at 80% 0%, rgba(244, 223, 216, 0.4), transparent 30%),
     linear-gradient(180deg, var(--color-surface-soft) 0%, var(--color-bg) 100%);
 }
 
 .invitation-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 2rem;
 }
 
-.invitation-page-header {
-  text-align: center;
-  margin-bottom: 2.5rem;
-}
-
-.invitation-page-header .section-kicker {
-  margin-bottom: 1rem;
-}
-
-.invitation-page-header h2 {
-  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+.invitation-nav-title {
+  font-size: 1.05rem;
+  font-weight: 600;
   color: var(--color-primary-dark);
-  margin: 0 0 0.6rem;
-}
-
-.invitation-page-header p {
-  color: var(--color-muted);
-  font-size: 1rem;
-  margin: 0;
+  letter-spacing: 0.01em;
 }
 
 .invitation-preview-wrap {
   display: flex;
   justify-content: center;
+  position: sticky;
+  top: 104px;
 }
 
 .invitation-card {
@@ -3534,4 +3525,129 @@ select {
   color: var(--color-subtle);
   margin: 0.5rem 0 0;
   font-style: italic;
+}
+
+.modal-error-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+/* ── Invitation Editor Layout ───────────────────────── */
+.invitation-editor-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.invitation-editor {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-md);
+}
+
+.inv-editor-field-group {
+  margin-bottom: 1.25rem;
+}
+
+.inv-editor-field-group:last-child {
+  margin-bottom: 0;
+}
+
+.inv-editor-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+}
+
+.inv-editor-textarea {
+  min-height: auto;
+  resize: vertical;
+}
+
+/* ── Language Picker ───────────────────────────────── */
+.inv-lang-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+}
+
+.inv-lang-option {
+  cursor: pointer;
+}
+
+.inv-lang-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.inv-lang-option span {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 1.1rem;
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  font-size: 0.88rem;
+  color: var(--color-primary-dark);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.inv-lang-option input[type="radio"]:checked + span {
+  background: var(--color-primary);
+  color: var(--color-surface);
+  border-color: var(--color-primary);
+}
+
+.inv-lang-option:hover span {
+  border-color: var(--color-primary);
+}
+
+.inv-lang-option input[type="radio"]:focus-visible + span {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ── Card meta (style + colors from questionnaire) ─── */
+.inv-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+
+.inv-style-badge {
+  padding: 0.25rem 0.75rem;
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+/* ── Responsive collapse ───────────────────────────── */
+@media (max-width: 860px) {
+  .invitation-editor-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .invitation-preview-wrap {
+    position: static;
+  }
 }
