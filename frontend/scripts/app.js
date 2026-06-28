@@ -51,6 +51,9 @@ const reportContent = document.getElementById('report-content');
 const weddingImageResult = document.getElementById('wedding-image-result');
 const weddingImageModal = document.getElementById('wedding-image-modal');
 const weddingImageModalContent = document.getElementById('wedding-image-modal-content');
+const invitationCta = document.getElementById('invitation-cta');
+const invitationCtaNotice = document.getElementById('invitation-cta-notice');
+const btnCreateInvitation = document.getElementById('btn-create-invitation');
 const navSectionLinks = Array.from(document.querySelectorAll('.nav-links a[href^="#"]'));
 const navSections = navSectionLinks
   .map((link) => ({
@@ -528,6 +531,10 @@ function renderReport(html) {
     weddingImageResult.className = 'wedding-image-result';
     weddingImageResult.innerHTML = '';
   }
+  if (invitationCta) {
+    invitationCta.hidden = false;
+    if (invitationCtaNotice) invitationCtaNotice.hidden = true;
+  }
   questionnaireSection.hidden = true;
   reportSection.hidden = false;
   reportSection.scrollIntoView({ behavior: 'smooth' });
@@ -594,6 +601,7 @@ function editAnswersFromReport() {
     weddingImageResult.hidden = true;
     weddingImageResult.innerHTML = '';
   }
+  if (invitationCta) invitationCta.hidden = true;
   closeWeddingImageModal();
   reportSection.hidden = true;
   questionnaireSection.hidden = false;
@@ -883,6 +891,7 @@ function resetForm() {
     weddingImageResult.hidden = true;
     weddingImageResult.innerHTML = '';
   }
+  if (invitationCta) invitationCta.hidden = true;
   closeWeddingImageModal();
   clearError();
   questionnaireSection.scrollIntoView({ behavior: 'smooth' });
@@ -960,6 +969,12 @@ document.addEventListener('click', (event) => {
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') closeWeddingImageModal();
 });
+
+if (btnCreateInvitation) {
+  btnCreateInvitation.addEventListener('click', () => {
+    if (invitationCtaNotice) invitationCtaNotice.hidden = false;
+  });
+}
 
 form.addEventListener('keydown', (e) => {
   if (e.key !== 'Enter') return;
