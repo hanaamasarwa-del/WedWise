@@ -1603,12 +1603,33 @@ select {
 
 .wedding-image-download-row {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
+  gap: 0.75rem;
   margin-top: 1.1rem;
 }
 
 .wedding-image-download-row .btn {
   min-width: min(100%, 240px);
+}
+
+.wedding-image-modal-actions .btn {
+  min-height: 3rem;
+}
+
+.wedding-image-modal-actions .btn[data-follow-up-decision="continue"] {
+  min-width: min(100%, 320px);
+}
+
+.wedding-image-modal-actions .btn[data-follow-up-decision="thinking"] {
+  min-width: min(100%, 360px);
+}
+
+.wedding-image-decision-note {
+  padding: 0.7rem 1rem;
+  background: rgba(244, 223, 216, 0.32);
+  border: 1px solid rgba(141, 118, 104, 0.14);
+  border-radius: var(--radius-md);
 }
 
 .modal-open {

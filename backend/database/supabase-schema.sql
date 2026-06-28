@@ -32,7 +32,7 @@ create table if not exists ai_reports (
   created_at timestamp with time zone not null default now()
 );
 
--- 3. Generated (or placeholder) images
+-- 3. Generated images, if image persistence is re-enabled
 create table if not exists generated_images (
   id uuid primary key default gen_random_uuid(),
   submission_id uuid not null references submissions(id) on delete cascade,
@@ -80,6 +80,17 @@ create table if not exists leads (
   created_at timestamp with time zone not null default now()
 );
 
+-- 6. Final user decision after generated wedding visualization
+create table if not exists wedding_follow_ups (
+  id uuid primary key default gen_random_uuid(),
+  submission_id uuid references submissions(id) on delete set null,
+  lead_id uuid references leads(id) on delete set null,
+  decision text not null check (decision in ('continue', 'thinking')),
+  image_generated boolean not null default false,
+  report_summary text,
+  created_at timestamp with time zone not null default now()
+);
+
 create index if not exists idx_submissions_created_at
   on submissions (created_at desc);
 
@@ -104,8 +115,15 @@ create index if not exists idx_leads_submission_id
 create index if not exists idx_leads_status_created_at
   on leads (status, created_at desc);
 
+create index if not exists idx_wedding_follow_ups_decision_created_at
+  on wedding_follow_ups (decision, created_at desc);
+
+create index if not exists idx_wedding_follow_ups_submission_id
+  on wedding_follow_ups (submission_id);
+
 alter table submissions enable row level security;
 alter table ai_reports enable row level security;
 alter table generated_images enable row level security;
 alter table suppliers enable row level security;
 alter table leads enable row level security;
+alter table wedding_follow_ups enable row level security;

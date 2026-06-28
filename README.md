@@ -27,10 +27,12 @@ The current website lets a visitor:
 6. Review the report, edit questionnaire answers if needed, confirm the report,
    and generate a realistic wedding visualization from the confirmed report.
 7. Save the generated wedding visualization from the preview modal.
-8. Create a wedding countdown card and a wedding blessing draft from dedicated
+8. Choose whether to continue organizing the wedding with WedWise or think
+   about it first; the decision is saved and sent to the agency Telegram bot.
+9. Create a wedding countdown card and a wedding blessing draft from dedicated
    helper pages.
-9. Send the completed questionnaire to the agency through Telegram.
-10. Open a floating AI support chatbot for short questions about WedWise and how
+10. Send the completed questionnaire to the agency through Telegram.
+11. Open a floating AI support chatbot for short questions about WedWise and how
    to use the website.
 
 The protected product brief also describes future work such as deeper
@@ -52,7 +54,8 @@ Working in the active user flow:
 - Wedding blessing helper page.
 - Local initial report generation.
 - Report review flow with answer editing, explicit report confirmation, wedding
-  image generation, preview modal, and image download.
+  image generation, preview modal, image download, final follow-up decision,
+  Telegram notification, and Supabase follow-up persistence.
 - Telegram delivery of completed questionnaire details.
 - Closed-by-default floating chatbot on every active frontend page.
 - OpenAI Responses API integration using `gpt-5.4-nano`.
@@ -174,7 +177,10 @@ POST /api/generate-image
 
 The backend builds a photorealistic wedding visualization prompt and calls the
 OpenAI Images API. The generated image is shown in a modal with a download
-button. The OpenAI API key stays server-side in `backend/.env`.
+button. The modal also lets the visitor choose whether to continue organizing
+the wedding with WedWise or think about it first. Both choices are saved to
+Supabase and sent to the configured Telegram bot. The OpenAI API key stays
+server-side in `backend/.env`.
 
 Required for real image generation:
 
@@ -281,6 +287,7 @@ dataset changes.
 | `GET` | `/api/submissions/:id` | Available; requires Supabase. |
 | `POST` | `/api/generate-report` | Available; currently uses mock report logic and Supabase. |
 | `POST` | `/api/generate-image` | Active OpenAI Images endpoint for confirmed report visualizations. |
+| `POST` | `/api/wedding-follow-up` | Active final decision endpoint; saves to Supabase and notifies Telegram. |
 | `GET` | `/api/suppliers/recommendations` | Available; uses demo suppliers and a saved submission. |
 | `POST` | `/api/leads` | Available; requires Supabase and optionally Telegram. |
 

@@ -24,6 +24,10 @@ const SUPPLIER_CATEGORIES = [
 let currentStep = 1;
 let latestReportText = '';
 let latestQuestionnaire = null;
+let latestPayload = null;
+let latestSubmissionId = null;
+let latestLeadId = null;
+let latestImageGenerated = false;
 let isReportConfirmed = false;
 
 if ('scrollRestoration' in history) {
@@ -568,6 +572,12 @@ function closeWeddingImageModal() {
   document.body.classList.remove('modal-open');
 }
 
+function getFinalDecisionText(decision) {
+  return decision === 'continue'
+    ? 'רוצה להמשיך לארגן את החתונה עם WedWise'
+    : 'התמונה נראית טוב, אבל רוצה לחשוב על זה';
+}
+
 function editAnswersFromReport() {
   isReportConfirmed = false;
   if (btnConfirmReport) {
@@ -632,12 +642,19 @@ async function generateWeddingImageFromReport() {
         <img src="${data.imageUrl}" alt="הדמיית חתונה שנוצרה לפי הדוח">
         <figcaption>הדמיית חתונה ראשונית לפי הדוח המאושר.</figcaption>
       </figure>
-      <div class="wedding-image-download-row">
+      <div class="wedding-image-download-row wedding-image-modal-actions">
         <a href="${data.imageUrl}" download="wedwise-wedding-visualization.png" class="btn btn-primary">
           שמירת התמונה
         </a>
+        <button type="button" class="btn btn-primary" data-follow-up-decision="continue">
+          להמשיך לארגן את החתונה איתנו
+        </button>
+        <button type="button" class="btn btn-secondary" data-follow-up-decision="thinking">
+          תודה, זה נראה מעולה, אבל עוד אחשוב על זה
+        </button>
       </div>
     `);
+    latestImageGenerated = true;
   } catch (error) {
     console.error('WedWise: wedding image generation failed:', error);
     setWeddingImageModal('error', `
@@ -649,6 +666,90 @@ async function generateWeddingImageFromReport() {
   } finally {
     btnGenerateImage.disabled = false;
     btnGenerateImage.textContent = 'יצירת תמונת חתונה';
+  }
+}
+
+async function submitWeddingFollowUp(decision) {
+  if (!latestPayload || !latestQuestionnaire) {
+    setWeddingImageModal('error', `
+      <div class="wedding-image-modal-message">
+        <h2 id="wedding-image-modal-title">לא מצאנו את פרטי השאלון</h2>
+        <p>כדי לשלוח את הבחירה, מלאו את השאלון מחדש.</p>
+      </div>
+    `);
+    return;
+  }
+
+  const buttons = Array.from(document.querySelectorAll('[data-follow-up-decision]'));
+  buttons.forEach((button) => {
+    button.disabled = true;
+  });
+
+  setWeddingImageModal('loading', `
+    <div class="wedding-image-loading wedding-image-modal-loading" role="status">
+      <span aria-hidden="true"></span>
+      <h2 id="wedding-image-modal-title">שולחים את הבחירה שלכם</h2>
+      <p>אנחנו שומרים את הפרטים ומעדכנים את הצוות.</p>
+    </div>
+  `);
+
+  try {
+    const response = await fetch('/api/wedding-follow-up', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        decision,
+        submissionId: latestSubmissionId,
+        leadId: latestLeadId,
+        lead: {
+          fullName: latestPayload.lead.full_name,
+          phone: latestPayload.lead.phone,
+          email: latestPayload.lead.email,
+        },
+        questionnaire: latestQuestionnaire,
+        reportText: latestReportText,
+        imageGenerated: latestImageGenerated,
+      }),
+    });
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(data.message || data.error || 'Follow-up save failed');
+    }
+
+    if (data.submissionId) latestSubmissionId = data.submissionId;
+    if (data.leadId) latestLeadId = data.leadId;
+
+    const title = decision === 'continue'
+      ? 'תודה, הפרטים נשלחו לצוות שלנו'
+      : 'תודה, הבחירה שלכם נשמרה';
+    const message = decision === 'continue'
+      ? 'הנתונים שלכם כבר נשלחו לנציג/ה שלנו. ביום העבודה הקרוב ניצור איתכם קשר.'
+      : 'שמחנו שההדמיה נראית טוב. שמרנו את הבחירה שלכם, ואם תרצו להמשיך איתנו בהמשך נשמח לעזור.';
+
+    setWeddingImageModal('ready', `
+      <div class="wedding-image-modal-message">
+        <h2 id="wedding-image-modal-title">${title}</h2>
+        <p>${message}</p>
+        <p class="wedding-image-decision-note">בחירה שנשלחה: ${getFinalDecisionText(decision)}</p>
+        <button type="button" class="btn btn-primary" data-close-image-modal>סגירה</button>
+      </div>
+    `);
+    weddingImageModalContent
+      ?.querySelector('[data-close-image-modal]')
+      ?.addEventListener('click', closeWeddingImageModal);
+  } catch (error) {
+    console.error('WedWise: wedding follow-up failed:', error);
+    setWeddingImageModal('error', `
+      <div class="wedding-image-modal-message">
+        <h2 id="wedding-image-modal-title">לא הצלחנו לשלוח את הבחירה</h2>
+        <p>הפרטים לא נשמרו כרגע. נסו שוב בעוד רגע.</p>
+        <button type="button" class="btn btn-secondary" data-close-image-modal>סגירה</button>
+      </div>
+    `);
+    weddingImageModalContent
+      ?.querySelector('[data-close-image-modal]')
+      ?.addEventListener('click', closeWeddingImageModal);
   }
 }
 
@@ -697,6 +798,11 @@ async function sendTelegramNotification(payload) {
 }
 
 async function submitQuestionnaire(payload, state) {
+  latestPayload = payload;
+  latestSubmissionId = null;
+  latestLeadId = null;
+  latestImageGenerated = false;
+
   // Telegram notification — fires in background, does not block report rendering
   sendTelegramNotification(payload);
 
@@ -714,6 +820,7 @@ async function submitQuestionnaire(payload, state) {
       flowers: state.flowers,
       decorations: state.decorations,
       personalText: wr.free_text,
+      inspirationUrl: wr.inspiration_url,
     };
 
     const subRes = await fetch('/api/submissions', {
@@ -724,7 +831,8 @@ async function submitQuestionnaire(payload, state) {
 
     if (subRes.ok) {
       const { submissionId } = await subRes.json();
-      await fetch('/api/leads', {
+      latestSubmissionId = submissionId;
+      const leadRes = await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -735,6 +843,11 @@ async function submitQuestionnaire(payload, state) {
           suppressTelegram: true,
         }),
       });
+
+      if (leadRes.ok) {
+        const { leadId } = await leadRes.json();
+        latestLeadId = leadId;
+      }
     }
   } catch (err) {
     console.warn('WedWise: Supabase save failed (non-blocking):', err.message);
@@ -748,6 +861,10 @@ function resetForm() {
   currentStep = 1;
   latestReportText = '';
   latestQuestionnaire = null;
+  latestPayload = null;
+  latestSubmissionId = null;
+  latestLeadId = null;
+  latestImageGenerated = false;
   isReportConfirmed = false;
   if (btnConfirmReport) {
     btnConfirmReport.hidden = false;
@@ -832,6 +949,12 @@ if (btnGenerateImage) {
 
 document.querySelectorAll('[data-close-image-modal]').forEach((element) => {
   element.addEventListener('click', closeWeddingImageModal);
+});
+
+document.addEventListener('click', (event) => {
+  const decisionButton = event.target.closest('[data-follow-up-decision]');
+  if (!decisionButton) return;
+  submitWeddingFollowUp(decisionButton.dataset.followUpDecision);
 });
 
 document.addEventListener('keydown', (event) => {

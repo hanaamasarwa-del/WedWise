@@ -67,8 +67,12 @@ After the report appears, visitors can edit their questionnaire answers or
 confirm the report. Once confirmed, the confirm button is replaced by a button
 to generate a wedding image. The image generation opens a modal that asks the
 visitor to wait while WedWise prepares an example photo-style visualization of
-the wedding. When the image is ready, the visitor can save/download it. This
-feature requires the server to have an OpenAI API key configured.
+the wedding. When the image is ready, the visitor can save/download it. The
+modal then offers two choices: continue organizing the wedding with WedWise, or
+say that the result looks good but they want to think about it. Both choices
+save the decision and notify the agency Telegram bot when the backend is
+configured. This feature requires the server to have an OpenAI API key
+configured.
 
 PLANNED PRODUCT DIRECTION
 The product brief describes richer future capabilities: deeper AI analysis,
