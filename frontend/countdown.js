@@ -17,7 +17,7 @@ const generateAiBtn = document.getElementById('generate-ai-btn');
 const downloadGeneratedBtn = document.getElementById('download-generated-btn');
 let uploadedImageFile = null;
 
-// Calculate months and days between today and a target date
+// Calculate years and months between today and a target date
 function calculateCountdown(targetDate) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -35,13 +35,25 @@ function calculateCountdown(targetDate) {
     return { isPast: true };
   }
 
-  // Calculate months and days
+  // Calculate years and months
+  let years = 0;
   let months = 0;
-  let days = 0;
 
-  // Start from today and add months until we reach or exceed the target
+  // Start from today and add years until we reach or exceed the target
   let current = new Date(today);
 
+  while (true) {
+    const nextYear = new Date(current.getFullYear() + 1, current.getMonth(), current.getDate());
+
+    if (nextYear > target) {
+      break;
+    }
+
+    current = nextYear;
+    years++;
+  }
+
+  // Calculate remaining months
   while (true) {
     const nextMonth = new Date(current.getFullYear(), current.getMonth() + 1, current.getDate());
 
@@ -53,11 +65,7 @@ function calculateCountdown(targetDate) {
     months++;
   }
 
-  // Calculate remaining days
-  const remainingMs = target.getTime() - current.getTime();
-  days = Math.floor(remainingMs / (1000 * 60 * 60 * 24));
-
-  return { months, days, isToday: false, isPast: false };
+  return { years, months, isToday: false, isPast: false };
 }
 
 // Show error message
@@ -90,8 +98,8 @@ function renderCountdown(targetDate, coupleNames, customTitle) {
   }
 
   // Update countdown display
+  document.getElementById('years-display').textContent = countdown.years;
   document.getElementById('months-display').textContent = countdown.months;
-  document.getElementById('days-display').textContent = countdown.days;
 
   // Update optional fields
   const cardTitle = document.getElementById('card-title');
@@ -156,17 +164,17 @@ async function downloadCard() {
 // Copy countdown to clipboard
 async function copyToClipboard() {
   try {
+    const years = document.getElementById('years-display').textContent;
     const months = document.getElementById('months-display').textContent;
-    const days = document.getElementById('days-display').textContent;
     const coupleNames = coupleNamesInput.value.trim();
 
-    let text = `${months} : ${days}`;
+    let text = `${years} : ${months}`;
 
     if (coupleNames) {
       text = `${coupleNames}\n${text}`;
     }
 
-    text += '\n\nחודשים : ימים';
+    text += '\n\nשנים : חודשים';
 
     await navigator.clipboard.writeText(text);
 
@@ -237,8 +245,8 @@ async function generateAiImage() {
     formData.append('image', uploadedImageFile);
     formData.append('coupleNames', coupleNamesInput.value);
     formData.append('customTitle', customTitleInput.value);
+    formData.append('years', document.getElementById('years-display').textContent);
     formData.append('months', document.getElementById('months-display').textContent);
-    formData.append('days', document.getElementById('days-display').textContent);
 
     const response = await fetch('/api/generate-countdown-design', {
       method: 'POST',

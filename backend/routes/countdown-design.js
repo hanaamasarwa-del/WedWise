@@ -8,7 +8,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 router.post('/generate-countdown-design', upload.single('image'), async (req, res) => {
   try {
-    const { coupleNames, customTitle, months, days } = req.body;
+    const { coupleNames, customTitle, years, months } = req.body;
 
     if (!req.file) {
       return res.status(400).json({ error: 'Image is required' });
@@ -23,7 +23,7 @@ router.post('/generate-countdown-design', upload.single('image'), async (req, re
     const imageBase64 = req.file.buffer.toString('base64');
     const imageMediaType = req.file.mimetype;
 
-    // First, analyze the image to understand its style in detail
+    // First, analyze the image to understand its style in detail using GPT-4 Vision
     const visionResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -31,21 +31,22 @@ router.post('/generate-countdown-design', upload.single('image'), async (req, re
         'Authorization': `Bearer ${openaiKey}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4-vision',
         messages: [
           {
             role: 'user',
             content: [
               {
                 type: 'text',
-                text: `Analyze this wedding inspiration image in detail. Describe:
-1. Dominant colors (list specific color names like "blush pink", "navy blue", "sage green", "gold", etc.)
-2. Visual elements (flowers, plants, textures, materials, patterns)
-3. Overall mood and aesthetic (romantic, modern, rustic, minimalist, bohemian, etc.)
-4. Lighting and atmosphere (warm, cool, natural, dramatic, soft)
-5. Any specific style details (garden vibes, beach/ocean, forest, luxury, vintage)
+                text: `Analyze this wedding inspiration image to extract its visual style. Provide:
+1. Color palette: List 3-5 dominant colors with specific names (e.g., "warm gold", "soft cream", "sage green", "terracotta", "dusty rose")
+2. Visual elements: Describe specific textures, patterns, flowers, plants, or materials visible
+3. Overall mood: (e.g., romantic, rustic, modern, bohemian, luxe, natural, vintage)
+4. Lighting: Describe the lighting quality (golden hour, soft natural, warm, cool, dramatic)
+5. Environment/setting: (garden, field, beach, urban, forest, outdoor, indoor)
+6. Style keywords: 5-7 adjectives that capture the essence
 
-Be specific and detailed. This will be used to create a matching countdown card design.`,
+Be very specific and detailed. This will guide the creation of a matching countdown card.`,
               },
               {
                 type: 'image_url',
@@ -56,7 +57,7 @@ Be specific and detailed. This will be used to create a matching countdown card 
             ],
           },
         ],
-        max_tokens: 300,
+        max_tokens: 400,
       }),
     });
 
@@ -67,25 +68,37 @@ Be specific and detailed. This will be used to create a matching countdown card 
     const visionData = await visionResponse.json();
     const styleDescription = visionData.choices[0]?.message?.content || 'elegant wedding design';
 
-    // Generate a similar image using DALL-E with detailed matching prompt
-    const prompt = `Create a stunning Hebrew wedding countdown card design that matches this exact aesthetic and style:
+    // Generate a beautiful, elegant countdown card design inspired by the photo
+    const prompt = `Create a stunning, premium wedding countdown card design in Hebrew. This is a DESIGNED CARD, not a photo.
 
+Aesthetic inspiration from the uploaded image:
 ${styleDescription}
 
-The countdown card must include:
-- Couple names at the top: "${coupleNames || 'לזוג האושר'}"
-- Large prominent countdown numbers: "${months} חודשים | ${days} ימים"
-- ${customTitle ? `Title text: "${customTitle}"` : 'Hebrew text: "עד ליום הגדול"'}
+COUNTDOWN INFORMATION TO DISPLAY:
+- Large prominent numbers: ${years} | ${months}
+- Labels below: שנים | חודשים
+- Couple names: ${coupleNames || 'לזוג האושר'}
+${customTitle ? `- Custom title: ${customTitle}` : ''}
 
-CRITICAL STYLE REQUIREMENTS:
-- Match the color palette exactly as described above
-- Incorporate the same visual elements, flowers, textures, and mood
-- Use the same aesthetic and atmosphere
-- Keep the exact same lighting style (warm/cool)
-- Maintain the same overall vibe and feeling
-- Premium, professional, polished appearance
+DESIGN REQUIREMENTS:
+✓ Elegant, romantic, premium aesthetic suitable for a wedding save-the-date
+✓ Extract and use the soft, refined color palette from the inspiration image
+✓ Incorporate textures, patterns, or decorative elements that match the mood
+✓ Beautiful typography with Hebrew text
+✓ Balanced composition with intentional spacing
+✓ Soft decorative elements (not tacky or childish)
+✓ Modern, polished, professional appearance
+✓ Cohesive design that feels intentionally crafted
 
-The design should be a beautiful save-the-date card suitable for sharing. Hebrew text throughout. Cohesive, elegant, and matching the inspiration image perfectly.`;
+CRITICAL:
+- DO NOT include photos of people
+- DO NOT use plain gradients with just text
+- DO NOT make it childish, generic, or basic
+- DO use the color palette from the inspiration image
+- DO create a card someone would actually want to share
+- Make it feel like a premium, designed wedding save-the-date card
+- The overall composition should feel balanced and elegant
+- Include subtle decorative elements that enhance the design`;
 
 
     const dalleResponse = await fetch('https://api.openai.com/v1/images/generations', {
