@@ -51,6 +51,8 @@ const reportContent = document.getElementById('report-content');
 const weddingImageResult = document.getElementById('wedding-image-result');
 const weddingImageModal = document.getElementById('wedding-image-modal');
 const weddingImageModalContent = document.getElementById('wedding-image-modal-content');
+const venueModal = document.getElementById('venue-modal');
+const venueModalContent = document.getElementById('venue-modal-content');
 const invitationCta = document.getElementById('invitation-cta');
 const btnOpenInvitationGenerator = document.getElementById('btn-open-invitation-generator');
 const navSectionLinks = Array.from(document.querySelectorAll('.nav-links a[href^="#"]'));
@@ -312,10 +314,19 @@ function generateMockReport(payload) {
     ? `<blockquote class="rpt-quote"><p>״${wr.free_text}״</p></blockquote>`
     : '';
 
-  const supplierCards = SUPPLIER_CATEGORIES.map((cat) => `
-    <div class="rpt-supplier-card">
+  const supplierCards = SUPPLIER_CATEGORIES.map((cat) => {
+    const isVenue = cat === 'אולם / גן אירועים';
+    const venueBtn = isVenue ? `
+      <button type="button" class="rpt-venue-btn" data-venue-recommend
+        data-region-id="${wr.region_id}" data-budget="${budget}" data-guests="${guests}">
+        הצג המלצות אולמות
+      </button>` : '';
+    return `
+    <div class="rpt-supplier-card${isVenue ? ' rpt-supplier-card--venue' : ''}">
       <span class="rpt-supplier-name">${cat}</span>
-    </div>`).join('');
+      ${venueBtn}
+    </div>`;
+  }).join('');
 
   const reportDate = new Date().toLocaleDateString('he-IL');
   const reportId = `#WW-${String(Date.now()).slice(-6)}`;
@@ -575,6 +586,107 @@ function closeWeddingImageModal() {
   if (!weddingImageModal) return;
   weddingImageModal.hidden = true;
   document.body.classList.remove('modal-open');
+}
+
+// ── Venue recommendations ──────────────────────────────────────────────
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (ch) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]
+  ));
+}
+
+function openVenueModal(html) {
+  if (!venueModal || !venueModalContent) return;
+  venueModalContent.innerHTML = html;
+  venueModal.hidden = false;
+  document.body.classList.add('modal-open');
+}
+
+function closeVenueModal() {
+  if (!venueModal) return;
+  venueModal.hidden = true;
+  document.body.classList.remove('modal-open');
+}
+
+function venueCardHtml(v) {
+  const price = v.priceMin != null
+    ? `₪${v.priceMin.toLocaleString('he-IL')}${v.priceMax && v.priceMax !== v.priceMin ? `–${v.priceMax.toLocaleString('he-IL')}` : ''} לאורח`
+    : 'מחיר לפי בקשה';
+  const capacity = (v.capacityMin != null && v.capacityMax != null)
+    ? `${v.capacityMin.toLocaleString('he-IL')}–${v.capacityMax.toLocaleString('he-IL')} אורחים`
+    : '';
+  const place = v.city || v.region || '';
+  const genericNote = v.imageIsGeneric ? '<span class="venue-card-photo-note">תמונה להמחשה</span>' : '';
+  return `
+    <article class="venue-card">
+      <div class="venue-card-photo">
+        <img src="${escapeHtml(v.imageUrl)}" alt="${escapeHtml(v.name)}" loading="lazy">
+        ${genericNote}
+      </div>
+      <div class="venue-card-body">
+        <h4 class="venue-card-name">${escapeHtml(v.name)}</h4>
+        ${place ? `<p class="venue-card-city">${escapeHtml(place)}</p>` : ''}
+        <ul class="venue-card-meta">
+          <li>${price}</li>
+          ${capacity ? `<li>${capacity}</li>` : ''}
+        </ul>
+        ${v.reason ? `<p class="venue-card-reason">${escapeHtml(v.reason)}</p>` : ''}
+        <a class="venue-card-rating" href="${escapeHtml(v.mapsUrl)}" target="_blank" rel="noopener"
+           title="צפייה בדירוג ובמיקום בגוגל מפות">
+          <span class="venue-stars" aria-hidden="true">★★★★★</span>
+          <span class="venue-rating-label">דירוג ומיקום בגוגל מפות ↗</span>
+        </a>
+      </div>
+    </article>`;
+}
+
+function renderVenueRecommendations(data) {
+  const intro = data.perGuestBudget > 0
+    ? `לפי תקציב של כ־₪${data.perGuestBudget.toLocaleString('he-IL')} לאורח לאולם, הנה שלוש המלצות מובילות עבורכם.`
+    : 'הנה שלוש המלצות אולמות מובילות עבורכם.';
+  openVenueModal(`
+    <div class="venue-modal-head">
+      <h2 id="venue-modal-title">אולמות מומלצים עבורכם</h2>
+      <p>${intro}</p>
+    </div>
+    <div class="venue-card-grid">
+      ${data.venues.map(venueCardHtml).join('')}
+    </div>
+    <p class="venue-modal-foot">לחיצה על הכוכבים תפתח את הדירוג והמיקום של האולם בגוגל מפות בחלון חדש.</p>
+  `);
+}
+
+async function showVenueRecommendations(btn) {
+  const payload = {
+    region_id: Number(btn.dataset.regionId),
+    budget: Number(btn.dataset.budget),
+    guests: Number(btn.dataset.guests),
+  };
+  openVenueModal(`
+    <div class="venue-modal-loading">
+      <h2>מחפשים אולמות מתאימים…</h2>
+      <p>בודקים התאמה לפי אזור, תקציב ומספר אורחים.</p>
+    </div>`);
+  try {
+    const res = await fetch('/api/venues/recommend', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.venues || !data.venues.length) {
+      throw new Error(data.error || 'no venues');
+    }
+    renderVenueRecommendations(data);
+  } catch (err) {
+    openVenueModal(`
+      <div class="venue-modal-message">
+        <h2>לא הצלחנו לטעון המלצות כרגע</h2>
+        <p>אפשר לנסות שוב בעוד רגע. אנחנו כאן כדי לעזור לכם למצוא את האולם המושלם.</p>
+        <button type="button" class="btn btn-secondary" data-close-venue-modal>סגירה</button>
+      </div>`);
+  }
 }
 
 function getFinalDecisionText(decision) {
@@ -957,6 +1069,15 @@ document.addEventListener('click', (event) => {
 });
 
 document.addEventListener('click', (event) => {
+  const venueBtn = event.target.closest('[data-venue-recommend]');
+  if (venueBtn) showVenueRecommendations(venueBtn);
+});
+
+document.addEventListener('click', (event) => {
+  if (event.target.closest('[data-close-venue-modal]')) closeVenueModal();
+});
+
+document.addEventListener('click', (event) => {
   if (event.target.closest('[data-go-to-invitation]')) {
     closeWeddingImageModal();
     saveInvitationData();
@@ -971,7 +1092,10 @@ document.addEventListener('click', (event) => {
 });
 
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') closeWeddingImageModal();
+  if (event.key === 'Escape') {
+    closeWeddingImageModal();
+    closeVenueModal();
+  }
 });
 
 function saveInvitationData() {
