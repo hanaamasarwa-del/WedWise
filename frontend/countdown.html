@@ -53,12 +53,9 @@
               </div>
 
               <div class="form-group">
-                <label for="inspiration-image">תמונת השראה (אופציונלי)</label>
+                <label for="inspiration-image">תמונה (אופציונלי)</label>
                 <input type="file" id="inspiration-image" name="inspiration-image" accept="image/*" onchange="previewImage(this)">
-                <p class="field-hint">העלו תמונת השראה כדי שה-AI יוכל ליצור עיצוב דומה לאירוע שלכם</p>
-                <div id="image-preview" style="display: none; margin-top: 1rem;">
-                  <img id="preview-img" src="" alt="Preview" style="max-width: 100%; max-height: 300px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                </div>
+                <p class="field-hint">העלו תמונה כדי שתופיע ברקע כרטיס הספירה</p>
               </div>
 
               <div class="button-group">
@@ -79,13 +76,13 @@
 
                   <div class="countdown-display">
                     <div class="countdown-number-group">
-                      <div class="countdown-label">חודשים</div>
-                      <div class="countdown-number" id="months-display">0</div>
+                      <div class="countdown-label">שנים</div>
+                      <div class="countdown-number" id="years-display">0</div>
                     </div>
                     <div class="countdown-separator">|</div>
                     <div class="countdown-number-group">
-                      <div class="countdown-label">ימים</div>
-                      <div class="countdown-number" id="days-display">0</div>
+                      <div class="countdown-label">חודשים</div>
+                      <div class="countdown-number" id="months-display">0</div>
                     </div>
                   </div>
 
@@ -97,16 +94,9 @@
                 <div class="countdown-decoration countdown-decoration-bottom" aria-hidden="true"></div>
               </div>
 
-              <div id="generated-image-container" style="display: none; margin-bottom: 2rem;">
-                <h3 style="color: var(--color-primary); margin-bottom: 1rem;">עיצוב שנוצר על ידי AI</h3>
-                <img id="generated-image" src="" alt="AI Generated Design" style="max-width: 100%; border-radius: 12px; box-shadow: 0 8px 32px rgba(196, 135, 126, 0.2);">
-                <button type="button" id="download-generated-btn" class="btn btn-primary" style="margin-top: 1rem;">הורדת העיצוב</button>
-              </div>
-
               <div class="countdown-actions">
-                <button type="button" id="download-btn" class="btn btn-primary">הורדת התמונה</button>
+                <button type="button" id="download-btn" class="btn btn-primary">הורדת הכרטיס</button>
                 <button type="button" id="copy-btn" class="btn btn-secondary">העתקה</button>
-                <button type="button" id="generate-ai-btn" class="btn btn-primary" style="display: none;">יצירת עיצוב AI</button>
               </div>
 
               <p id="copy-message" class="copy-success" style="display: none;">✓ התמונה הועתקה!</p>
