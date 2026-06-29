@@ -619,8 +619,24 @@ form.addEventListener('keydown', (e) => {
 goToStep(1, { focusFirstInput: false });
 updateActiveNavLink();
 
-document.getElementById('estimated_budget_ils').addEventListener('input', handleNumberInput);
-document.getElementById('guest_count').addEventListener('input', handleNumberInput);
+// Attach number formatting to input fields when they exist
+function attachNumberFormatting() {
+  const budgetInput = document.getElementById('estimated_budget_ils');
+  const guestInput = document.getElementById('guest_count');
+
+  if (budgetInput) {
+    budgetInput.addEventListener('input', handleNumberInput);
+  }
+  if (guestInput) {
+    guestInput.addEventListener('input', handleNumberInput);
+  }
+}
+
+// Try to attach immediately
+attachNumberFormatting();
+
+// Also try on DOMContentLoaded in case elements aren't ready yet
+document.addEventListener('DOMContentLoaded', attachNumberFormatting);
 
 window.addEventListener('load', () => {
   window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
