@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -6,18 +6,18 @@
   <title>WedWise – תכנון חתונות חכם ואישי</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="site.css">
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&family=Heebo:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/site.css">
 </head>
 <body id="top">
   <header class="site-header">
     <div class="container header-inner">
-      <a href="#top" class="logo">WedWise</a>
+      <a href="index.html" class="logo">WedWise</a>
       <nav class="nav-links">
-        <a href="index.html">עמוד בית</a>
-        <a href="countdown.html">ספירה לאחור</a>
-        <a href="blessing-helper.html">עוזר ברכות</a>
-        <a href="questionnaire.html" class="nav-cta">התחילו לתכנן</a>
+        <a href="index.html" class="active" aria-current="page">&#1512;&#1488;&#1513;&#1497;</a>
+        <a href="questionnaire.html">&#1513;&#1488;&#1500;&#1493;&#1503; &#1514;&#1499;&#1504;&#1493;&#1503;</a>
+        <a href="countdown.html">&#1505;&#1508;&#1497;&#1512;&#1492; &#1500;&#1488;&#1495;&#1493;&#1512;</a>
+        <a href="blessing-helper.html">&#1506;&#1493;&#1494;&#1512; &#1489;&#1512;&#1499;&#1493;&#1514;</a>
       </nav>
     </div>
   </header>
@@ -25,11 +25,17 @@
   <main>
     <section class="hero">
       <div class="hero-bg">
+        <!-- Protected brand hero: keep this image and petal layer unless the design owner approves a replacement. -->
         <img
           src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=2400&q=90"
           alt="זוג בחתונה אלגנטית"
           fetchpriority="high"
         >
+        <div class="hero-petals" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </div>
       <div class="container hero-content">
         <p class="hero-eyebrow">תכנון חתונות חכם ואישי</p>
@@ -39,7 +45,7 @@
           ממלאים שאלון קצר על החתונה שחולמים עליה — ומקבלים דוח מותאם אישית עם כיוון עיצובי והמלצות ראשוניות.
         </p>
         <div class="hero-actions">
-          <a href="questionnaire.html" class="btn btn-primary btn-lg">התחילו את השאלון</a>
+          <a href="#questionnaire" class="btn btn-primary btn-lg">התחילו את השאלון</a>
         </div>
       </div>
     </section>
@@ -90,11 +96,214 @@
           <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCd4jd91ie7P9Ov_jVO5CesEMlzAqVVjwwkNxrY5r-qfpMFP2OgLoW--wNQA3bJCc1dkPxtScDZHxWvlmmqQvTfTpoelTaRxiJCBoI7A9oAzNclOjWtu6nxPk78vVrPnGK0dmWZaKSdQ2q71mBy9trqO5T9wKajXlBw1afpD-vJ3QF8SVnfEeNBBZHCI0YFTExna6rl95ejLH1-OzKLSFN7O8AuAqPdAj-03DfMNMNuepgVZasxzcflB3YxrfSovb2P5E1pnypQ6sDV" alt="ערכת חתונה אלגנטית">
         </figure>
       </div>
+    </section>
+
+    <section id="questionnaire" class="questionnaire">
+      <div class="container">
+        <div class="questionnaire-header">
+          <h2>שאלון תכנון החתונה</h2>
+          <p>ענו על כמה שאלות קצרות — נוכל לייצר עבורכם דוח ראשוני מותאם אישית.</p>
+        </div>
+
+        <form id="wedding-form" novalidate>
+          <div class="progress-wrapper">
+            <div class="progress-text">
+              <span id="progress-label">שלב 1 מתוך 6</span>
+            </div>
+            <div class="progress-bar" role="progressbar" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1">
+              <div id="progress-fill" class="progress-fill"></div>
+            </div>
+          </div>
+
+          <div id="form-error" class="form-error" role="alert" hidden></div>
+
+          <!-- Step 1: Budget & Guests -->
+          <fieldset class="form-step active" data-step="1">
+            <legend>תקציב ואורחים</legend>
+            <div class="field-group">
+              <label for="estimated_budget_ils">תקציב משוער (₪)</label>
+              <input type="number" id="estimated_budget_ils" name="estimated_budget_ils" min="1" placeholder="לדוגמה: 120000" required>
+            </div>
+            <div class="field-group">
+              <label for="guest_count">מספר אורחים משוער</label>
+              <input type="number" id="guest_count" name="guest_count" min="20" placeholder="לדוגמה: 250" required>
+            </div>
+          </fieldset>
+
+          <!-- Step 2: Region & Style -->
+          <fieldset class="form-step" data-step="2">
+            <legend>אזור וסגנון</legend>
+            <div class="field-group">
+              <label for="region_id">אזור בארץ</label>
+              <select id="region_id" name="region_id" required>
+                <option value="">בחרו אזור</option>
+                <option value="1">ירושלים והסביבה</option>
+                <option value="2">המרכז</option>
+                <option value="3">הצפון</option>
+                <option value="4">הדרום</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <span class="field-label">סגנון חתונה מועדף</span>
+              <div class="style-grid" role="radiogroup" aria-label="סגנון חתונה">
+                <label class="style-card">
+                  <input type="radio" name="preferred_style" value="רומנטי">
+                  <span>רומנטי</span>
+                </label>
+                <label class="style-card">
+                  <input type="radio" name="preferred_style" value="אלגנטי">
+                  <span>אלגנטי</span>
+                </label>
+                <label class="style-card">
+                  <input type="radio" name="preferred_style" value="כפרי">
+                  <span>כפרי</span>
+                </label>
+                <label class="style-card">
+                  <input type="radio" name="preferred_style" value="מודרני">
+                  <span>מודרני</span>
+                </label>
+                <label class="style-card">
+                  <input type="radio" name="preferred_style" value="בוהו">
+                  <span>בוהו</span>
+                </label>
+                <label class="style-card">
+                  <input type="radio" name="preferred_style" value="מינימליסטי">
+                  <span>מינימליסטי</span>
+                </label>
+                <label class="style-card">
+                  <input type="radio" name="preferred_style" value="אורבני">
+                  <span>אורבני</span>
+                </label>
+                <label class="style-card">
+                  <input type="radio" name="preferred_style" value="מסורתי">
+                  <span>מסורתי</span>
+                </label>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Step 3: Colors, Flowers, Decorations -->
+          <fieldset class="form-step" data-step="3">
+            <legend>צבעים, פרחים וקישוטים</legend>
+            <div class="field-group">
+              <label for="preferred_colors">צבעים מועדפים</label>
+              <input type="text" id="preferred_colors" name="preferred_colors" placeholder="לדוגמה: ורוד עתיק, זהב, ירוק זית" required>
+            </div>
+            <div class="field-group">
+              <span class="field-label">סוגי פרחים (ניתן לבחור כמה)</span>
+              <div class="chip-group">
+                <label class="chip"><input type="checkbox" name="flowers" value="ורדים"><span>ורדים</span></label>
+                <label class="chip"><input type="checkbox" name="flowers" value="אנמונים"><span>אנמונים</span></label>
+                <label class="chip"><input type="checkbox" name="flowers" value="אביביים"><span>פרחי אביב</span></label>
+                <label class="chip"><input type="checkbox" name="flowers" value="סוקולנטים"><span>סוקולנטים</span></label>
+                <label class="chip"><input type="checkbox" name="flowers" value="סחלבים"><span>סחלבים</span></label>
+                <label class="chip"><input type="checkbox" name="flowers" value="פרחי שדה"><span>פרחי שדה</span></label>
+              </div>
+            </div>
+            <div class="field-group">
+              <span class="field-label">קישוטים (ניתן לבחור כמה)</span>
+              <div class="chip-group">
+                <label class="chip"><input type="checkbox" name="decorations" value="נרות"><span>נרות</span></label>
+                <label class="chip"><input type="checkbox" name="decorations" value="תאורה רכה"><span>תאורה רכה</span></label>
+                <label class="chip"><input type="checkbox" name="decorations" value="בדים ווילונות"><span>בדים ווילונות</span></label>
+                <label class="chip"><input type="checkbox" name="decorations" value="עץ וטבע"><span>עץ וטבע</span></label>
+                <label class="chip"><input type="checkbox" name="decorations" value="זהב ומתכת"><span>זהב ומתכת</span></label>
+                <label class="chip"><input type="checkbox" name="decorations" value="מינימליסטי"><span>מינימליסטי</span></label>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Step 4: Free Text -->
+          <fieldset class="form-step" data-step="4">
+            <legend>העדפות אישיות</legend>
+            <div class="field-group">
+              <label for="free_text">תארו את האווירה שאתם חולמים עליה</label>
+              <textarea id="free_text" name="free_text" rows="6" placeholder="לדוגמה: חופה פתוחה בשקיעה, שולחנות ארוכים, מוזיקה שקטה בקבלת הפנים, אווירה אינטימית ורומנטית..."></textarea>
+              <p class="field-hint">שתפו כל פרט שחשוב לכם — סגנון חופה, שולחנות, מוזיקה, אווירה ועוד.</p>
+            </div>
+          </fieldset>
+
+          <!-- Step 5: Wedding Inspiration (optional) -->
+          <fieldset class="form-step" data-step="5">
+            <legend>השראה לחתונה <span class="legend-optional">(אופציונלי)</span></legend>
+            <div class="inspiration-link-panel">
+              <div class="inspiration-intro">
+                <span class="inspiration-intro-icon" aria-hidden="true">↗</span>
+                <div>
+                  <p class="inspiration-intro-title">יש לכם לוח Pinterest או השראה שאספתם?</p>
+                  <p>שתפו קישור אחד ונצרף אותו לבקשה, כדי שהכיוון העיצובי יהיה קרוב יותר למה שאתם אוהבים.</p>
+                </div>
+              </div>
+
+              <div class="inspiration-source-list" aria-label="סוגי קישורי השראה לדוגמה">
+                <span>Pinterest</span>
+                <span>Instagram</span>
+                <span>Mood board</span>
+                <span>בלוג חתונות</span>
+              </div>
+
+              <div class="field-group inspiration-url-field">
+                <label for="inspiration_url">קישור להשראה</label>
+                <div class="url-input-shell">
+                  <span aria-hidden="true">⌁</span>
+                  <input type="url" id="inspiration_url" name="inspiration_url"
+                    placeholder="https://www.pinterest.com/... או כל קישור השראה אחר">
+                </div>
+                <p class="field-hint">השדה אופציונלי לחלוטין. אפשר להשאיר ריק ולהמשיך לשלב הבא.</p>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Step 6: Contact -->
+          <fieldset class="form-step" data-step="6">
+            <legend>פרטי יצירת קשר</legend>
+            <div class="field-group">
+              <label for="full_name">שם מלא</label>
+              <input type="text" id="full_name" name="full_name" autocomplete="name" required>
+            </div>
+            <div class="field-group">
+              <label for="phone">טלפון</label>
+              <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="050-1234567" required>
+            </div>
+            <div class="field-group">
+              <label for="email">אימייל</label>
+              <input type="email" id="email" name="email" autocomplete="email" placeholder="name@example.com" required>
+            </div>
+          </fieldset>
+
+          <div class="form-nav">
+            <button type="button" id="btn-back" class="btn btn-secondary" hidden>חזרה</button>
+            <button type="button" id="btn-next" class="btn btn-primary">הבא</button>
+            <button type="submit" id="btn-submit" class="btn btn-primary btn-nav-submit" hidden>שליחה וקבלת דוח</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="report-section" class="report-section" hidden>
+      <div class="container">
+        <div id="report-content" class="report-content"></div>
+        <div class="report-actions">
+          <button type="button" id="btn-confirm-report" class="btn btn-primary btn-report-main">אישור הדוח</button>
+          <button type="button" id="btn-generate-image" class="btn btn-primary btn-report-main" hidden>יצירת תמונת חתונה</button>
+          <button type="button" id="btn-edit-answers" class="btn btn-secondary">עריכת התשובות</button>
+          <button type="button" id="btn-restart" class="btn btn-secondary">התחילו מחדש</button>
+        </div>
+        <div id="wedding-image-result" class="wedding-image-result" hidden aria-live="polite"></div>
+      </div>
+    </section>
+
+    <div id="wedding-image-modal" class="wedding-image-modal" hidden>
+      <div class="wedding-image-modal-backdrop" data-close-image-modal></div>
+      <div class="wedding-image-modal-window" role="dialog" aria-modal="true" aria-labelledby="wedding-image-modal-title">
+        <button type="button" class="wedding-image-modal-close" data-close-image-modal aria-label="סגירת חלון">×</button>
+        <div id="wedding-image-modal-content"></div>
+      </div>
+    </div>
 
     <section class="why-us">
       <div class="container">
         <div class="why-us-header">
-          <span class="section-kicker">WedWise</span>
           <h2>למה לבחור ב־ WedWise?</h2>
         </div>
         <div class="benefits-grid">
@@ -135,7 +344,7 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <a href="#top" class="footer-logo">WedWise</a>
+      <span class="footer-logo">WedWise</span>
       <p>&copy; 2026 WedWise. כל הזכויות שמורות.</p>
     </div>
   </footer>
@@ -190,19 +399,7 @@
     </button>
   </aside>
 
-  <script src="app.js" defer></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const navLinks = document.querySelectorAll('.nav-links a');
-      navLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (href === 'index.html') {
-          link.classList.add('nav-cta');
-        } else {
-          link.classList.remove('nav-cta');
-        }
-      });
-    });
-  </script>
+  <script src="scripts/app.js" defer></script>
+  <script src="scripts/chat-widget.js" defer></script>
 </body>
 </html>
