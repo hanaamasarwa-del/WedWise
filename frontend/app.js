@@ -52,34 +52,20 @@ const navSections = navSectionLinks
 
 function formatNumberWithCommas(value) {
   if (!value) return '';
-  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 function handleNumberInput(e) {
   const input = e.target;
-  let value = input.value;
 
-  // Only keep digits and commas
-  value = value.replace(/[^\d,]/g, '');
-
-  // Remove existing commas to work with clean digits
-  const digitsOnly = value.replace(/,/g, '');
-
-  // Only allow numbers
-  if (!/^\d*$/.test(digitsOnly)) return;
+  // Remove everything except digits
+  let digitsOnly = input.value.replace(/\D/g, '');
 
   // Format with commas
   const formatted = formatNumberWithCommas(digitsOnly);
 
-  // Only update if it changed
-  if (input.value !== formatted) {
-    const cursorPos = input.selectionStart;
-    input.value = formatted;
-
-    // Adjust cursor position for added commas
-    const diff = formatted.length - value.length;
-    input.setSelectionRange(cursorPos + diff, cursorPos + diff);
-  }
+  // Update value
+  input.value = formatted;
 }
 
 function updateActiveNavLink() {
