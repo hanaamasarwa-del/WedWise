@@ -77,11 +77,11 @@
                 <div class="field-grid">
                   <div class="field-group">
                     <label for="estimated_budget_ils">תקציב משוער (₪)</label>
-                    <input type="text" id="estimated_budget_ils" name="estimated_budget_ils" inputmode="numeric" placeholder="לדוגמה: 120000" required>
+                    <input type="number" id="estimated_budget_ils" name="estimated_budget_ils" min="1" placeholder="לדוגמה: 120000" required>
                   </div>
                   <div class="field-group">
                     <label for="guest_count">מספר אורחים משוער</label>
-                    <input type="text" id="guest_count" name="guest_count" inputmode="numeric" placeholder="לדוגמה: 250" required>
+                    <input type="number" id="guest_count" name="guest_count" min="20" placeholder="לדוגמה: 250" required>
                   </div>
                 </div>
               </fieldset>
