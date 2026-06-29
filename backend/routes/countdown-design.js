@@ -23,7 +23,7 @@ router.post('/generate-countdown-design', upload.single('image'), async (req, re
     const imageBase64 = req.file.buffer.toString('base64');
     const imageMediaType = req.file.mimetype;
 
-    // First, analyze the image to understand its style
+    // First, analyze the image to understand its style in detail
     const visionResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -38,7 +38,14 @@ router.post('/generate-countdown-design', upload.single('image'), async (req, re
             content: [
               {
                 type: 'text',
-                text: 'Analyze this wedding inspiration image and describe its style, colors, mood, and aesthetic in Hebrew. Be concise (2-3 sentences).',
+                text: `Analyze this wedding inspiration image in detail. Describe:
+1. Dominant colors (list specific color names like "blush pink", "navy blue", "sage green", "gold", etc.)
+2. Visual elements (flowers, plants, textures, materials, patterns)
+3. Overall mood and aesthetic (romantic, modern, rustic, minimalist, bohemian, etc.)
+4. Lighting and atmosphere (warm, cool, natural, dramatic, soft)
+5. Any specific style details (garden vibes, beach/ocean, forest, luxury, vintage)
+
+Be specific and detailed. This will be used to create a matching countdown card design.`,
               },
               {
                 type: 'image_url',
@@ -49,7 +56,7 @@ router.post('/generate-countdown-design', upload.single('image'), async (req, re
             ],
           },
         ],
-        max_tokens: 200,
+        max_tokens: 300,
       }),
     });
 
@@ -60,19 +67,26 @@ router.post('/generate-countdown-design', upload.single('image'), async (req, re
     const visionData = await visionResponse.json();
     const styleDescription = visionData.choices[0]?.message?.content || 'elegant wedding design';
 
-    // Generate a similar image using DALL-E
-    const prompt = `Create a beautiful wedding countdown card design in Hebrew inspired by this style: ${styleDescription}
+    // Generate a similar image using DALL-E with detailed matching prompt
+    const prompt = `Create a stunning Hebrew wedding countdown card design that matches this exact aesthetic and style:
 
-    The design should include:
-    - Couple names: ${coupleNames || 'לזוג האושר'}
-    - Countdown display: ${months} חודשים | ${days} ימים
-    - ${customTitle ? `Custom title: ${customTitle}` : 'A romantic footer with "עד ליום הגדול"'}
-    - Professional, elegant, and premium appearance
-    - Wedding/romantic aesthetic
-    - Hebrew text
-    - Suitable for sharing as a save-the-date
+${styleDescription}
 
-    Make it visually stunning and cohesive with the inspiration image's style.`;
+The countdown card must include:
+- Couple names at the top: "${coupleNames || 'לזוג האושר'}"
+- Large prominent countdown numbers: "${months} חודשים | ${days} ימים"
+- ${customTitle ? `Title text: "${customTitle}"` : 'Hebrew text: "עד ליום הגדול"'}
+
+CRITICAL STYLE REQUIREMENTS:
+- Match the color palette exactly as described above
+- Incorporate the same visual elements, flowers, textures, and mood
+- Use the same aesthetic and atmosphere
+- Keep the exact same lighting style (warm/cool)
+- Maintain the same overall vibe and feeling
+- Premium, professional, polished appearance
+
+The design should be a beautiful save-the-date card suitable for sharing. Hebrew text throughout. Cohesive, elegant, and matching the inspiration image perfectly.`;
+
 
     const dalleResponse = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
