@@ -1,4 +1,13 @@
 :80 {
     reverse_proxy /api/* {$BACKEND_URL}
+
+    # Static assets (everything except the API) must be revalidated on each load so a
+    # new deploy reaches returning visitors immediately. ETag makes revalidation cheap
+    # (304 Not Modified) while preventing stale HTML/JS/CSS from being served.
+    @static {
+        not path /api/*
+    }
+    header @static Cache-Control "no-cache"
+
     file_server
 }
