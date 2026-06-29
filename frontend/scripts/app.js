@@ -51,8 +51,8 @@ const reportContent = document.getElementById('report-content');
 const weddingImageResult = document.getElementById('wedding-image-result');
 const weddingImageModal = document.getElementById('wedding-image-modal');
 const weddingImageModalContent = document.getElementById('wedding-image-modal-content');
-const venueModal = document.getElementById('venue-modal');
-const venueModalContent = document.getElementById('venue-modal-content');
+// Venue modal is created lazily by ensureVenueModal() so the feature does not depend
+// on the popup markup being present in the (possibly cached) page HTML.
 const invitationCta = document.getElementById('invitation-cta');
 const btnOpenInvitationGenerator = document.getElementById('btn-open-invitation-generator');
 const navSectionLinks = Array.from(document.querySelectorAll('.nav-links a[href^="#"]'));
@@ -596,16 +596,35 @@ function escapeHtml(value) {
   ));
 }
 
+function ensureVenueModal() {
+  let modal = document.getElementById('venue-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'venue-modal';
+    modal.className = 'wedding-image-modal venue-modal';
+    modal.hidden = true;
+    modal.innerHTML = `
+      <div class="wedding-image-modal-backdrop" data-close-venue-modal></div>
+      <div class="wedding-image-modal-window venue-modal-window" role="dialog" aria-modal="true" aria-labelledby="venue-modal-title">
+        <button type="button" class="wedding-image-modal-close" data-close-venue-modal aria-label="סגירת חלון">×</button>
+        <div id="venue-modal-content"></div>
+      </div>`;
+    document.body.appendChild(modal);
+  }
+  return { modal, content: modal.querySelector('#venue-modal-content') };
+}
+
 function openVenueModal(html) {
-  if (!venueModal || !venueModalContent) return;
-  venueModalContent.innerHTML = html;
-  venueModal.hidden = false;
+  const { modal, content } = ensureVenueModal();
+  content.innerHTML = html;
+  modal.hidden = false;
   document.body.classList.add('modal-open');
 }
 
 function closeVenueModal() {
-  if (!venueModal) return;
-  venueModal.hidden = true;
+  const modal = document.getElementById('venue-modal');
+  if (!modal) return;
+  modal.hidden = true;
   document.body.classList.remove('modal-open');
 }
 
