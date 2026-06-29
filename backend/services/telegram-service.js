@@ -104,42 +104,4 @@ async function sendLeadNotification(lead) {
   return sendMessage(message);
 }
 
-function buildFollowUpMessage(followUp) {
-  const decisionText = followUp.decision === "continue"
-    ? "רוצה להמשיך ארגון חתונה עם WedWise"
-    : "אהב/ה את התמונה אבל רוצה לחשוב על זה";
-
-  return [
-    "📌 בחירה אחרי יצירת תמונת חתונה",
-    "",
-    "פרטי קשר",
-    `👤 שם מלא: ${followUp.fullName}`,
-    `📞 טלפון: ${followUp.phone}`,
-    `📧 אימייל: ${followUp.email || "לא הוזן"}`,
-    "",
-    "בחירת המשתמש",
-    `✅ סטטוס: ${decisionText}`,
-    "",
-    "תקציר חתונה",
-    `💰 תקציב: ${Number(followUp.budget || 0).toLocaleString("he-IL")} ₪`,
-    `👥 אורחים: ${Number(followUp.guests || 0).toLocaleString("he-IL")}`,
-    `📍 אזור: ${followUp.region || "לא צוין"}`,
-    `✨ סגנון: ${followUp.style || "לא צוין"}`,
-    `🎨 צבעים: ${followUp.colors || "לא צוין"}`,
-    `🌸 פרחים: ${followUp.flowers || "לא צוין"}`,
-    `🕯️ קישוטים: ${followUp.decorations || "לא צוין"}`,
-    "",
-    "הערות אישיות",
-    followUp.freeText || "לא נכתבו הערות",
-  ].join("\n");
-}
-
-async function sendFollowUpNotification(followUp) {
-  return sendMessage(buildFollowUpMessage(followUp));
-}
-
-module.exports = {
-  sendFormNotification,
-  sendLeadNotification,
-  sendFollowUpNotification,
-};
+module.exports = { sendFormNotification, sendLeadNotification };

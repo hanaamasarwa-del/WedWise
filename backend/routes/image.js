@@ -1,36 +1,31 @@
 const express = require("express");
 const router = express.Router();
-const { generateWeddingImage } = require("../services/image-service");
+const { getOrCreateImage } = require("../services/image-service");
 
 // POST /api/generate-image
 router.post("/generate-image", async (req, res) => {
-  const { reportText, description, questionnaire } = req.body;
-  const sourceText = reportText || description;
+  const { submissionId, imagePrompt } = req.body;
 
-  if (!sourceText || String(sourceText).trim().length < 30) {
-    return res.status(400).json({
-      error: "Missing required field: reportText",
-      message: "Please provide a wedding report or description with at least 30 characters.",
-    });
+  if (!submissionId) {
+    return res.status(400).json({ error: "Missing required field: submissionId" });
+  }
+  if (!imagePrompt) {
+    return res.status(400).json({ error: "Missing required field: imagePrompt" });
   }
 
   try {
-    const result = await generateWeddingImage({
-      reportText: sourceText,
-      questionnaire,
-    });
+    const { image } = await getOrCreateImage(submissionId, imagePrompt);
 
     res.json({
-      imageUrl: result.image,
-      promptUsed: result.promptUsed,
-      model: result.model,
+      imageId: image.id,
+      submissionId: image.submission_id,
+      imageUrl: image.image_url,
+      promptUsed: image.prompt_used,
+      createdAt: image.created_at,
     });
   } catch (err) {
     console.error("Image generation error:", err);
-    res.status(err.statusCode || 500).json({
-      error: "Failed to generate image",
-      message: err.message || "Unexpected image generation error",
-    });
+    res.status(500).json({ error: "Failed to generate image" });
   }
 });
 

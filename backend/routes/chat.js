@@ -43,11 +43,7 @@ router.post("/", async (req, res) => {
       return res.status(503).json({ error: "The chat is not configured yet." });
     }
 
-    console.error("Chat request failed:", {
-      message: error.message,
-      status: error.status,
-      type: error.type,
-    });
+    console.error("Chat request failed:", error.message);
     return res.status(502).json({
       error: "The assistant is temporarily unavailable. Please try again.",
     });
