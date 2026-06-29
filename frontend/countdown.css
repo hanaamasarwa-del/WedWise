@@ -109,6 +109,43 @@
   flex: 1;
 }
 
+/* Design Options */
+.design-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.design-option {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background: white;
+  border: 2px solid var(--color-border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.design-option:hover {
+  border-color: var(--color-primary);
+  background: rgba(184, 150, 62, 0.05);
+}
+
+.design-option input[type="radio"] {
+  margin-left: 0.75rem;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+.design-option span {
+  flex: 1;
+  text-align: right;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
 /* Countdown Card - The Beautiful Display */
 .countdown-card {
   background: linear-gradient(135deg, #FFFFFF 0%, #FBF8F4 40%, #F5EDE6 100%);
