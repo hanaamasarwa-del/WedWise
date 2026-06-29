@@ -115,6 +115,8 @@
   background: linear-gradient(135deg, #FFFFFF 0%, #FBF8F4 40%, #F5EDE6 100%);
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
   border: 2px solid rgba(184, 150, 62, 0.25);
   border-radius: 24px;
   padding: 5rem 3.5rem;
@@ -125,12 +127,12 @@
   text-align: center;
   position: relative;
   overflow: hidden;
-  min-height: 620px;
   display: flex;
   align-items: center;
   justify-content: center;
-  aspect-ratio: 1 / 1.2;
-  max-width: 520px;
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  max-width: 500px;
   margin: 0 auto;
 }
 

@@ -124,14 +124,34 @@ async function downloadCard() {
     downloadBtn.disabled = true;
     downloadBtn.textContent = 'מוריד...';
 
+    // Temporarily hide decorative elements
+    const decorations = countdownCard.querySelectorAll('.countdown-decoration');
+    const originalDisplay = [];
+    decorations.forEach((el, idx) => {
+      originalDisplay[idx] = el.style.display;
+      el.style.display = 'none';
+    });
+
+    // Wait for image to load
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+    // Capture the card
     const canvas = await html2canvas(countdownCard, {
-      scale: 2,
+      scale: 3,
       backgroundColor: null,
       logging: false,
       useCORS: true,
       allowTaint: true,
+      imageTimeout: 0,
+      proxy: null,
     });
 
+    // Restore decorative elements
+    decorations.forEach((el, idx) => {
+      el.style.display = originalDisplay[idx];
+    });
+
+    // Download the image
     const link = document.createElement('a');
     link.href = canvas.toDataURL('image/png');
     link.download = 'wedding-countdown.png';
@@ -141,6 +161,11 @@ async function downloadCard() {
     downloadBtn.textContent = 'הורדת הכרטיס';
   } catch (error) {
     console.error('Error downloading image:', error);
+    // Restore decorative elements on error
+    const decorations = countdownCard.querySelectorAll('.countdown-decoration');
+    decorations.forEach((el) => {
+      el.style.display = '';
+    });
     alert('לא הצלחנו להוריד את הכרטיס. אנא נסו שנית.');
     downloadBtn.disabled = false;
     downloadBtn.textContent = 'הורדת הכרטיס';
@@ -200,8 +225,8 @@ form.addEventListener('reset', () => {
   noResult.hidden = false;
   hideError();
 
-  // Reset countdown card background
-  countdownCard.style.backgroundImage = 'none';
+  // Reset countdown card background to default
+  countdownCard.style.backgroundImage = 'linear-gradient(135deg, #FFFFFF 0%, #FBF8F4 40%, #F5EDE6 100%)';
   uploadedImageUrl = null;
 });
 
@@ -212,11 +237,12 @@ function previewImage(input) {
     reader.onload = (e) => {
       uploadedImageUrl = e.target.result;
 
-      // Apply background image to countdown card
+      // Apply background image to countdown card as data URL
       countdownCard.style.backgroundImage = `url('${uploadedImageUrl}')`;
       countdownCard.style.backgroundSize = 'cover';
       countdownCard.style.backgroundPosition = 'center';
-      countdownCard.style.backgroundAttachment = 'fixed';
+      countdownCard.style.backgroundRepeat = 'no-repeat';
+      countdownCard.style.backgroundAttachment = 'scroll';
     };
     reader.readAsDataURL(input.files[0]);
   }
