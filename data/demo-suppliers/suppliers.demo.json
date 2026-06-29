@@ -57,22 +57,255 @@
   ],
   "suppliers": [
     {
-      "id": 12,
-      "name": "חוות השקמה",
+      "id": 1,
+      "name": "גן הרים",
       "category": "אולם / גן אירועים",
-      "region": "הדרום",
-      "city": "מצפה רמון",
-      "price_min_ils": 280,
-      "price_max_ils": 460,
+      "region": "ירושלים והסביבה",
+      "city": "ירושלים",
+      "price_min_ils": 260,
+      "price_max_ils": 420,
       "price_unit": "לאורח",
-      "guest_capacity_min": 70,
-      "guest_capacity_max": 250,
-      "description": "מקום קטן יחסית לחתונות יעד באווירת מדבר.",
-      "website_url": "https://example.com/havat-hashikma",
+      "guest_capacity_min": 120,
+      "guest_capacity_max": 450,
+      "description": "גן אירועים פתוח עם אפשרות לחופה תחת כיפת השמיים.",
+      "website_url": "https://example.com/gan-harim",
       "styles": [
+        "רומנטי",
         "כפרי",
-        "בוהו",
+        "מסורתי"
+      ],
+      "tags": [
+        "כשר",
+        "אירוע חוץ",
+        "נגישות",
+        "מתאים לחתונה גדולה"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 2,
+      "name": "אחוזת האבן",
+      "category": "אולם / גן אירועים",
+      "region": "ירושלים והסביבה",
+      "city": "מעלה אדומים",
+      "price_min_ils": 310,
+      "price_max_ils": 490,
+      "price_unit": "לאורח",
+      "guest_capacity_min": 150,
+      "guest_capacity_max": 550,
+      "description": "מקום אלגנטי בסגנון קלאסי, מתאים לאירועים בינוניים וגדולים.",
+      "website_url": "https://example.com/ahuzat-haeven",
+      "styles": [
+        "רומנטי",
+        "אלגנטי",
+        "מסורתי"
+      ],
+      "tags": [
+        "כשר",
+        "אירוע פנים",
+        "נגישות",
+        "מתאים לחתונה גדולה",
+        "מסורתי"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 3,
+      "name": "בית הגפן",
+      "category": "אולם / גן אירועים",
+      "region": "ירושלים והסביבה",
+      "city": "בית שמש",
+      "price_min_ils": 220,
+      "price_max_ils": 360,
+      "price_unit": "לאורח",
+      "guest_capacity_min": 80,
+      "guest_capacity_max": 300,
+      "description": "מקום אינטימי עם עיצוב כפרי ואווירה משפחתית.",
+      "website_url": "https://example.com/beit-hagefen",
+      "styles": [
+        "רומנטי",
+        "כפרי",
+        "בוהו"
+      ],
+      "tags": [
+        "כשר",
+        "אירוע חוץ",
+        "נגישות",
+        "מתאים לחתונה קטנה"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 4,
+      "name": "טרסה אורבנית",
+      "category": "אולם / גן אירועים",
+      "region": "המרכז",
+      "city": "תל אביב",
+      "price_min_ils": 350,
+      "price_max_ils": 560,
+      "price_unit": "לאורח",
+      "guest_capacity_min": 90,
+      "guest_capacity_max": 320,
+      "description": "חלל אורבני במרכז העיר עם מרפסת וחלל פנימי.",
+      "website_url": "https://example.com/terasa-urbanit",
+      "styles": [
+        "אלגנטי",
+        "מודרני",
+        "אורבני"
+      ],
+      "tags": [
+        "אירוע פנים",
+        "נגישות",
+        "מתאים לחתונה קטנה"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 5,
+      "name": "חוות הברושים",
+      "category": "אולם / גן אירועים",
+      "region": "המרכז",
+      "city": "כפר סבא",
+      "price_min_ils": 280,
+      "price_max_ils": 450,
+      "price_unit": "לאורח",
+      "guest_capacity_min": 140,
+      "guest_capacity_max": 600,
+      "description": "גן פתוח עם אזורי ישיבה טבעיים, מתאים לחתונות קיץ.",
+      "website_url": "https://example.com/havat-habroshim",
+      "styles": [
+        "רומנטי",
+        "כפרי",
+        "בוהו"
+      ],
+      "tags": [
+        "כשר",
+        "אירוע חוץ",
+        "נגישות",
+        "מתאים לחתונה גדולה"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 6,
+      "name": "היכל השקיעה",
+      "category": "אולם / גן אירועים",
+      "region": "המרכז",
+      "city": "ראשון לציון",
+      "price_min_ils": 300,
+      "price_max_ils": 520,
+      "price_unit": "לאורח",
+      "guest_capacity_min": 180,
+      "guest_capacity_max": 750,
+      "description": "אולם מודרני עם מערכות תאורה והגברה מתקדמות.",
+      "website_url": "https://example.com/heichal-hashkia",
+      "styles": [
+        "אלגנטי",
+        "מודרני",
         "מינימליסטי"
+      ],
+      "tags": [
+        "כשר",
+        "אירוע פנים",
+        "נגישות",
+        "מתאים לחתונה גדולה"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 7,
+      "name": "יקב העמק",
+      "category": "אולם / גן אירועים",
+      "region": "הצפון",
+      "city": "זכרון יעקב",
+      "price_min_ils": 300,
+      "price_max_ils": 480,
+      "price_unit": "לאורח",
+      "guest_capacity_min": 100,
+      "guest_capacity_max": 380,
+      "description": "מתחם בסגנון יקב עם נוף, מתאים לאווירה רומנטית וכפרית.",
+      "website_url": "https://example.com/yekev-haemek",
+      "styles": [
+        "רומנטי",
+        "אלגנטי",
+        "כפרי"
+      ],
+      "tags": [
+        "כשר",
+        "אירוע חוץ",
+        "נגישות",
+        "מתאים לחתונה קטנה"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 8,
+      "name": "גני הצפון",
+      "category": "אולם / גן אירועים",
+      "region": "הצפון",
+      "city": "חיפה",
+      "price_min_ils": 250,
+      "price_max_ils": 410,
+      "price_unit": "לאורח",
+      "guest_capacity_min": 130,
+      "guest_capacity_max": 500,
+      "description": "גן ואולם גמיש לאירועים בעונות שונות.",
+      "website_url": "https://example.com/ganei-hatzafon",
+      "styles": [
+        "אלגנטי",
+        "כפרי",
+        "מודרני"
+      ],
+      "tags": [
+        "כשר",
+        "אירוע חוץ",
+        "אירוע פנים",
+        "נגישות",
+        "מתאים לחתונה גדולה"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 9,
+      "name": "חצר הגליל",
+      "category": "אולם / גן אירועים",
+      "region": "הצפון",
+      "city": "כרמיאל",
+      "price_min_ils": 230,
+      "price_max_ils": 390,
+      "price_unit": "לאורח",
+      "guest_capacity_min": 90,
+      "guest_capacity_max": 360,
+      "description": "חצר אירועים פתוחה בסגנון טבעי ובוהו.",
+      "website_url": "https://example.com/hatzer-hagalil",
+      "styles": [
+        "רומנטי",
+        "כפרי",
+        "בוהו"
       ],
       "tags": [
         "כשר",
@@ -145,211 +378,26 @@
       "is_active": true
     },
     {
-      "id": 18,
-      "name": "פולס דרום",
-      "category": "די־ג׳יי",
-      "region": "הדרום",
-      "city": "באר שבע",
-      "price_min_ils": 4500,
-      "price_max_ils": 7200,
-      "price_unit": "לחבילה",
-      "guest_capacity_min": null,
-      "guest_capacity_max": null,
-      "description": "חבילת מוזיקה והגברה לאירועים קטנים ובינוניים.",
-      "website_url": "https://example.com/pulse-darom",
-      "styles": [
-        "מודרני",
-        "מינימליסטי"
-      ],
-      "tags": [
-        "הגברה כלולה"
-      ],
-      "is_demo": true,
-      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
-      "last_reviewed_at": "2026-06-25",
-      "is_active": true
-    },
-    {
-      "id": 32,
-      "name": "מדבר פורח",
-      "category": "עיצוב ופרחים",
-      "region": "הדרום",
-      "city": "באר שבע",
-      "price_min_ils": 4200,
-      "price_max_ils": 9800,
-      "price_unit": "לחבילה",
-      "guest_capacity_min": null,
-      "guest_capacity_max": null,
-      "description": "עיצוב בהיר, טבעי ומינימליסטי לאירועים בדרום.",
-      "website_url": "https://example.com/midbar-poreach",
-      "styles": [
-        "כפרי",
-        "בוהו",
-        "מינימליסטי"
-      ],
-      "tags": [
-        "כשר"
-      ],
-      "is_demo": true,
-      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
-      "last_reviewed_at": "2026-06-25",
-      "is_active": true
-    },
-    {
-      "id": 26,
-      "name": "חול וזהב",
-      "category": "צילום",
-      "region": "הדרום",
-      "city": "באר שבע",
-      "price_min_ils": 7000,
-      "price_max_ils": 12000,
-      "price_unit": "לחבילה",
-      "guest_capacity_min": null,
-      "guest_capacity_max": null,
-      "description": "צילום באווירת מדבר, טבע וחתונות יעד בדרום.",
-      "website_url": "https://example.com/chol-vzahav",
-      "styles": [
-        "כפרי",
-        "בוהו"
-      ],
-      "tags": [
-        "וידאו כלול"
-      ],
-      "is_demo": true,
-      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
-      "last_reviewed_at": "2026-06-25",
-      "is_active": true
-    },
-    {
-      "id": 27,
-      "name": "סטודיו רימון",
-      "category": "צילום",
-      "region": "הדרום",
-      "city": "אשקלון",
-      "price_min_ils": 7500,
-      "price_max_ils": 12500,
-      "price_unit": "לחבילה",
-      "guest_capacity_min": null,
-      "guest_capacity_max": null,
-      "description": "סטילס ווידאו בסגנון חם ומשפחתי.",
-      "website_url": "https://example.com/studio-rimon",
-      "styles": [
-        "רומנטי",
-        "מסורתי"
-      ],
-      "tags": [
-        "וידאו כלול"
-      ],
-      "is_demo": true,
-      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
-      "last_reviewed_at": "2026-06-25",
-      "is_active": true
-    },
-    {
-      "id": 36,
-      "name": "אש ותבלין",
-      "category": "קייטרינג",
-      "region": "הדרום",
-      "city": "באר שבע",
-      "price_min_ils": 170,
-      "price_max_ils": 290,
-      "price_unit": "לאורח",
-      "guest_capacity_min": 100,
-      "guest_capacity_max": 400,
-      "description": "קייטרינג לאירועי חוץ בסגנון מדברי וישראלי.",
-      "website_url": "https://example.com/esh-vetavlin",
-      "styles": [
-        "כפרי",
-        "בוהו",
-        "מינימליסטי"
-      ],
-      "tags": [
-        "כשר"
-      ],
-      "is_demo": true,
-      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
-      "last_reviewed_at": "2026-06-25",
-      "is_active": true
-    },
-    {
-      "id": 6,
-      "name": "היכל השקיעה",
+      "id": 12,
+      "name": "חוות השקמה",
       "category": "אולם / גן אירועים",
-      "region": "המרכז",
-      "city": "ראשון לציון",
-      "price_min_ils": 300,
-      "price_max_ils": 520,
-      "price_unit": "לאורח",
-      "guest_capacity_min": 180,
-      "guest_capacity_max": 750,
-      "description": "אולם מודרני עם מערכות תאורה והגברה מתקדמות.",
-      "website_url": "https://example.com/heichal-hashkia",
-      "styles": [
-        "אלגנטי",
-        "מודרני",
-        "מינימליסטי"
-      ],
-      "tags": [
-        "כשר",
-        "אירוע פנים",
-        "נגישות",
-        "מתאים לחתונה גדולה"
-      ],
-      "is_demo": true,
-      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
-      "last_reviewed_at": "2026-06-25",
-      "is_active": true
-    },
-    {
-      "id": 5,
-      "name": "חוות הברושים",
-      "category": "אולם / גן אירועים",
-      "region": "המרכז",
-      "city": "כפר סבא",
+      "region": "הדרום",
+      "city": "מצפה רמון",
       "price_min_ils": 280,
-      "price_max_ils": 450,
+      "price_max_ils": 460,
       "price_unit": "לאורח",
-      "guest_capacity_min": 140,
-      "guest_capacity_max": 600,
-      "description": "גן פתוח עם אזורי ישיבה טבעיים, מתאים לחתונות קיץ.",
-      "website_url": "https://example.com/havat-habroshim",
+      "guest_capacity_min": 70,
+      "guest_capacity_max": 250,
+      "description": "מקום קטן יחסית לחתונות יעד באווירת מדבר.",
+      "website_url": "https://example.com/havat-hashikma",
       "styles": [
-        "רומנטי",
         "כפרי",
-        "בוהו"
+        "בוהו",
+        "מינימליסטי"
       ],
       "tags": [
         "כשר",
         "אירוע חוץ",
-        "נגישות",
-        "מתאים לחתונה גדולה"
-      ],
-      "is_demo": true,
-      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
-      "last_reviewed_at": "2026-06-25",
-      "is_active": true
-    },
-    {
-      "id": 4,
-      "name": "טרסה אורבנית",
-      "category": "אולם / גן אירועים",
-      "region": "המרכז",
-      "city": "תל אביב",
-      "price_min_ils": 350,
-      "price_max_ils": 560,
-      "price_unit": "לאורח",
-      "guest_capacity_min": 90,
-      "guest_capacity_max": 320,
-      "description": "חלל אורבני במרכז העיר עם מרפסת וחלל פנימי.",
-      "website_url": "https://example.com/terasa-urbanit",
-      "styles": [
-        "אלגנטי",
-        "מודרני",
-        "אורבני"
-      ],
-      "tags": [
-        "אירוע פנים",
-        "נגישות",
         "מתאים לחתונה קטנה"
       ],
       "is_demo": true,
@@ -358,20 +406,46 @@
       "is_active": true
     },
     {
-      "id": 19,
-      "name": "מיקס 360",
+      "id": 13,
+      "name": "DJ נועה",
       "category": "די־ג׳יי",
-      "region": "המרכז",
-      "city": "אשדוד",
-      "price_min_ils": 5200,
-      "price_max_ils": 8400,
+      "region": "ירושלים והסביבה",
+      "city": "ירושלים",
+      "price_min_ils": 5500,
+      "price_max_ils": 8500,
       "price_unit": "לחבילה",
       "guest_capacity_min": null,
       "guest_capacity_max": null,
-      "description": "מוזיקה מיינסטרימית, לטינית וריקודים עדכניים.",
-      "website_url": "https://example.com/mix-360",
+      "description": "מוזיקה מיינסטרימית וריקודים, עם פגישת תכנון מראש.",
+      "website_url": "https://example.com/dj-noa",
       "styles": [
         "רומנטי",
+        "אלגנטי",
+        "מסורתי"
+      ],
+      "tags": [
+        "מסורתי",
+        "הגברה כלולה"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 14,
+      "name": "קצב העיר",
+      "category": "די־ג׳יי",
+      "region": "המרכז",
+      "city": "תל אביב",
+      "price_min_ils": 7000,
+      "price_max_ils": 11000,
+      "price_unit": "לחבילה",
+      "guest_capacity_min": null,
+      "guest_capacity_max": null,
+      "description": "די־ג׳יי לאירועים אורבניים, פופ, האוס ומוזיקה ישראלית.",
+      "website_url": "https://example.com/ketzev-hair",
+      "styles": [
         "מודרני",
         "אורבני"
       ],
@@ -410,19 +484,97 @@
       "is_active": true
     },
     {
-      "id": 14,
-      "name": "קצב העיר",
+      "id": 16,
+      "name": "רוח צפונית",
       "category": "די־ג׳יי",
-      "region": "המרכז",
-      "city": "תל אביב",
-      "price_min_ils": 7000,
-      "price_max_ils": 11000,
+      "region": "הצפון",
+      "city": "חיפה",
+      "price_min_ils": 5000,
+      "price_max_ils": 8000,
       "price_unit": "לחבילה",
       "guest_capacity_min": null,
       "guest_capacity_max": null,
-      "description": "די־ג׳יי לאירועים אורבניים, פופ, האוס ומוזיקה ישראלית.",
-      "website_url": "https://example.com/ketzev-hair",
+      "description": "מוזיקה לאירועים באווירה רגועה, אינדי, ישראלי ולועזי.",
+      "website_url": "https://example.com/ruach-tzfonit",
       "styles": [
+        "רומנטי",
+        "כפרי",
+        "בוהו"
+      ],
+      "tags": [
+        "הגברה כלולה"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 17,
+      "name": "DJ עומר",
+      "category": "די־ג׳יי",
+      "region": "הצפון",
+      "city": "טבריה",
+      "price_min_ils": 4800,
+      "price_max_ils": 7600,
+      "price_unit": "לחבילה",
+      "guest_capacity_min": null,
+      "guest_capacity_max": null,
+      "description": "דגש על חתונות מסורתיות, מזרחית, ישראלית וריקודים.",
+      "website_url": "https://example.com/dj-omer",
+      "styles": [
+        "רומנטי",
+        "מסורתי"
+      ],
+      "tags": [
+        "מסורתי",
+        "הגברה כלולה"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 18,
+      "name": "פולס דרום",
+      "category": "די־ג׳יי",
+      "region": "הדרום",
+      "city": "באר שבע",
+      "price_min_ils": 4500,
+      "price_max_ils": 7200,
+      "price_unit": "לחבילה",
+      "guest_capacity_min": null,
+      "guest_capacity_max": null,
+      "description": "חבילת מוזיקה והגברה לאירועים קטנים ובינוניים.",
+      "website_url": "https://example.com/pulse-darom",
+      "styles": [
+        "מודרני",
+        "מינימליסטי"
+      ],
+      "tags": [
+        "הגברה כלולה"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 19,
+      "name": "מיקס 360",
+      "category": "די־ג׳יי",
+      "region": "המרכז",
+      "city": "אשדוד",
+      "price_min_ils": 5200,
+      "price_max_ils": 8400,
+      "price_unit": "לחבילה",
+      "guest_capacity_min": null,
+      "guest_capacity_max": null,
+      "description": "מוזיקה מיינסטרימית, לטינית וריקודים עדכניים.",
+      "website_url": "https://example.com/mix-360",
+      "styles": [
+        "רומנטי",
         "מודרני",
         "אורבני"
       ],
@@ -435,74 +587,47 @@
       "is_active": true
     },
     {
-      "id": 30,
-      "name": "קווים נקיים",
-      "category": "עיצוב ופרחים",
-      "region": "המרכז",
-      "city": "תל אביב",
+      "id": 20,
+      "name": "על הרחבה",
+      "category": "די־ג׳יי",
+      "region": "ירושלים והסביבה",
+      "city": "מודיעין",
+      "price_min_ils": 5800,
+      "price_max_ils": 9000,
+      "price_unit": "לחבילה",
+      "guest_capacity_min": null,
+      "guest_capacity_max": null,
+      "description": "די־ג׳יי עם דגש על קריאת קהל ותכנון מסיבת ריקודים.",
+      "website_url": "https://example.com/al-harhava",
+      "styles": [
+        "אלגנטי",
+        "מודרני"
+      ],
+      "tags": [
+        "הגברה כלולה"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 21,
+      "name": "אור טבעי צילום",
+      "category": "צילום",
+      "region": "ירושלים והסביבה",
+      "city": "ירושלים",
       "price_min_ils": 8000,
-      "price_max_ils": 18000,
+      "price_max_ils": 13000,
       "price_unit": "לחבילה",
       "guest_capacity_min": null,
       "guest_capacity_max": null,
-      "description": "עיצוב מודרני ומינימליסטי, תאורה, שולחנות ופרחים.",
-      "website_url": "https://example.com/kavim-nekiim",
-      "styles": [
-        "אלגנטי",
-        "מודרני",
-        "מינימליסטי"
-      ],
-      "tags": [
-        "כשר"
-      ],
-      "is_demo": true,
-      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
-      "last_reviewed_at": "2026-06-25",
-      "is_active": true
-    },
-    {
-      "id": 28,
-      "name": "עדשה אורבנית",
-      "category": "צילום",
-      "region": "המרכז",
-      "city": "רמת גן",
-      "price_min_ils": 10000,
-      "price_max_ils": 15500,
-      "price_unit": "לחבילה",
-      "guest_capacity_min": null,
-      "guest_capacity_max": null,
-      "description": "צילום וידאו וסטילס בקו אופנתי ועירוני.",
-      "website_url": "https://example.com/adasa-urbanit",
-      "styles": [
-        "אלגנטי",
-        "מודרני",
-        "אורבני"
-      ],
-      "tags": [
-        "וידאו כלול"
-      ],
-      "is_demo": true,
-      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
-      "last_reviewed_at": "2026-06-25",
-      "is_active": true
-    },
-    {
-      "id": 23,
-      "name": "פריים כפרי",
-      "category": "צילום",
-      "region": "המרכז",
-      "city": "רחובות",
-      "price_min_ils": 8500,
-      "price_max_ils": 14000,
-      "price_unit": "לחבילה",
-      "guest_capacity_min": null,
-      "guest_capacity_max": null,
-      "description": "צילום באווירה כפרית ורומנטית, כולל צילומי חוץ.",
-      "website_url": "https://example.com/frame-kafri",
+      "description": "צילום סטילס בסגנון תיעודי טבעי, עם אפשרות לאלבום.",
+      "website_url": "https://example.com/or-tivi",
       "styles": [
         "רומנטי",
         "כפרי",
-        "בוהו"
+        "מינימליסטי"
       ],
       "tags": [
         "וידאו כלול"
@@ -539,191 +664,25 @@
       "is_active": true
     },
     {
-      "id": 34,
-      "name": "מטבח השוק",
-      "category": "קייטרינג",
+      "id": 23,
+      "name": "פריים כפרי",
+      "category": "צילום",
       "region": "המרכז",
-      "city": "תל אביב",
-      "price_min_ils": 240,
-      "price_max_ils": 380,
-      "price_unit": "לאורח",
-      "guest_capacity_min": 70,
-      "guest_capacity_max": 250,
-      "description": "קייטרינג שף בסגנון מודרני, חלבי או בשרי לפי בחירה.",
-      "website_url": "https://example.com/mitbach-hashuk",
-      "styles": [
-        "אלגנטי",
-        "מודרני",
-        "אורבני"
-      ],
-      "tags": [
-        "כשר",
-        "צמחוני / טבעוני"
-      ],
-      "is_demo": true,
-      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
-      "last_reviewed_at": "2026-06-25",
-      "is_active": true
-    },
-    {
-      "id": 8,
-      "name": "גני הצפון",
-      "category": "אולם / גן אירועים",
-      "region": "הצפון",
-      "city": "חיפה",
-      "price_min_ils": 250,
-      "price_max_ils": 410,
-      "price_unit": "לאורח",
-      "guest_capacity_min": 130,
-      "guest_capacity_max": 500,
-      "description": "גן ואולם גמיש לאירועים בעונות שונות.",
-      "website_url": "https://example.com/ganei-hatzafon",
-      "styles": [
-        "אלגנטי",
-        "כפרי",
-        "מודרני"
-      ],
-      "tags": [
-        "כשר",
-        "אירוע חוץ",
-        "אירוע פנים",
-        "נגישות",
-        "מתאים לחתונה גדולה"
-      ],
-      "is_demo": true,
-      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
-      "last_reviewed_at": "2026-06-25",
-      "is_active": true
-    },
-    {
-      "id": 9,
-      "name": "חצר הגליל",
-      "category": "אולם / גן אירועים",
-      "region": "הצפון",
-      "city": "כרמיאל",
-      "price_min_ils": 230,
-      "price_max_ils": 390,
-      "price_unit": "לאורח",
-      "guest_capacity_min": 90,
-      "guest_capacity_max": 360,
-      "description": "חצר אירועים פתוחה בסגנון טבעי ובוהו.",
-      "website_url": "https://example.com/hatzer-hagalil",
+      "city": "רחובות",
+      "price_min_ils": 8500,
+      "price_max_ils": 14000,
+      "price_unit": "לחבילה",
+      "guest_capacity_min": null,
+      "guest_capacity_max": null,
+      "description": "צילום באווירה כפרית ורומנטית, כולל צילומי חוץ.",
+      "website_url": "https://example.com/frame-kafri",
       "styles": [
         "רומנטי",
         "כפרי",
         "בוהו"
       ],
       "tags": [
-        "כשר",
-        "אירוע חוץ",
-        "מתאים לחתונה קטנה"
-      ],
-      "is_demo": true,
-      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
-      "last_reviewed_at": "2026-06-25",
-      "is_active": true
-    },
-    {
-      "id": 7,
-      "name": "יקב העמק",
-      "category": "אולם / גן אירועים",
-      "region": "הצפון",
-      "city": "זכרון יעקב",
-      "price_min_ils": 300,
-      "price_max_ils": 480,
-      "price_unit": "לאורח",
-      "guest_capacity_min": 100,
-      "guest_capacity_max": 380,
-      "description": "מתחם בסגנון יקב עם נוף, מתאים לאווירה רומנטית וכפרית.",
-      "website_url": "https://example.com/yekev-haemek",
-      "styles": [
-        "רומנטי",
-        "אלגנטי",
-        "כפרי"
-      ],
-      "tags": [
-        "כשר",
-        "אירוע חוץ",
-        "נגישות",
-        "מתאים לחתונה קטנה"
-      ],
-      "is_demo": true,
-      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
-      "last_reviewed_at": "2026-06-25",
-      "is_active": true
-    },
-    {
-      "id": 17,
-      "name": "DJ עומר",
-      "category": "די־ג׳יי",
-      "region": "הצפון",
-      "city": "טבריה",
-      "price_min_ils": 4800,
-      "price_max_ils": 7600,
-      "price_unit": "לחבילה",
-      "guest_capacity_min": null,
-      "guest_capacity_max": null,
-      "description": "דגש על חתונות מסורתיות, מזרחית, ישראלית וריקודים.",
-      "website_url": "https://example.com/dj-omer",
-      "styles": [
-        "רומנטי",
-        "מסורתי"
-      ],
-      "tags": [
-        "מסורתי",
-        "הגברה כלולה"
-      ],
-      "is_demo": true,
-      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
-      "last_reviewed_at": "2026-06-25",
-      "is_active": true
-    },
-    {
-      "id": 16,
-      "name": "רוח צפונית",
-      "category": "די־ג׳יי",
-      "region": "הצפון",
-      "city": "חיפה",
-      "price_min_ils": 5000,
-      "price_max_ils": 8000,
-      "price_unit": "לחבילה",
-      "guest_capacity_min": null,
-      "guest_capacity_max": null,
-      "description": "מוזיקה לאירועים באווירה רגועה, אינדי, ישראלי ולועזי.",
-      "website_url": "https://example.com/ruach-tzfonit",
-      "styles": [
-        "רומנטי",
-        "כפרי",
-        "בוהו"
-      ],
-      "tags": [
-        "הגברה כלולה"
-      ],
-      "is_demo": true,
-      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
-      "last_reviewed_at": "2026-06-25",
-      "is_active": true
-    },
-    {
-      "id": 31,
-      "name": "פרחי הגליל",
-      "category": "עיצוב ופרחים",
-      "region": "הצפון",
-      "city": "כרמיאל",
-      "price_min_ils": 4500,
-      "price_max_ils": 10500,
-      "price_unit": "לחבילה",
-      "guest_capacity_min": null,
-      "guest_capacity_max": null,
-      "description": "עיצוב טבעי ובוהו לחתונות גן וחצר.",
-      "website_url": "https://example.com/pirchei-hagalil",
-      "styles": [
-        "רומנטי",
-        "כפרי",
-        "בוהו"
-      ],
-      "tags": [
-        "כשר"
+        "וידאו כלול"
       ],
       "is_demo": true,
       "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
@@ -781,85 +740,24 @@
       "is_active": true
     },
     {
-      "id": 35,
-      "name": "טעמי הצפון",
-      "category": "קייטרינג",
-      "region": "הצפון",
-      "city": "חיפה",
-      "price_min_ils": 190,
-      "price_max_ils": 320,
-      "price_unit": "לאורח",
-      "guest_capacity_min": 90,
-      "guest_capacity_max": 420,
-      "description": "קייטרינג כשר עם אפשרויות קלאסיות, צמחוניות וטבעוניות.",
-      "website_url": "https://example.com/taamei-hatzafon",
+      "id": 26,
+      "name": "חול וזהב",
+      "category": "צילום",
+      "region": "הדרום",
+      "city": "באר שבע",
+      "price_min_ils": 7000,
+      "price_max_ils": 12000,
+      "price_unit": "לחבילה",
+      "guest_capacity_min": null,
+      "guest_capacity_max": null,
+      "description": "צילום באווירת מדבר, טבע וחתונות יעד בדרום.",
+      "website_url": "https://example.com/chol-vzahav",
       "styles": [
-        "אלגנטי",
-        "כפרי",
-        "מסורתי"
-      ],
-      "tags": [
-        "כשר",
-        "צמחוני / טבעוני"
-      ],
-      "is_demo": true,
-      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
-      "last_reviewed_at": "2026-06-25",
-      "is_active": true
-    },
-    {
-      "id": 2,
-      "name": "אחוזת האבן",
-      "category": "אולם / גן אירועים",
-      "region": "ירושלים והסביבה",
-      "city": "מעלה אדומים",
-      "price_min_ils": 310,
-      "price_max_ils": 490,
-      "price_unit": "לאורח",
-      "guest_capacity_min": 150,
-      "guest_capacity_max": 550,
-      "description": "מקום אלגנטי בסגנון קלאסי, מתאים לאירועים בינוניים וגדולים.",
-      "website_url": "https://example.com/ahuzat-haeven",
-      "styles": [
-        "רומנטי",
-        "אלגנטי",
-        "מסורתי"
-      ],
-      "tags": [
-        "כשר",
-        "אירוע פנים",
-        "נגישות",
-        "מתאים לחתונה גדולה",
-        "מסורתי"
-      ],
-      "is_demo": true,
-      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
-      "last_reviewed_at": "2026-06-25",
-      "is_active": true
-    },
-    {
-      "id": 3,
-      "name": "בית הגפן",
-      "category": "אולם / גן אירועים",
-      "region": "ירושלים והסביבה",
-      "city": "בית שמש",
-      "price_min_ils": 220,
-      "price_max_ils": 360,
-      "price_unit": "לאורח",
-      "guest_capacity_min": 80,
-      "guest_capacity_max": 300,
-      "description": "מקום אינטימי עם עיצוב כפרי ואווירה משפחתית.",
-      "website_url": "https://example.com/beit-hagefen",
-      "styles": [
-        "רומנטי",
         "כפרי",
         "בוהו"
       ],
       "tags": [
-        "כשר",
-        "אירוע חוץ",
-        "נגישות",
-        "מתאים לחתונה קטנה"
+        "וידאו כלול"
       ],
       "is_demo": true,
       "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
@@ -867,55 +765,24 @@
       "is_active": true
     },
     {
-      "id": 1,
-      "name": "גן הרים",
-      "category": "אולם / גן אירועים",
-      "region": "ירושלים והסביבה",
-      "city": "ירושלים",
-      "price_min_ils": 260,
-      "price_max_ils": 420,
-      "price_unit": "לאורח",
-      "guest_capacity_min": 120,
-      "guest_capacity_max": 450,
-      "description": "גן אירועים פתוח עם אפשרות לחופה תחת כיפת השמיים.",
-      "website_url": "https://example.com/gan-harim",
-      "styles": [
-        "רומנטי",
-        "כפרי",
-        "מסורתי"
-      ],
-      "tags": [
-        "כשר",
-        "אירוע חוץ",
-        "נגישות",
-        "מתאים לחתונה גדולה"
-      ],
-      "is_demo": true,
-      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
-      "last_reviewed_at": "2026-06-25",
-      "is_active": true
-    },
-    {
-      "id": 13,
-      "name": "DJ נועה",
-      "category": "די־ג׳יי",
-      "region": "ירושלים והסביבה",
-      "city": "ירושלים",
-      "price_min_ils": 5500,
-      "price_max_ils": 8500,
+      "id": 27,
+      "name": "סטודיו רימון",
+      "category": "צילום",
+      "region": "הדרום",
+      "city": "אשקלון",
+      "price_min_ils": 7500,
+      "price_max_ils": 12500,
       "price_unit": "לחבילה",
       "guest_capacity_min": null,
       "guest_capacity_max": null,
-      "description": "מוזיקה מיינסטרימית וריקודים, עם פגישת תכנון מראש.",
-      "website_url": "https://example.com/dj-noa",
+      "description": "סטילס ווידאו בסגנון חם ומשפחתי.",
+      "website_url": "https://example.com/studio-rimon",
       "styles": [
         "רומנטי",
-        "אלגנטי",
         "מסורתי"
       ],
       "tags": [
-        "מסורתי",
-        "הגברה כלולה"
+        "וידאו כלול"
       ],
       "is_demo": true,
       "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
@@ -923,24 +790,25 @@
       "is_active": true
     },
     {
-      "id": 20,
-      "name": "על הרחבה",
-      "category": "די־ג׳יי",
-      "region": "ירושלים והסביבה",
-      "city": "מודיעין",
-      "price_min_ils": 5800,
-      "price_max_ils": 9000,
+      "id": 28,
+      "name": "עדשה אורבנית",
+      "category": "צילום",
+      "region": "המרכז",
+      "city": "רמת גן",
+      "price_min_ils": 10000,
+      "price_max_ils": 15500,
       "price_unit": "לחבילה",
       "guest_capacity_min": null,
       "guest_capacity_max": null,
-      "description": "די־ג׳יי עם דגש על קריאת קהל ותכנון מסיבת ריקודים.",
-      "website_url": "https://example.com/al-harhava",
+      "description": "צילום וידאו וסטילס בקו אופנתי ועירוני.",
+      "website_url": "https://example.com/adasa-urbanit",
       "styles": [
         "אלגנטי",
-        "מודרני"
+        "מודרני",
+        "אורבני"
       ],
       "tags": [
-        "הגברה כלולה"
+        "וידאו כלול"
       ],
       "is_demo": true,
       "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
@@ -974,25 +842,77 @@
       "is_active": true
     },
     {
-      "id": 21,
-      "name": "אור טבעי צילום",
-      "category": "צילום",
-      "region": "ירושלים והסביבה",
-      "city": "ירושלים",
+      "id": 30,
+      "name": "קווים נקיים",
+      "category": "עיצוב ופרחים",
+      "region": "המרכז",
+      "city": "תל אביב",
       "price_min_ils": 8000,
-      "price_max_ils": 13000,
+      "price_max_ils": 18000,
       "price_unit": "לחבילה",
       "guest_capacity_min": null,
       "guest_capacity_max": null,
-      "description": "צילום סטילס בסגנון תיעודי טבעי, עם אפשרות לאלבום.",
-      "website_url": "https://example.com/or-tivi",
+      "description": "עיצוב מודרני ומינימליסטי, תאורה, שולחנות ופרחים.",
+      "website_url": "https://example.com/kavim-nekiim",
       "styles": [
-        "רומנטי",
-        "כפרי",
+        "אלגנטי",
+        "מודרני",
         "מינימליסטי"
       ],
       "tags": [
-        "וידאו כלול"
+        "כשר"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 31,
+      "name": "פרחי הגליל",
+      "category": "עיצוב ופרחים",
+      "region": "הצפון",
+      "city": "כרמיאל",
+      "price_min_ils": 4500,
+      "price_max_ils": 10500,
+      "price_unit": "לחבילה",
+      "guest_capacity_min": null,
+      "guest_capacity_max": null,
+      "description": "עיצוב טבעי ובוהו לחתונות גן וחצר.",
+      "website_url": "https://example.com/pirchei-hagalil",
+      "styles": [
+        "רומנטי",
+        "כפרי",
+        "בוהו"
+      ],
+      "tags": [
+        "כשר"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 32,
+      "name": "מדבר פורח",
+      "category": "עיצוב ופרחים",
+      "region": "הדרום",
+      "city": "באר שבע",
+      "price_min_ils": 4200,
+      "price_max_ils": 9800,
+      "price_unit": "לחבילה",
+      "guest_capacity_min": null,
+      "guest_capacity_max": null,
+      "description": "עיצוב בהיר, טבעי ומינימליסטי לאירועים בדרום.",
+      "website_url": "https://example.com/midbar-poreach",
+      "styles": [
+        "כפרי",
+        "בוהו",
+        "מינימליסטי"
+      ],
+      "tags": [
+        "כשר"
       ],
       "is_demo": true,
       "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
@@ -1023,6 +943,310 @@
       "is_demo": true,
       "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
       "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 34,
+      "name": "מטבח השוק",
+      "category": "קייטרינג",
+      "region": "המרכז",
+      "city": "תל אביב",
+      "price_min_ils": 240,
+      "price_max_ils": 380,
+      "price_unit": "לאורח",
+      "guest_capacity_min": 70,
+      "guest_capacity_max": 250,
+      "description": "קייטרינג שף בסגנון מודרני, חלבי או בשרי לפי בחירה.",
+      "website_url": "https://example.com/mitbach-hashuk",
+      "styles": [
+        "אלגנטי",
+        "מודרני",
+        "אורבני"
+      ],
+      "tags": [
+        "כשר",
+        "צמחוני / טבעוני"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 35,
+      "name": "טעמי הצפון",
+      "category": "קייטרינג",
+      "region": "הצפון",
+      "city": "חיפה",
+      "price_min_ils": 190,
+      "price_max_ils": 320,
+      "price_unit": "לאורח",
+      "guest_capacity_min": 90,
+      "guest_capacity_max": 420,
+      "description": "קייטרינג כשר עם אפשרויות קלאסיות, צמחוניות וטבעוניות.",
+      "website_url": "https://example.com/taamei-hatzafon",
+      "styles": [
+        "אלגנטי",
+        "כפרי",
+        "מסורתי"
+      ],
+      "tags": [
+        "כשר",
+        "צמחוני / טבעוני"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 36,
+      "name": "אש ותבלין",
+      "category": "קייטרינג",
+      "region": "הדרום",
+      "city": "באר שבע",
+      "price_min_ils": 170,
+      "price_max_ils": 290,
+      "price_unit": "לאורח",
+      "guest_capacity_min": 100,
+      "guest_capacity_max": 400,
+      "description": "קייטרינג לאירועי חוץ בסגנון מדברי וישראלי.",
+      "website_url": "https://example.com/esh-vetavlin",
+      "styles": [
+        "כפרי",
+        "בוהו",
+        "מינימליסטי"
+      ],
+      "tags": [
+        "כשר"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-25",
+      "is_active": true
+    },
+    {
+      "id": 37,
+      "name": "Orchard Terrace",
+      "category": "אולם / גן אירועים",
+      "region": "המרכז",
+      "city": "Raanana",
+      "price_min_ils": 290,
+      "price_max_ils": 470,
+      "price_unit": "לאורח",
+      "guest_capacity_min": 110,
+      "guest_capacity_max": 420,
+      "description": "Synthetic garden venue for couples looking for a calm outdoor reception and elegant indoor dinner.",
+      "website_url": "https://example.com/orchard-terrace",
+      "styles": [
+        "כפרי",
+        "בוהו",
+        "אלגנטי"
+      ],
+      "tags": [
+        "כשר",
+        "אירוע חוץ",
+        "מתאים לחתונה קטנה"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-27",
+      "is_active": true
+    },
+    {
+      "id": 38,
+      "name": "Olive Grove Hall",
+      "category": "אולם / גן אירועים",
+      "region": "הצפון",
+      "city": "Yokneam",
+      "price_min_ils": 240,
+      "price_max_ils": 390,
+      "price_unit": "לאורח",
+      "guest_capacity_min": 90,
+      "guest_capacity_max": 360,
+      "description": "Synthetic northern venue with a soft rustic line, outdoor ceremony area, and flexible dining layout.",
+      "website_url": "https://example.com/olive-grove-hall",
+      "styles": [
+        "כפרי",
+        "מינימליסטי",
+        "מסורתי"
+      ],
+      "tags": [
+        "כשר",
+        "אירוע חוץ",
+        "נגישות"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-27",
+      "is_active": true
+    },
+    {
+      "id": 39,
+      "name": "DJ Skyline",
+      "category": "די־ג׳יי",
+      "region": "המרכז",
+      "city": "Tel Aviv",
+      "price_min_ils": 6200,
+      "price_max_ils": 9800,
+      "price_unit": "לחבילה",
+      "guest_capacity_min": null,
+      "guest_capacity_max": null,
+      "description": "Synthetic DJ package for modern city weddings, reception music, dance floor set, and basic lighting coordination.",
+      "website_url": "https://example.com/dj-skyline",
+      "styles": [
+        "בוהו",
+        "מודרני",
+        "רומנטי"
+      ],
+      "tags": [
+        "כשר",
+        "אירוע פנים",
+        "מתאים לחתונה גדולה"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-27",
+      "is_active": true
+    },
+    {
+      "id": 40,
+      "name": "Negev Pulse",
+      "category": "די־ג׳יי",
+      "region": "הדרום",
+      "city": "Beer Sheva",
+      "price_min_ils": 5200,
+      "price_max_ils": 8200,
+      "price_unit": "לחבילה",
+      "guest_capacity_min": null,
+      "guest_capacity_max": null,
+      "description": "Synthetic DJ service for warm southern celebrations, with Israeli, mainstream, and traditional dance sets.",
+      "website_url": "https://example.com/negev-pulse",
+      "styles": [
+        "מינימליסטי",
+        "אלגנטי",
+        "אורבני"
+      ],
+      "tags": [
+        "כשר",
+        "מתאים לחתונה גדולה",
+        "מסורתי"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-27",
+      "is_active": true
+    },
+    {
+      "id": 41,
+      "name": "Golden Hour Studio",
+      "category": "צילום",
+      "region": "ירושלים והסביבה",
+      "city": "Jerusalem",
+      "price_min_ils": 8800,
+      "price_max_ils": 14200,
+      "price_unit": "לחבילה",
+      "guest_capacity_min": null,
+      "guest_capacity_max": null,
+      "description": "Synthetic photography package focused on natural light, couple portraits, family coverage, and highlight video.",
+      "website_url": "https://example.com/golden-hour-studio",
+      "styles": [
+        "כפרי",
+        "בוהו",
+        "אורבני"
+      ],
+      "tags": [
+        "כשר",
+        "מסורתי",
+        "הגברה כלולה"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-27",
+      "is_active": true
+    },
+    {
+      "id": 42,
+      "name": "Northlight Frames",
+      "category": "צילום",
+      "region": "הצפון",
+      "city": "Haifa",
+      "price_min_ils": 7600,
+      "price_max_ils": 11800,
+      "price_unit": "לחבילה",
+      "guest_capacity_min": null,
+      "guest_capacity_max": null,
+      "description": "Synthetic photo and video team for intimate northern weddings, outdoor portraits, and documentary coverage.",
+      "website_url": "https://example.com/northlight-frames",
+      "styles": [
+        "כפרי",
+        "מינימליסטי",
+        "אלגנטי"
+      ],
+      "tags": [
+        "אירוע חוץ",
+        "נגישות",
+        "הגברה כלולה"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-27",
+      "is_active": true
+    },
+    {
+      "id": 43,
+      "name": "Rose Line Design",
+      "category": "עיצוב ופרחים",
+      "region": "המרכז",
+      "city": "Givatayim",
+      "price_min_ils": 6200,
+      "price_max_ils": 14500,
+      "price_unit": "לחבילה",
+      "guest_capacity_min": null,
+      "guest_capacity_max": null,
+      "description": "Synthetic floral and table styling service for romantic palettes, soft candles, chuppah flowers, and signage.",
+      "website_url": "https://example.com/rose-line-design",
+      "styles": [
+        "כפרי",
+        "בוהו",
+        "מסורתי"
+      ],
+      "tags": [
+        "כשר",
+        "מתאים לחתונה קטנה",
+        "וידאו כלול"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-27",
+      "is_active": true
+    },
+    {
+      "id": 44,
+      "name": "Season Table Catering",
+      "category": "קייטרינג",
+      "region": "המרכז",
+      "city": "Petah Tikva",
+      "price_min_ils": 205,
+      "price_max_ils": 340,
+      "price_unit": "לאורח",
+      "guest_capacity_min": 80,
+      "guest_capacity_max": 450,
+      "description": "Synthetic catering option with flexible meat, dairy, vegetarian, and buffet-style menus for medium weddings.",
+      "website_url": "https://example.com/season-table-catering",
+      "styles": [
+        "בוהו",
+        "מודרני",
+        "אורבני"
+      ],
+      "tags": [
+        "כשר",
+        "נגישות",
+        "צמחוני / טבעוני"
+      ],
+      "is_demo": true,
+      "info_source": "נתוני דמו שנוצרו לצורכי פיתוח והדגמה בלבד",
+      "last_reviewed_at": "2026-06-27",
       "is_active": true
     }
   ]

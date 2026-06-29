@@ -1,0 +1,4 @@
+:80 {
+    reverse_proxy /api/* {$BACKEND_URL}
+    file_server
+}
