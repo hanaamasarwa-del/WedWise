@@ -21,6 +21,14 @@ const SUPPLIER_CATEGORIES = [
   'קייטרינג',
 ];
 
+function formatNumberInput(input) {
+  input.value = input.value.replace(/[^\d]/g, '');
+  const num = parseInt(input.value, 10);
+  if (!isNaN(num)) {
+    input.value = num.toLocaleString('he-IL');
+  }
+}
+
 let currentStep = 1;
 let latestReportText = '';
 let latestQuestionnaire = null;
@@ -94,8 +102,8 @@ function getFormState() {
   const styleInput = form.querySelector('input[name="preferred_style"]:checked');
 
   return {
-    estimated_budget_ils: parseInt(form.estimated_budget_ils.value, 10) || 0,
-    guest_count: parseInt(form.guest_count.value, 10) || 0,
+    estimated_budget_ils: parseInt(form.estimated_budget_ils.value.replace(/[^\d]/g, ''), 10) || 0,
+    guest_count: parseInt(form.guest_count.value.replace(/[^\d]/g, ''), 10) || 0,
     region_id: form.region_id.value,
     region_name: REGION_NAMES[form.region_id.value] || '',
     preferred_style: styleInput ? styleInput.value : '',
@@ -1146,6 +1154,14 @@ form.addEventListener('keydown', (e) => {
 
   e.preventDefault();
   btnNext.click();
+});
+
+document.getElementById('estimated_budget_ils').addEventListener('input', function() {
+  formatNumberInput(this);
+});
+
+document.getElementById('guest_count').addEventListener('input', function() {
+  formatNumberInput(this);
 });
 
 goToStep(1, { focusFirstInput: false });

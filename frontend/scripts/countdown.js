@@ -16,6 +16,7 @@ const copyMessage = document.getElementById('copy-message');
 const generateAiBtn = document.getElementById('generate-ai-btn');
 const downloadGeneratedBtn = document.getElementById('download-generated-btn');
 let uploadedImageFile = null;
+let uploadedImageDataUrl = null;
 
 // Calculate months and days between today and a target date
 function calculateCountdown(targetDate) {
@@ -120,6 +121,15 @@ function renderCountdown(targetDate, coupleNames, customTitle) {
     cardFooter.style.display = 'none';
   }
 
+  // Apply background image if uploaded
+  if (uploadedImageDataUrl) {
+    countdownCard.style.backgroundImage = `url('${uploadedImageDataUrl}')`;
+    countdownCard.style.backgroundSize = 'cover';
+    countdownCard.style.backgroundPosition = 'center';
+  } else {
+    countdownCard.style.backgroundImage = 'none';
+  }
+
   // Show result
   resultContainer.hidden = false;
   noResult.hidden = true;
@@ -206,6 +216,12 @@ form.addEventListener('reset', () => {
   resultContainer.hidden = true;
   noResult.hidden = false;
   hideError();
+  uploadedImageDataUrl = null;
+  uploadedImageFile = null;
+  countdownCard.style.backgroundImage = 'none';
+  document.getElementById('image-preview').style.display = 'none';
+  document.getElementById('inspiration-image').value = '';
+  generateAiBtn.style.display = 'none';
 });
 
 // Image preview
@@ -214,6 +230,7 @@ function previewImage(input) {
     uploadedImageFile = input.files[0];
     const reader = new FileReader();
     reader.onload = (e) => {
+      uploadedImageDataUrl = e.target.result;
       document.getElementById('preview-img').src = e.target.result;
       document.getElementById('image-preview').style.display = 'block';
       generateAiBtn.style.display = 'inline-block';
