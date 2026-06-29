@@ -53,30 +53,9 @@
               </div>
 
               <div class="form-group">
-                <label for="inspiration-image">תמונה להורדה (אופציונלי)</label>
+                <label for="inspiration-image">תמונה (אופציונלי)</label>
                 <input type="file" id="inspiration-image" name="inspiration-image" accept="image/*" onchange="previewImage(this)">
-                <p class="field-hint">העלו תמונה כדי ליצור כרטיס ספירה מעוצב עם התמונה שלכם</p>
-                <div id="image-preview" style="display: none; margin-top: 1rem;">
-                  <img id="preview-img" src="" alt="Preview" style="max-width: 100%; max-height: 300px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                </div>
-              </div>
-
-              <div class="form-group" id="design-style-group" style="display: none;">
-                <label>בחרו עיצוב</label>
-                <div class="design-options">
-                  <label class="design-option">
-                    <input type="radio" name="design-style" value="full-photo-text" checked>
-                    <span>תמונה מלאה עם טקסט מעל</span>
-                  </label>
-                  <label class="design-option">
-                    <input type="radio" name="design-style" value="blurred-with-card">
-                    <span>רקע מטושטש עם כרטיס אלגנטי</span>
-                  </label>
-                  <label class="design-option">
-                    <input type="radio" name="design-style" value="photo-top-countdown-bottom">
-                    <span>תמונה למעלה וספירה למטה</span>
-                  </label>
-                </div>
+                <p class="field-hint">העלו תמונה כדי שתופיע ברקע כרטיס הספירה</p>
               </div>
 
               <div class="button-group">
@@ -115,14 +94,8 @@
                 <div class="countdown-decoration countdown-decoration-bottom" aria-hidden="true"></div>
               </div>
 
-              <div id="designed-card-container" style="display: none; margin-bottom: 2rem;">
-                <h3 style="color: var(--color-primary); margin-bottom: 1rem;">כרטיס ספירה מעוצב</h3>
-                <div id="designed-card-preview" style="max-width: 100%; border-radius: 12px; box-shadow: 0 8px 32px rgba(196, 135, 126, 0.2); overflow: hidden; margin-bottom: 1rem;"></div>
-                <button type="button" id="download-designed-btn" class="btn btn-primary">הורדת הכרטיס</button>
-              </div>
-
               <div class="countdown-actions">
-                <button type="button" id="download-btn" class="btn btn-primary">הורדת התמונה</button>
+                <button type="button" id="download-btn" class="btn btn-primary">הורדת הכרטיס</button>
                 <button type="button" id="copy-btn" class="btn btn-secondary">העתקה</button>
               </div>
 
