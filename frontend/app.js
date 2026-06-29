@@ -50,6 +50,16 @@ const navSections = navSectionLinks
   }))
   .filter((item) => item.section);
 
+function formatNumberWithCommas(value) {
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function handleNumberInput(e) {
+  const input = e.target;
+  const digitsOnly = input.value.replace(/,/g, '');
+  input.value = formatNumberWithCommas(digitsOnly);
+}
+
 function updateActiveNavLink() {
   const headerOffset = document.querySelector('.site-header')?.offsetHeight || 0;
   const scrollPosition = window.scrollY + headerOffset + 80;
@@ -600,6 +610,9 @@ form.addEventListener('keydown', (e) => {
 
 goToStep(1, { focusFirstInput: false });
 updateActiveNavLink();
+
+document.getElementById('estimated_budget_ils').addEventListener('input', handleNumberInput);
+document.getElementById('guest_count').addEventListener('input', handleNumberInput);
 
 window.addEventListener('load', () => {
   window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
