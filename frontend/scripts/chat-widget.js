@@ -138,6 +138,12 @@
       input.style.height = `${Math.min(input.scrollHeight, 112)}px`;
     });
 
+    input.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;
+      event.preventDefault();
+      if (!input.disabled) form.requestSubmit();
+    });
+
     messagesEl.addEventListener('click', (event) => {
       const promptButton = event.target.closest('[data-chat-prompt]');
       if (!promptButton || input.disabled) return;
