@@ -187,6 +187,21 @@ Most pages share `frontend/styles/site.css` and the floating chatbot from
 `frontend/scripts/chat-widget.js`. Page-specific styles live in
 `frontend/styles/countdown.css` and `frontend/styles/blessing-helper.css`.
 
+### Questionnaire Sync Rule
+
+The active wedding questionnaire appears in two places:
+
+- `frontend/index.html`, embedded in the homepage flow.
+- `frontend/questionnaire.html`, as the dedicated planning questionnaire page.
+
+The form content, step order, field names, options, placeholders, helper text,
+validation attributes, progress controls, and submit/back/next buttons must stay
+identical between these two pages. The homepage may keep a different page-level
+layout and scale so it fits the landing page, but the actual
+`<form id="wedding-form">...</form>` content should be updated in both files
+whenever questionnaire content changes. After editing either page, compare the
+two form blocks and verify they still match.
+
 ### Tips and Guides Content Rules
 
 `frontend/articles.html` intentionally mixes two content types:
