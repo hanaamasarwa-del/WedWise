@@ -781,11 +781,6 @@ function supplierCardHtml(supplier) {
   const styleText = Array.isArray(supplier.styles) && supplier.styles.length
     ? supplier.styles.slice(0, 3).join(', ')
     : '';
-  const website = supplier.websiteUrl ? `
-    <a class="venue-card-rating" href="${escapeHtml(supplier.websiteUrl)}" target="_blank" rel="noopener">
-      <span class="venue-stars" aria-hidden="true">★★★★★</span>
-      <span class="venue-rating-label">פתיחת אתר הספק ↗</span>
-    </a>` : '';
 
   return `
     <article class="venue-card supplier-match-card">
@@ -799,7 +794,6 @@ function supplierCardHtml(supplier) {
         </ul>
         ${supplier.description ? `<p class="supplier-card-description">${escapeHtml(supplier.description)}</p>` : ''}
         ${supplier.reason ? `<p class="venue-card-reason">${escapeHtml(supplier.reason)}</p>` : ''}
-        ${website}
       </div>
     </article>`;
 }
