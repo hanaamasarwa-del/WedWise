@@ -58,7 +58,7 @@ Working in the active user flow:
   Telegram notification, and Supabase follow-up persistence.
 - Telegram delivery of completed questionnaire details.
 - Closed-by-default floating chatbot on every active frontend page.
-- OpenAI Responses API integration using `gpt-5.4-nano`.
+- OpenAI Responses API integration using `gpt-5.4-mini`.
 - OpenAI Images API integration using `gpt-image-1`.
 - Server-side API key handling.
 - Basic chatbot and form rate limiting.
@@ -84,7 +84,7 @@ Important limitations:
 - Frontend: HTML, CSS, and vanilla JavaScript.
 - Server: Node.js and Express.
 - AI chatbot: OpenAI Responses API.
-- Chatbot model: `gpt-5.4-nano` by default.
+- Chatbot model: `gpt-5.4-mini` by default.
 - Notifications: Telegram Bot API.
 - Optional persistence routes: Supabase/PostgreSQL.
 - Demo supplier assets: SQLite, SQL seed data, and JSON.
@@ -132,7 +132,7 @@ The active backend reads `backend/.env`.
 | --- | --- | --- |
 | `PORT` | No | Local server port. Defaults to `3000`. |
 | `OPENAI_API_KEY` | For AI features | OpenAI API key for chatbot and wedding image generation. Never expose it in frontend code. |
-| `OPENAI_CHAT_MODEL` | No | Chatbot model override. Defaults to `gpt-5.4-nano`. |
+| `OPENAI_CHAT_MODEL` | No | Chatbot model override. Defaults to `gpt-5.4-mini`. |
 | `OPENAI_IMAGE_MODEL` | No | Image generation model override. Defaults to `gpt-image-1`. |
 | `OPENAI_IMAGE_SIZE` | No | Image generation size override. Defaults to `1024x1024`. |
 | `OPENAI_IMAGE_QUALITY` | No | Image generation quality override. Defaults to `medium`. |
