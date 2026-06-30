@@ -65,6 +65,9 @@ Working in the active user flow:
   Telegram notification, and Supabase follow-up persistence.
 - Venue recommendation modal based on the questionnaire's region, budget, and
   guest count. The data source is local demo JSON under `backend/data/venues/`.
+- Non-venue supplier recommendation modals from the report for DJ, photography,
+  design/flowers, and catering. These use the supplier catalog/database route
+  and never generate supplier names in the browser.
 - Telegram delivery of completed questionnaire details.
 - Optional Supabase persistence for questionnaire submissions, leads, reports,
   and follow-up decisions when Supabase credentials are configured.
@@ -80,8 +83,8 @@ Working in the active user flow:
 Present in the backend but not part of the primary local report flow:
 
 - Mock report persistence.
-- Demo supplier recommendation routes under `/api/suppliers/recommendations`,
-  which require a saved Supabase submission.
+- Legacy supplier recommendation route under `/api/suppliers/recommendations`,
+  which requires a saved Supabase submission.
 
 Important limitations:
 
@@ -376,6 +379,20 @@ These records exist only for development, matching-flow tests, and project
 demonstrations. Keep the SQL, SQLite, and JSON versions synchronized when the
 dataset changes.
 
+The active non-venue supplier recommender is:
+
+```text
+POST /api/suppliers/recommend
+```
+
+It accepts a category, region, budget, guest count, and style, then returns
+matching suppliers for DJ, photography, design/flowers, or catering. The route
+queries Supabase `suppliers` when Supabase credentials are configured. In local
+development without Supabase credentials, it falls back to
+`data/demo-suppliers/suppliers.demo.json`, which is the JSON export of the demo
+supplier catalog. The frontend must render only supplier rows returned by this
+endpoint. Do not invent supplier names, prices, links, or availability.
+
 Venue recommendation data used by `/api/venues/recommend` lives separately in:
 
 ```text
@@ -401,6 +418,7 @@ recommendations.
 | `POST` | `/api/generate-countdown-design` | Optional OpenAI countdown design endpoint; requires uploaded image and API key. |
 | `POST` | `/api/wedding-follow-up` | Active final decision endpoint; saves to Supabase and notifies Telegram. |
 | `POST` | `/api/venues/recommend` | Active local venue recommendation endpoint using `backend/data/venues/`. |
+| `POST` | `/api/suppliers/recommend` | Active non-venue supplier recommendation endpoint for DJ, photography, design/flowers, and catering. Uses Supabase suppliers when configured, with local demo-catalog fallback for development. |
 | `GET` | `/api/suppliers/recommendations` | Available; uses demo suppliers and a saved submission. |
 | `POST` | `/api/leads` | Available; requires Supabase and optionally Telegram. |
 
@@ -453,6 +471,9 @@ supplier matching.
   unless the user explicitly requests that exact change.
 - Keep secrets server-side and out of Git.
 - Do not describe demo suppliers as real or verified.
+- For supplier recommendations, render only rows returned by the supplier
+  database/catalog route. Never generate, hardcode, or guess supplier names,
+  prices, links, or availability in frontend code.
 - Update chatbot knowledge with every user-facing change.
 - Keep durable implementation notes short in `docs/project-notes.md`.
 - Before every GitHub upload, review the repository changes from the current

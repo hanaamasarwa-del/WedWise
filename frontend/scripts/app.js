@@ -21,6 +21,15 @@ const SUPPLIER_CATEGORIES = [
   'קייטרינג',
 ];
 
+const VENUE_CATEGORY = 'אולם / גן אירועים';
+
+const SUPPLIER_RECOMMENDATION_LABELS = {
+  'די־ג׳יי': 'הצג המלצות די־ג׳יי',
+  'צילום': 'הצג המלצות צילום',
+  'עיצוב ופרחים': 'הצג המלצות עיצוב',
+  'קייטרינג': 'הצג המלצות קייטרינג',
+};
+
 function formatNumberInput(input) {
   input.value = input.value.replace(/[^\d]/g, '');
   const num = parseInt(input.value, 10);
@@ -323,16 +332,24 @@ function generateMockReport(payload) {
     : '';
 
   const supplierCards = SUPPLIER_CATEGORIES.map((cat) => {
-    const isVenue = cat === 'אולם / גן אירועים';
+    const isVenue = cat === VENUE_CATEGORY;
+    const supplierButtonLabel = SUPPLIER_RECOMMENDATION_LABELS[cat];
     const venueBtn = isVenue ? `
       <button type="button" class="rpt-venue-btn" data-venue-recommend
         data-region-id="${wr.region_id}" data-budget="${budget}" data-guests="${guests}">
         הצג המלצות אולמות
       </button>` : '';
+    const supplierBtn = supplierButtonLabel ? `
+      <button type="button" class="rpt-venue-btn rpt-supplier-btn" data-supplier-recommend
+        data-category="${escapeHtml(cat)}" data-region-id="${wr.region_id}"
+        data-region="${escapeHtml(region)}" data-budget="${budget}"
+        data-guests="${guests}" data-style="${escapeHtml(style)}">
+        ${supplierButtonLabel}
+      </button>` : '';
     return `
-    <div class="rpt-supplier-card${isVenue ? ' rpt-supplier-card--venue' : ''}">
+    <div class="rpt-supplier-card${isVenue ? ' rpt-supplier-card--venue' : supplierButtonLabel ? ' rpt-supplier-card--recommendable' : ''}">
       <span class="rpt-supplier-name">${cat}</span>
-      ${venueBtn}
+      ${venueBtn || supplierBtn}
     </div>`;
   }).join('');
 
@@ -498,7 +515,7 @@ function generateMockReport(payload) {
           <span class="rpt-mark" aria-hidden="true">✓</span>
           <h3>קטגוריות ספקים לבדיקה</h3>
         </div>
-        <p class="rpt-block-sub">בדוח המלא נציג התאמות לפי אזור, סגנון ותקציב.</p>
+        <p class="rpt-block-sub">ההתאמות כאן מבוססות על האזור, הסגנון והתקציב שציינתם בשאלון.</p>
         <div class="rpt-suppliers">
           ${supplierCards}
         </div>
@@ -712,6 +729,133 @@ async function showVenueRecommendations(btn) {
         <h2>לא הצלחנו לטעון המלצות כרגע</h2>
         <p>אפשר לנסות שוב בעוד רגע. אנחנו כאן כדי לעזור לכם למצוא את האולם המושלם.</p>
         <button type="button" class="btn btn-secondary" data-close-venue-modal>סגירה</button>
+      </div>`);
+  }
+}
+
+function ensureSupplierModal() {
+  let modal = document.getElementById('supplier-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'supplier-modal';
+    modal.className = 'wedding-image-modal venue-modal supplier-modal';
+    modal.hidden = true;
+    modal.innerHTML = `
+      <div class="wedding-image-modal-backdrop" data-close-supplier-modal></div>
+      <div class="wedding-image-modal-window venue-modal-window" role="dialog" aria-modal="true" aria-labelledby="supplier-modal-title">
+        <button type="button" class="wedding-image-modal-close" data-close-supplier-modal aria-label="סגירת חלון">×</button>
+        <div id="supplier-modal-content"></div>
+      </div>`;
+    document.body.appendChild(modal);
+  }
+  return { modal, content: modal.querySelector('#supplier-modal-content') };
+}
+
+function openSupplierModal(html) {
+  const { modal, content } = ensureSupplierModal();
+  content.innerHTML = html;
+  modal.hidden = false;
+  document.body.classList.add('modal-open');
+}
+
+function closeSupplierModal() {
+  const modal = document.getElementById('supplier-modal');
+  if (!modal) return;
+  modal.hidden = true;
+  document.body.classList.remove('modal-open');
+}
+
+function supplierPriceText(supplier) {
+  if (supplier.priceMin == null) return 'מחיר לפי בדיקה';
+  const min = Number(supplier.priceMin).toLocaleString('he-IL');
+  const max = supplier.priceMax != null && supplier.priceMax !== supplier.priceMin
+    ? `–${Number(supplier.priceMax).toLocaleString('he-IL')}`
+    : '';
+  const unit = supplier.priceUnit ? ` ${escapeHtml(supplier.priceUnit)}` : '';
+  return `${min}${max} ₪${unit}`;
+}
+
+function supplierCardHtml(supplier) {
+  const place = [supplier.city, supplier.region].filter(Boolean).join(' · ');
+  const styleText = Array.isArray(supplier.styles) && supplier.styles.length
+    ? supplier.styles.slice(0, 3).join(', ')
+    : '';
+  const website = supplier.websiteUrl ? `
+    <a class="venue-card-rating" href="${escapeHtml(supplier.websiteUrl)}" target="_blank" rel="noopener">
+      <span class="venue-stars" aria-hidden="true">★★★★★</span>
+      <span class="venue-rating-label">פתיחת אתר הספק ↗</span>
+    </a>` : '';
+
+  return `
+    <article class="venue-card supplier-match-card">
+      <div class="venue-card-body">
+        <span class="supplier-match-label">${escapeHtml(supplier.category)}</span>
+        <h4 class="venue-card-name">${escapeHtml(supplier.name)}</h4>
+        ${place ? `<p class="venue-card-city">${escapeHtml(place)}</p>` : ''}
+        <ul class="venue-card-meta">
+          <li>${supplierPriceText(supplier)}</li>
+          ${styleText ? `<li>${escapeHtml(styleText)}</li>` : ''}
+        </ul>
+        ${supplier.description ? `<p class="supplier-card-description">${escapeHtml(supplier.description)}</p>` : ''}
+        ${supplier.reason ? `<p class="venue-card-reason">${escapeHtml(supplier.reason)}</p>` : ''}
+        ${website}
+      </div>
+    </article>`;
+}
+
+function renderSupplierRecommendations(data) {
+  const budget = data.targetBudget?.amount
+    ? `${formatCurrency(Number(data.targetBudget.amount))} ${escapeHtml(data.targetBudget.unit || '')}`.trim()
+    : '';
+  const intro = budget
+    ? `לפי אזור ${escapeHtml(data.region || '')}, סגנון האירוע ומסגרת של כ־${budget}, אלו ההתאמות הראשוניות שמצאנו.`
+    : `לפי אזור ${escapeHtml(data.region || '')} וסגנון האירוע, אלו ההתאמות הראשוניות שמצאנו.`;
+
+  openSupplierModal(`
+    <div class="venue-modal-head">
+      <h2 id="supplier-modal-title">המלצות ${escapeHtml(data.category)}</h2>
+      <p>${intro}</p>
+    </div>
+    <div class="venue-card-grid">
+      ${data.suppliers.map(supplierCardHtml).join('')}
+    </div>
+    <p class="venue-modal-foot">ההתאמות הן הצעה ראשונית מתוך מאגר הספקים. מחירים, זמינות ופרטים סופיים חייבים בדיקה מול הספק.</p>
+  `);
+}
+
+async function showSupplierRecommendations(btn) {
+  const payload = {
+    category: btn.dataset.category,
+    region_id: Number(btn.dataset.regionId),
+    region: btn.dataset.region,
+    budget: Number(btn.dataset.budget),
+    guests: Number(btn.dataset.guests),
+    style: btn.dataset.style,
+  };
+
+  openSupplierModal(`
+    <div class="venue-modal-loading">
+      <h2>מחפשים ${escapeHtml(payload.category)} שמתאימים לכם...</h2>
+      <p>בודקים התאמה לפי אזור, תקציב, סגנון וכמות אורחים.</p>
+    </div>`);
+
+  try {
+    const res = await fetch('/api/suppliers/recommend', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.suppliers || !data.suppliers.length) {
+      throw new Error(data.error || 'no suppliers');
+    }
+    renderSupplierRecommendations(data);
+  } catch (err) {
+    openSupplierModal(`
+      <div class="venue-modal-message">
+        <h2>לא הצלחנו לטעון המלצות כרגע</h2>
+        <p>אפשר לנסות שוב בעוד רגע. אם התקלה חוזרת, נציג שלנו יוכל לבדוק עבורכם ספקים מתאימים ידנית.</p>
+        <button type="button" class="btn btn-secondary" data-close-supplier-modal>סגירה</button>
       </div>`);
   }
 }
@@ -1101,7 +1245,16 @@ document.addEventListener('click', (event) => {
 });
 
 document.addEventListener('click', (event) => {
+  const supplierBtn = event.target.closest('[data-supplier-recommend]');
+  if (supplierBtn) showSupplierRecommendations(supplierBtn);
+});
+
+document.addEventListener('click', (event) => {
   if (event.target.closest('[data-close-venue-modal]')) closeVenueModal();
+});
+
+document.addEventListener('click', (event) => {
+  if (event.target.closest('[data-close-supplier-modal]')) closeSupplierModal();
 });
 
 document.addEventListener('click', (event) => {
