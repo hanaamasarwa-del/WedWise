@@ -107,10 +107,10 @@ async function sendLeadNotification(lead) {
 function buildFollowUpMessage(followUp) {
   const decisionText = followUp.decision === "continue"
     ? "רוצה להמשיך ארגון חתונה עם WedWise"
-    : "אהב/ה את התמונה אבל רוצה לחשוב על זה";
+    : "רוצה לשמור את הדוח ולחשוב על זה";
 
   return [
-    "📌 בחירה אחרי יצירת תמונת חתונה",
+    "📌 בחירה אחרי אישור דוח החתונה",
     "",
     "פרטי קשר",
     `👤 שם מלא: ${followUp.fullName}`,
