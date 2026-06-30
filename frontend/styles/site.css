@@ -675,20 +675,15 @@ button, input, select, textarea {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 3.25rem;
-  height: 3.25rem;
-  margin-bottom: 1.35rem;
+  width: 2.3rem;
+  height: 2.3rem;
+  margin-bottom: 1rem;
   color: var(--color-primary-dark);
-  background: linear-gradient(135deg, #FFF8F4 0%, var(--color-secondary-soft) 100%);
-  border: 1px solid rgba(141, 118, 104, 0.24);
+  background: linear-gradient(135deg, rgba(244, 223, 216, 0.74), rgba(255, 255, 255, 0.82));
+  border: 1px solid rgba(141, 118, 104, 0.22);
   border-radius: var(--radius-md);
-  font-family: var(--font-display);
-  font-size: 2.05rem;
-  font-weight: 700;
-  line-height: 1;
-  box-shadow: 0 10px 24px rgba(185, 133, 125, 0.14);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.72);
-  -webkit-text-stroke: 0.35px rgba(26, 22, 17, 0.24);
+  font-size: 0.78rem;
+  font-weight: 800;
 }
 
 .step-card h3 {
