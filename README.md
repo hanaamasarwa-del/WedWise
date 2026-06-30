@@ -187,6 +187,23 @@ Most pages share `frontend/styles/site.css` and the floating chatbot from
 `frontend/scripts/chat-widget.js`. Page-specific styles live in
 `frontend/styles/countdown.css` and `frontend/styles/blessing-helper.css`.
 
+### Tips and Guides Content Rules
+
+`frontend/articles.html` intentionally mixes two content types:
+
+- Guide cards use `article-card--guide`. They may include a fuller summary,
+  short bullet list, and the button text `קראו את המדריך`. Opening one should
+  show a deeper, article-like guide with context, sections, practical reasoning,
+  and a checklist.
+- Tip cards use `article-card--tip`. They must stay short, direct, and easy to
+  scan. Their visible card copy should usually be one concise paragraph without
+  a long bullet list, and the button text should stay tip-oriented, such as
+  `פתחו טיפ קצר`. Opening one may show a concise tip expansion, not a full
+  article-length guide.
+
+Do not make all cards the same length. The page title is `טיפים ומדריכים`
+because it should clearly contain both quick tips and deeper guides.
+
 ## Chatbot
 
 The chatbot appears as a floating button in the corner of the screen. It is
