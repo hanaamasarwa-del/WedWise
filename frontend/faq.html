@@ -11,12 +11,27 @@
   <style>
     /* ── FAQ page ── */
     .faq-hero {
+      position: relative;
       padding: 5rem 0 3.5rem;
       text-align: center;
       background:
-        radial-gradient(circle at 15% 0%, rgba(244, 223, 216, 0.55), transparent 38%),
-        radial-gradient(circle at 90% 100%, rgba(232, 216, 202, 0.32), transparent 30%),
-        var(--color-bg);
+        linear-gradient(180deg, rgba(253, 251, 247, 0.88), rgba(253, 251, 247, 0.95)),
+        url("https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=2200&q=82") center/cover;
+      overflow: hidden;
+    }
+
+    .faq-hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 5rem;
+      background: linear-gradient(180deg, transparent, var(--color-bg));
+      pointer-events: none;
+    }
+
+    .faq-hero .container {
+      position: relative;
+      z-index: 1;
     }
 
     .faq-hero-eyebrow {
