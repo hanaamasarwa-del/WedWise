@@ -18,8 +18,9 @@ The current website lets a visitor:
 
 1. Learn how the WedWise planning process works.
 2. Complete a six-step wedding questionnaire.
-3. Move between the main page, planning questionnaire, countdown tool, and
-   wedding blessing writing page from one consistent navigation menu.
+3. Move between the main page, planning questionnaire, countdown tool, wedding
+   blessing writing page, and tips/guides page from one consistent navigation
+   menu.
 4. Enter a budget, guest count, region, style, colors, flowers, decorations,
    personal notes, an optional inspiration link, and contact details.
 5. Receive an initial browser-generated planning report with a suggested budget
@@ -29,10 +30,12 @@ The current website lets a visitor:
 7. Save the generated wedding visualization from the preview modal.
 8. Choose whether to continue organizing the wedding with WedWise or think
    about it first; the decision is saved and sent to the agency Telegram bot.
-9. Create a wedding countdown card and a wedding blessing draft from dedicated
-   helper pages.
-10. Send the completed questionnaire to the agency through Telegram.
-11. Open a floating AI support chatbot for short questions about WedWise and how
+9. Create a wedding countdown card, write a wedding blessing draft, and browse
+   practical wedding-planning tips from dedicated pages.
+10. Open a wedding invitation editor from the report flow and export the
+   invitation as PNG or print/save it as PDF.
+11. Send the completed questionnaire to the agency through Telegram.
+12. Open a floating AI support chatbot for short questions about WedWise and how
    to use the website.
 
 The protected product brief also describes future work such as deeper
@@ -52,30 +55,44 @@ Working in the active user flow:
 - Six-step questionnaire with validation and back/next navigation.
 - Wedding countdown helper page.
 - Wedding blessing writing page, labeled `כתיבת ברכה` in the navigation.
+- Wedding tips/guides page, labeled `טיפים ומדריכים`, with a visual tips grid,
+  expanded guide reader, and supplier-meeting checklist.
+- Wedding invitation editor, reachable from the report flow, with Hebrew,
+  English, and Arabic invitation text modes plus PNG/PDF export options.
 - Local initial report generation.
 - Report review flow with answer editing, explicit report confirmation, wedding
   image generation, preview modal, image download, final follow-up decision,
   Telegram notification, and Supabase follow-up persistence.
+- Venue recommendation modal based on the questionnaire's region, budget, and
+  guest count. The data source is local demo JSON under `backend/data/venues/`.
 - Telegram delivery of completed questionnaire details.
+- Optional Supabase persistence for questionnaire submissions, leads, reports,
+  and follow-up decisions when Supabase credentials are configured.
 - Closed-by-default floating chatbot on every active frontend page.
 - OpenAI Responses API integration using `gpt-5.4-mini`.
 - OpenAI Images API integration using `gpt-image-1`.
+- Wedding blessing generation through the backend with OpenAI.
+- Optional countdown-card AI design generation from an uploaded inspiration
+  image when `OPENAI_API_KEY` is configured.
 - Server-side API key handling.
 - Basic chatbot and form rate limiting.
 
-Present in the backend but not connected to the active questionnaire flow:
+Present in the backend but not part of the primary local report flow:
 
-- Supabase submission and lead routes.
 - Mock report persistence.
-- Demo supplier recommendation routes.
+- Demo supplier recommendation routes under `/api/suppliers/recommendations`,
+  which require a saved Supabase submission.
 
 Important limitations:
 
 - The displayed planning report is currently generated locally in the browser,
   not by an AI report service.
-- Wedding image generation requires `OPENAI_API_KEY` on the backend.
+- Wedding image generation, blessing generation, and AI countdown design require
+  `OPENAI_API_KEY` on the backend.
 - Supplier records are synthetic demo data and must never be presented as
   verified businesses, prices, recommendations, or availability.
+- Invitation editing is frontend-only and uses browser state/local storage for
+  report context. It is not persisted server-side.
 - Sending contact details requests follow-up; it does not confirm a booking,
   supplier, price, or response time.
 
@@ -86,19 +103,20 @@ Important limitations:
 - AI chatbot: OpenAI Responses API.
 - Chatbot model: `gpt-5.4-mini` by default.
 - Navigation label for the blessing tool: `כתיבת ברכה`.
+- Navigation label for the content hub: `טיפים ומדריכים`.
 - Notifications: Telegram Bot API.
 - Optional persistence routes: Supabase/PostgreSQL.
+- Venue recommendation assets: local JSON files under `backend/data/venues/`.
 - Demo supplier assets: SQLite, SQL seed data, and JSON.
 
-Node.js 18 or newer is required because the server uses the built-in `fetch`
-API. A current Node.js LTS release is recommended.
+Node.js 22 or newer is required by the root `package.json`. The backend also
+uses the built-in `fetch` API.
 
 ## Local Setup
 
 From the repository root:
 
 ```bash
-cd backend
 npm install
 ```
 
@@ -111,9 +129,11 @@ Start the application:
 npm start
 ```
 
-For automatic server restarts during development:
+The root `npm start` command runs `node backend/index.js`. You can also work
+from the backend package directly:
 
 ```bash
+cd backend
 npm run dev
 ```
 
@@ -146,6 +166,26 @@ The active backend reads `backend/.env`.
 | `IMAGE_API_KEY` | Legacy fallback | Accepted as a fallback by image generation if `OPENAI_API_KEY` is absent. Prefer `OPENAI_API_KEY`. |
 
 Never commit `backend/.env` or any real secret.
+
+## Frontend Pages
+
+The active frontend is intentionally static. Each page is a standalone HTML
+entry point served by Express:
+
+| Page | Purpose |
+| --- | --- |
+| `frontend/index.html` | Landing page, questionnaire entry, report flow, image generation, venue recommendations, and final follow-up decision. |
+| `frontend/questionnaire.html` | Dedicated questionnaire page using the shared questionnaire/report script. |
+| `frontend/countdown.html` | Wedding countdown card builder with optional AI design generation from an inspiration image. |
+| `frontend/blessing-helper.html` | Wedding blessing/speech generator. |
+| `frontend/articles.html` | Tips and guides hub labeled `טיפים ומדריכים`, with quick tips, deeper guide reader, and supplier-meeting checklist. |
+| `frontend/invitation.html` | Invitation editor reached from the report flow, with PNG/PDF export. |
+| `frontend/about.html` | About page. |
+| `frontend/faq.html` | FAQ page. |
+
+Most pages share `frontend/styles/site.css` and the floating chatbot from
+`frontend/scripts/chat-widget.js`. Page-specific styles live in
+`frontend/styles/countdown.css` and `frontend/styles/blessing-helper.css`.
 
 ## Chatbot
 
@@ -199,6 +239,29 @@ OPENAI_IMAGE_SIZE=1024x1024
 OPENAI_IMAGE_QUALITY=medium
 ```
 
+## Other AI Tools
+
+The blessing page posts to:
+
+```text
+POST /api/generate-blessing
+```
+
+This route currently uses the OpenAI Chat Completions API with `gpt-4o-mini`
+and writes Hebrew blessing text according to the selected speaker, couple
+names, tone, length, and optional personal details.
+
+The countdown page can optionally generate an AI-designed countdown image from
+an uploaded inspiration image:
+
+```text
+POST /api/generate-countdown-design
+```
+
+That route analyzes the uploaded image with `gpt-4o-mini`, then generates a
+countdown design image. It requires `OPENAI_API_KEY` and is separate from the
+regular browser-rendered countdown card.
+
 Chatbot behavior:
 
 - Answers only questions related to WedWise and using the website.
@@ -208,7 +271,7 @@ Chatbot behavior:
 - Uses plain text without Markdown styling, arrows, decorative symbols, or
   gender-slash wording.
 - Knows the current page structure, questionnaire, report, limitations, and
-  planned product direction.
+  planned product direction, including the tips/guides page.
 - Does not claim that prices, bookings, suppliers, or availability are
   confirmed.
 
@@ -281,6 +344,16 @@ These records exist only for development, matching-flow tests, and project
 demonstrations. Keep the SQL, SQLite, and JSON versions synchronized when the
 dataset changes.
 
+Venue recommendation data used by `/api/venues/recommend` lives separately in:
+
+```text
+backend/data/venues/
+```
+
+Those venue JSON files are development/demo assets. Keep their source,
+freshness, and production readiness clear before presenting them as real
+recommendations.
+
 ## API Summary
 
 | Method | Endpoint | Status |
@@ -292,7 +365,10 @@ dataset changes.
 | `GET` | `/api/submissions/:id` | Available; requires Supabase. |
 | `POST` | `/api/generate-report` | Available; currently uses mock report logic and Supabase. |
 | `POST` | `/api/generate-image` | Active OpenAI Images endpoint for confirmed report visualizations. |
+| `POST` | `/api/generate-blessing` | Active OpenAI blessing/speech generation endpoint. |
+| `POST` | `/api/generate-countdown-design` | Optional OpenAI countdown design endpoint; requires uploaded image and API key. |
 | `POST` | `/api/wedding-follow-up` | Active final decision endpoint; saves to Supabase and notifies Telegram. |
+| `POST` | `/api/venues/recommend` | Active local venue recommendation endpoint using `backend/data/venues/`. |
 | `GET` | `/api/suppliers/recommendations` | Available; uses demo suppliers and a saved submission. |
 | `POST` | `/api/leads` | Available; requires Supabase and optionally Telegram. |
 
@@ -305,9 +381,12 @@ WedWise/
 |   |-- questionnaire.html
 |   |-- countdown.html
 |   |-- blessing-helper.html
+|   |-- articles.html
+|   |-- invitation.html
 |   |-- scripts/
 |   `-- styles/
 |-- backend/
+|   |-- data/
 |   |-- database/
 |   |-- routes/
 |   |-- services/
@@ -358,8 +437,16 @@ Before considering a relevant change complete:
 ```bash
 node --check backend/index.js
 node --check backend/routes/chat.js
+node --check backend/routes/blessing.js
+node --check backend/routes/countdown-design.js
+node --check backend/routes/image.js
+node --check backend/routes/venues.js
 node --check backend/services/chat-service.js
 node --check frontend/scripts/app.js
+node --check frontend/scripts/chat-widget.js
+node --check frontend/scripts/blessing-helper.js
+node --check frontend/scripts/countdown.js
+node --check frontend/scripts/invitation.js
 git diff --check
 ```
 
