@@ -18,7 +18,7 @@ CURRENT PAGE STRUCTURE
   background, subtle petal motion, and a button that takes visitors to the
   questionnaire.
 - The top navigation links to: Home, planning questionnaire, countdown page,
-  and blessing helper.
+  and the wedding blessing writing page labeled "כתיבת ברכה".
 - The "How it works" section explains three stages: complete the questionnaire,
   receive a personalized initial report, and continue with the agency if
   desired.
@@ -35,10 +35,10 @@ CURRENT PAGE STRUCTURE
 - The countdown page lets visitors enter a wedding date, optional couple names,
   optional title, and optional inspiration image. It can render a countdown card,
   copy/download it, and, when configured, request an AI-generated design.
-- The blessing helper page generates a wedding blessing/speech from the speaker,
-  couple names, tone, length, and optional personal details.
-- The questionnaire, countdown page, and blessing helper share a matching footer,
-  chatbot, navigation style, and cross-page tool strip so visitors can move
+- The blessing writing page generates a wedding blessing/speech from the
+  speaker, couple names, tone, length, and optional personal details.
+- The questionnaire, countdown page, and blessing writing page share a matching
+  footer, chatbot, navigation style, and cross-page tool strip so visitors can move
   between the tools without feeling like they entered a separate site.
 
 QUESTIONNAIRE DETAILS

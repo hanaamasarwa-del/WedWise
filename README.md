@@ -19,7 +19,7 @@ The current website lets a visitor:
 1. Learn how the WedWise planning process works.
 2. Complete a six-step wedding questionnaire.
 3. Move between the main page, planning questionnaire, countdown tool, and
-   blessing helper from one consistent navigation menu.
+   wedding blessing writing page from one consistent navigation menu.
 4. Enter a budget, guest count, region, style, colors, flowers, decorations,
    personal notes, an optional inspiration link, and contact details.
 5. Receive an initial browser-generated planning report with a suggested budget
@@ -51,7 +51,7 @@ Working in the active user flow:
 - Protected landing hero image with subtle petal motion.
 - Six-step questionnaire with validation and back/next navigation.
 - Wedding countdown helper page.
-- Wedding blessing helper page.
+- Wedding blessing writing page, labeled `כתיבת ברכה` in the navigation.
 - Local initial report generation.
 - Report review flow with answer editing, explicit report confirmation, wedding
   image generation, preview modal, image download, final follow-up decision,
@@ -85,6 +85,7 @@ Important limitations:
 - Server: Node.js and Express.
 - AI chatbot: OpenAI Responses API.
 - Chatbot model: `gpt-5.4-mini` by default.
+- Navigation label for the blessing tool: `כתיבת ברכה`.
 - Notifications: Telegram Bot API.
 - Optional persistence routes: Supabase/PostgreSQL.
 - Demo supplier assets: SQLite, SQL seed data, and JSON.
