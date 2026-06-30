@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>אודות – WedWise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&family=Heebo:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/site.css">
+  <style>
+    /* ── About page ── */
+    .about-hero {
+      padding: 5rem 0 4rem;
+      text-align: center;
+      background:
+        radial-gradient(circle at 80% 0%, rgba(244, 223, 216, 0.55), transparent 38%),
+        radial-gradient(circle at 10% 100%, rgba(232, 216, 202, 0.35), transparent 30%),
+        var(--color-bg);
+    }
+
+    .about-hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+      padding: 0.45rem 1.1rem;
+      color: var(--color-primary-dark);
+      background: linear-gradient(135deg, rgba(255,255,255,0.88), rgba(244,223,216,0.52));
+      border: 1px solid rgba(141,118,104,0.24);
+      border-right: 3px solid var(--color-primary);
+      border-radius: var(--radius-md);
+      font-weight: 800;
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+    }
+
+    .about-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5.5vw, 4rem);
+      font-weight: 700;
+      color: var(--color-primary-dark);
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+    }
+
+    .about-hero-lead {
+      max-width: 600px;
+      margin: 0 auto;
+      color: var(--color-muted);
+      font-size: clamp(1.05rem, 1.8vw, 1.2rem);
+      line-height: 1.85;
+    }
+
+    /* ── Divider ornament ── */
+    .about-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 2.5rem 0;
+    }
+
+    .about-divider::before,
+    .about-divider::after {
+      content: '';
+      flex: 1;
+      max-width: 160px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--color-primary-light));
+    }
+
+    .about-divider::after {
+      background: linear-gradient(270deg, transparent, var(--color-primary-light));
+    }
+
+    .about-divider span {
+      color: var(--color-primary);
+      font-size: 1.1rem;
+    }
+
+    /* ── Section blocks ── */
+    .about-section {
+      padding: 4rem 0;
+    }
+
+    .about-section:nth-child(even) {
+      background: linear-gradient(180deg, var(--color-surface-soft) 0%, var(--color-bg) 100%);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: center;
+    }
+
+    .about-grid.reverse {
+      direction: ltr;
+    }
+
+    .about-grid.reverse .about-text {
+      direction: rtl;
+    }
+
+    .about-section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 1rem;
+      padding: 0.35rem 0.85rem;
+      color: var(--color-primary-dark);
+      background: rgba(244, 223, 216, 0.36);
+      border: 1px solid var(--color-border-soft);
+      border-radius: var(--radius-pill);
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .about-text h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+      font-weight: 700;
+      color: var(--color-text);
+      line-height: 1.2;
+      margin-bottom: 1.1rem;
+    }
+
+    .about-text p {
+      color: var(--color-muted);
+      font-size: 1.05rem;
+      line-height: 1.85;
+      margin-bottom: 1rem;
+    }
+
+    .about-text p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ── Visual card ── */
+    .about-visual {
+      position: relative;
+      min-height: 360px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--color-border);
+    }
+
+    .about-visual::before {
+      content: '';
+      position: absolute;
+      inset: 1rem;
+      z-index: 1;
+      border: 1px solid rgba(255,255,255,0.45);
+      border-radius: calc(var(--radius-lg) - 8px);
+      pointer-events: none;
+    }
+
+    .about-visual img {
+      width: 100%;
+      height: 100%;
+      min-height: 360px;
+      object-fit: cover;
+      transition: transform 0.65s ease;
+    }
+
+    .about-visual:hover img {
+      transform: scale(1.04);
+    }
+
+    /* ── Icon card variant ── */
+    .about-icon-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      padding: 1.5rem;
+      background: rgba(255,255,255,0.78);
+      border: 1px solid var(--color-border-soft);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .about-icon-badge {
+      display: inline-grid;
+      place-items: center;
+      width: 3rem;
+      height: 3rem;
+      flex-shrink: 0;
+      color: #fff;
+      background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+      border-radius: var(--radius-md);
+      font-size: 1.35rem;
+      box-shadow: var(--shadow-gold);
+    }
+
+    /* ── How-it-helps list ── */
+    .about-feature-list {
+      display: grid;
+      gap: 1rem;
+      list-style: none;
+      margin-top: 1.5rem;
+    }
+
+    .about-feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      padding: 0.9rem 1rem;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid var(--color-border-soft);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      color: var(--color-text);
+      font-weight: 600;
+      font-size: 0.98rem;
+      line-height: 1.55;
+    }
+
+    .about-feature-list li .feature-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      flex-shrink: 0;
+      color: var(--color-primary-dark);
+      background: rgba(244,223,216,0.58);
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    /* ── AI section ── */
+    .about-ai-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+      margin-top: 1.75rem;
+    }
+
+    .about-ai-card {
+      padding: 1.4rem;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-top: 3px solid var(--color-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .about-ai-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .about-ai-card-icon {
+      font-size: 1.6rem;
+      margin-bottom: 0.85rem;
+      display: block;
+    }
+
+    .about-ai-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 0.5rem;
+    }
+
+    .about-ai-card p {
+      color: var(--color-muted);
+      font-size: 0.93rem;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    /* ── Team section ── */
+    .about-team-section {
+      padding: 5rem 0;
+      background:
+        radial-gradient(circle at 90% 10%, rgba(244,223,216,0.4), transparent 35%),
+        var(--color-bg);
+    }
+
+    .about-team-header {
+      text-align: center;
+      max-width: 620px;
+      margin: 0 auto 3rem;
+    }
+
+    .about-team-header h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 0.85rem;
+    }
+
+    .about-team-header p {
+      color: var(--color-muted);
+      font-size: 1.05rem;
+      line-height: 1.75;
+    }
+
+    .about-team-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      padding: 2rem;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.94), rgba(248,244,238,0.94)),
+        radial-gradient(circle at 0% 0%, rgba(185,133,125,0.14), transparent 34%);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      max-width: 800px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .about-team-avatar {
+      display: grid;
+      place-items: center;
+      width: 5rem;
+      height: 5rem;
+      color: #fff;
+      background: linear-gradient(145deg, var(--color-secondary), var(--color-primary));
+      border-radius: 50%;
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      box-shadow: var(--shadow-gold);
+      flex-shrink: 0;
+    }
+
+    .about-team-info h3 {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 0.25rem;
+    }
+
+    .about-team-info .team-role {
+      display: inline-block;
+      margin-bottom: 0.85rem;
+      padding: 0.25rem 0.75rem;
+      color: var(--color-primary-dark);
+      background: rgba(244,223,216,0.36);
+      border: 1px solid var(--color-border-soft);
+      border-radius: var(--radius-pill);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .about-team-info p {
+      color: var(--color-muted);
+      font-size: 0.98rem;
+      line-height: 1.75;
+      margin: 0;
+    }
+
+    /* ── CTA banner ── */
+    .about-cta {
+      padding: 5rem 0;
+      text-align: center;
+      background: linear-gradient(135deg, var(--color-surface-soft) 0%, var(--color-bg) 100%);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .about-cta h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 1rem;
+    }
+
+    .about-cta p {
+      color: var(--color-muted);
+      font-size: 1.05rem;
+      max-width: 520px;
+      margin: 0 auto 2rem;
+      line-height: 1.75;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 780px) {
+      .about-grid,
+      .about-grid.reverse {
+        grid-template-columns: 1fr;
+        direction: rtl;
+      }
+
+      .about-ai-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .about-team-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .about-team-avatar {
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body id="top" class="subpage">
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">WedWise</a>
+      <nav class="nav-links">
+        <a href="index.html">ראשי</a>
+        <a href="questionnaire.html">שאלון תכנון</a>
+        <a href="countdown.html">ספירה לאחור</a>
+        <a href="blessing-helper.html">עוזר ברכות</a>
+        <a href="about.html" class="active" aria-current="page">אודות</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ── Hero ── -->
+    <section class="about-hero">
+      <div class="container">
+        <div class="about-hero-eyebrow">הסיפור שלנו</div>
+        <h1>WedWise – תכנון חתונות<br>חכם ואישי</h1>
+        <p class="about-hero-lead">
+          אנחנו מאמינים שכל זוג ראוי לחתונה שמרגישה בדיוק כמותם.
+          WedWise נוצר כדי להפוך את תהליך התכנון לפשוט, מהנה ומותאם אישית — מהרגע הראשון.
+        </p>
+      </div>
+    </section>
+
+    <!-- ── What is WedWise ── -->
+    <section class="about-section">
+      <div class="container">
+        <div class="about-grid">
+          <div class="about-text">
+            <span class="about-section-label">מה זה WedWise?</span>
+            <h2>פלטפורמה חכמה לתכנון החתונה של חלומכם</h2>
+            <p>
+              WedWise הוא כלי תכנון חתונות דיגיטלי שנבנה עבור זוגות בישראל. הפלטפורמה משלבת שאלון תכנון מעמיק,
+              עיבוד חכם של ה-AI ושירות אנושי אישי — כדי לעזור לכם להתחיל את מסע תכנון החתונה בצורה מסודרת ומדויקת.
+            </p>
+            <p>
+              בעזרת שאלון קצר, המערכת מייצרת עבורכם דוח מותאם אישית הכולל כיוון עיצובי, המלצות על ספקים,
+              פירוק תקציב ועוד — הכל בהתאמה לחזון שלכם.
+            </p>
+          </div>
+          <div class="about-visual">
+            <img
+              src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=80"
+              alt="חתונה אלגנטית"
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Why we created it ── -->
+    <section class="about-section">
+      <div class="container">
+        <div class="about-grid reverse">
+          <div class="about-visual">
+            <img
+              src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=900&q=80"
+              alt="תכנון חתונה"
+            >
+          </div>
+          <div class="about-text">
+            <span class="about-section-label">למה יצרנו את זה?</span>
+            <h2>כי תכנון חתונה לא אמור להיות מלחיץ</h2>
+            <p>
+              תכנון חתונה הוא אחד האירועים המרגשים והמורכבים בחיים. מתוך ניסיון ישיר עם זוגות רבים, הבנו
+              שהשלב הראשון — לדעת מאין להתחיל — הוא לרוב המאתגר ביותר.
+            </p>
+            <p>
+              המון ספקים, אין-ספור אפשרויות, לחץ תקציבי ושאלות שלא יודעים מה לשאול. WedWise נוצר כדי
+              לייצר לכם נקודת פתיחה ברורה, מותאמת אישית, ובעיקר — שלווה.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── How it helps ── -->
+    <section class="about-section">
+      <div class="container">
+        <div style="max-width: 760px; margin: 0 auto;">
+          <span class="about-section-label">איך זה עוזר לכם?</span>
+          <h2 style="font-family: var(--font-display); font-size: clamp(1.7rem, 3.5vw, 2.4rem); font-weight: 700; color: var(--color-text); line-height: 1.2; margin-bottom: 0.85rem;">
+            ממלאים שאלון — ומקבלים כיוון ברור
+          </h2>
+          <p style="color: var(--color-muted); font-size: 1.05rem; line-height: 1.85;">
+            WedWise מלווה אתכם לאורך כל שלבי תכנון החתונה — מהרגע שהחלטתם עד לסגירת כל הספקים.
+          </p>
+          <ul class="about-feature-list">
+            <li>
+              <span class="feature-num">01</span>
+              <span>שאלון תכנון מקיף שמכסה תקציב, אורחים, סגנון, צבעים, פרחים ואווירה — בכמה דקות בלבד.</span>
+            </li>
+            <li>
+              <span class="feature-num">02</span>
+              <span>דוח אישי מותאם עם כיוון עיצובי, פירוק תקציב ראשוני והמלצות על ספקים רלוונטיים.</span>
+            </li>
+            <li>
+              <span class="feature-num">03</span>
+              <span>ספירה לאחור אישית שתזכיר לכם כמה ימים נשארו עד ליום הגדול.</span>
+            </li>
+            <li>
+              <span class="feature-num">04</span>
+              <span>עוזר ברכות שיעזור לכם לנסח טקסטים אישיים ומרגשים לכרטיסי הזמנה ולהודעות.</span>
+            </li>
+            <li>
+              <span class="feature-num">05</span>
+              <span>נציג אנושי שיחזור אליכם ויסייע בסגירת כל הפרטים — אולם, דיג׳יי, עיצוב ועוד.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── How AI personalizes ── -->
+    <section class="about-section">
+      <div class="container">
+        <div class="about-grid">
+          <div class="about-text">
+            <span class="about-section-label">בינה מלאכותית</span>
+            <h2>ה-AI שמבין את החלום שלכם</h2>
+            <p>
+              לב המערכת של WedWise הוא מנוע AI מתקדם שמנתח את כל התשובות שסיפקתם ויוצר עבורכם
+              חוויה מותאמת לחלוטין — לא תבנית גנרית, אלא המלצות שמרגישות כאילו נכתבו בשבילכם בדיוק.
+            </p>
+            <div class="about-ai-grid">
+              <div class="about-ai-card">
+                <span class="about-ai-card-icon">🎨</span>
+                <h3>עיצוב אישי</h3>
+                <p>ה-AI מנתח את הסגנון, הצבעים והפרחים שבחרתם ומייצר כיוון עיצובי קוהרנטי.</p>
+              </div>
+              <div class="about-ai-card">
+                <span class="about-ai-card-icon">💰</span>
+                <h3>התאמת תקציב</h3>
+                <p>כל ההמלצות מסוננות לפי התקציב שהזנתם — ללא הפתעות ועלויות בלתי צפויות.</p>
+              </div>
+              <div class="about-ai-card">
+                <span class="about-ai-card-icon">📍</span>
+                <h3>התאמה אזורית</h3>
+                <p>ספקים ואולמות מוצעים בהתאם לאזור הגיאוגרפי שבחרתם בישראל.</p>
+              </div>
+              <div class="about-ai-card">
+                <span class="about-ai-card-icon">✨</span>
+                <h3>השראה חכמה</h3>
+                <p>ניתן לשתף לוח Pinterest או מצב רוח — ה-AI ילמד ממנו ויתאים את ההמלצות.</p>
+              </div>
+            </div>
+          </div>
+          <div class="about-visual">
+            <img
+              src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?auto=format&fit=crop&w=900&q=80"
+              alt="תכנון חכם עם בינה מלאכותית"
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Team / Agency ── -->
+    <section class="about-team-section">
+      <div class="container">
+        <div class="about-team-header">
+          <span class="about-section-label" style="margin: 0 auto 1rem; display: inline-flex;">הצוות שלנו</span>
+          <h2>הכירו את הסוכנות מאחורי WedWise</h2>
+          <p>
+            WedWise נוצר ומתפעל על ידי צוות אנשי מקצוע בעולמות תכנון חתונות, טכנולוגיה ועיצוב.
+            אנחנו משלבים ניסיון אנושי עם כלים טכנולוגיים מתקדמים כדי להעניק לכם את החוויה הטובה ביותר.
+          </p>
+        </div>
+
+        <div class="about-team-card">
+          <div class="about-team-avatar">W</div>
+          <div class="about-team-info">
+            <h3>צוות WedWise</h3>
+            <span class="team-role">תכנון חתונות | טכנולוגיה | עיצוב</span>
+            <p>
+              אנחנו קבוצה של אנשי מקצוע שמאמינים שכל חתונה היא סיפור אחר. הצוות שלנו כולל מתכנני
+              אירועים עם ניסיון של שנים, מעצבים גרפיים, ומומחי טכנולוגיה — כולם עם מטרה אחת משותפת:
+              לעזור לכם לממש את חתונת החלומות שלכם.
+            </p>
+          </div>
+        </div>
+
+        <div class="about-team-card">
+          <div class="about-team-avatar" style="background: linear-gradient(145deg, #9B8E84, #655B52);">♡</div>
+          <div class="about-team-info">
+            <h3>הגישה שלנו</h3>
+            <span class="team-role">אנושי · אישי · מקצועי</span>
+            <p>
+              אנחנו מאמינים שטכנולוגיה היא כלי — אבל האנשים מאחוריה הם הלב. לכן, לצד מנוע ה-AI החכם שלנו,
+              תמיד ישנו נציג אנושי שיעמוד לרשותכם, יענה על שאלות ויסייע בכל החלטה — מהקטנה ועד הגדולה.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── CTA ── -->
+    <section class="about-cta">
+      <div class="container">
+        <h2>מוכנים להתחיל את המסע?</h2>
+        <p>מלאו את השאלון הקצר שלנו וקבלו דוח מותאם אישית — חינם, בלי התחייבות.</p>
+        <a href="questionnaire.html" class="btn btn-primary btn-lg">מעבר לשאלון תכנון</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span class="footer-logo">WedWise</span>
+      <p>&copy; 2026 WedWise. כל הזכויות שמורות.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
