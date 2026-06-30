@@ -35,6 +35,8 @@
       position: relative;
       z-index: 1;
       max-width: 840px;
+      margin: 0 auto;
+      text-align: center;
     }
 
     .articles-kicker {
@@ -63,17 +65,18 @@
     .articles-hero h1::after {
       content: "";
       position: absolute;
-      right: 0;
+      right: 50%;
       bottom: -0.85rem;
       width: min(220px, 46%);
       height: 3px;
       background: linear-gradient(90deg, rgba(255,255,255,0.08), #fff, var(--color-secondary-soft), rgba(255,255,255,0.08));
       border-radius: var(--radius-pill);
+      transform: translateX(50%);
     }
 
     .articles-hero p {
       max-width: 710px;
-      margin: 0;
+      margin: 0 auto;
       color: rgba(255, 255, 255, 0.92);
       font-size: clamp(1.08rem, 1.6vw, 1.22rem);
       font-weight: 600;
