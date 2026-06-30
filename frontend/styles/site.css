@@ -827,6 +827,28 @@ button, input, select, textarea {
   background: var(--color-bg);
 }
 
+body.subpage .questionnaire {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(253, 251, 247, 0.88), rgba(253, 251, 247, 0.95)),
+    url("https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=2200&q=82") center/cover;
+}
+
+body.subpage .questionnaire::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 5rem;
+  background: linear-gradient(180deg, transparent, var(--color-bg));
+  pointer-events: none;
+}
+
+body.subpage .questionnaire > .container {
+  position: relative;
+  z-index: 1;
+}
+
 .questionnaire-layout {
   display: grid;
   grid-template-columns: minmax(280px, 0.42fr) minmax(0, 1fr);
@@ -1589,12 +1611,8 @@ select {
   flex-basis: min(100%, 360px);
 }
 
-.report-actions #btn-generate-image {
-  flex-basis: min(100%, 320px);
-}
-
 .invitation-cta {
-  width: min(100%, 760px);
+  width: min(100%, 980px);
   margin: 2rem auto 0;
   padding: 2rem 1.5rem;
   background: linear-gradient(135deg, var(--color-surface-soft) 0%, var(--color-bg) 100%);
@@ -1605,8 +1623,16 @@ select {
   box-shadow: var(--shadow-gold);
 }
 
+.report-tool-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+  align-items: stretch;
+}
+
 .btn-invitation-cta {
-  min-width: min(100%, 340px);
+  width: 100%;
+  min-width: 0;
   padding: 1.1rem 2rem;
   font-size: 1.05rem;
   font-weight: 700;
@@ -2792,6 +2818,12 @@ select {
   color: var(--color-primary-light);
   font-size: 0.86rem;
   font-weight: 500;
+}
+
+@media (max-width: 780px) {
+  .report-tool-actions {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ── Chat widget ── */

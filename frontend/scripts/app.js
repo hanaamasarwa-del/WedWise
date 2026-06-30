@@ -72,6 +72,7 @@ const weddingImageModalContent = document.getElementById('wedding-image-modal-co
 // on the popup markup being present in the (possibly cached) page HTML.
 const invitationCta = document.getElementById('invitation-cta');
 const btnOpenInvitationGenerator = document.getElementById('btn-open-invitation-generator');
+const btnOpenCountdownGenerator = document.getElementById('btn-open-countdown-generator');
 const navSectionLinks = Array.from(document.querySelectorAll('.nav-links a[href^="#"]'));
 const navSections = navSectionLinks
   .map((link) => ({
@@ -561,14 +562,14 @@ function renderReport(html) {
   if (btnGenerateImage) {
     btnGenerateImage.hidden = true;
     btnGenerateImage.disabled = false;
-    btnGenerateImage.textContent = 'יצירת תמונת חתונה';
+    btnGenerateImage.textContent = 'צרו הדמיית חתונה';
   }
   if (weddingImageResult) {
     weddingImageResult.hidden = true;
     weddingImageResult.className = 'wedding-image-result';
     weddingImageResult.innerHTML = '';
   }
-  if (invitationCta) invitationCta.hidden = false;
+  if (invitationCta) invitationCta.hidden = true;
   questionnaireSection.hidden = true;
   reportSection.hidden = false;
   reportSection.scrollIntoView({ behavior: 'smooth' });
@@ -863,7 +864,7 @@ async function showSupplierRecommendations(btn) {
 function getFinalDecisionText(decision) {
   return decision === 'continue'
     ? 'רוצה להמשיך לארגן את החתונה עם WedWise'
-    : 'התמונה נראית טוב, אבל רוצה לחשוב על זה';
+    : 'רוצה לשמור את הדוח ולחשוב על זה';
 }
 
 function editAnswersFromReport() {
@@ -876,7 +877,7 @@ function editAnswersFromReport() {
   if (btnGenerateImage) {
     btnGenerateImage.hidden = true;
     btnGenerateImage.disabled = false;
-    btnGenerateImage.textContent = 'יצירת תמונת חתונה';
+    btnGenerateImage.textContent = 'צרו הדמיית חתונה';
   }
   if (weddingImageResult) {
     weddingImageResult.hidden = true;
@@ -958,7 +959,7 @@ async function generateWeddingImageFromReport() {
     `);
   } finally {
     btnGenerateImage.disabled = false;
-    btnGenerateImage.textContent = 'יצירת תמונת חתונה';
+    btnGenerateImage.textContent = 'צרו הדמיית חתונה';
   }
 }
 
@@ -1018,7 +1019,7 @@ async function submitWeddingFollowUp(decision) {
       : 'תודה, הבחירה שלכם נשמרה';
     const message = decision === 'continue'
       ? 'הנתונים שלכם כבר נשלחו לנציג/ה שלנו. ביום העבודה הקרוב ניצור איתכם קשר.'
-      : 'שמחנו שההדמיה נראית טוב. שמרנו את הבחירה שלכם, ואם תרצו להמשיך איתנו בהמשך נשמח לעזור.';
+      : 'שמרנו את הבחירה שלכם. תוכלו לחזור לדוח, ליצור הזמנה או ספירה לאחור, ואם תרצו להמשיך איתנו בהמשך נשמח לעזור.';
 
     setWeddingImageModal('ready', `
       <div class="wedding-image-modal-message">
@@ -1161,7 +1162,7 @@ function resetForm() {
   if (btnGenerateImage) {
     btnGenerateImage.hidden = true;
     btnGenerateImage.disabled = false;
-    btnGenerateImage.textContent = 'יצירת תמונת חתונה';
+    btnGenerateImage.textContent = 'צרו הדמיית חתונה';
   }
   goToStep(1);
   reportSection.hidden = true;
@@ -1225,9 +1226,23 @@ if (btnConfirmReport) {
     if (btnGenerateImage) {
       btnGenerateImage.hidden = false;
       btnGenerateImage.disabled = false;
-      btnGenerateImage.focus({ preventScroll: true });
     }
-    setWeddingImageStatus('confirmed', '<p>הדוח אושר. עכשיו אפשר ליצור הדמיית חתונה לפי התוכן שלו.</p>');
+    if (invitationCta) invitationCta.hidden = false;
+    setWeddingImageStatus('confirmed', '<p>הדוח אושר. אפשר לבחור כלי המשך מתחת לדוח, או לעדכן אותנו אם תרצו שנמשיך איתכם מכאן.</p>');
+    setWeddingImageModal('ready', `
+      <div class="wedding-image-modal-message">
+        <h2 id="wedding-image-modal-title">הדוח נראה לכם נכון?</h2>
+        <p>אפשר להמשיך עם WedWise מהנקודה הזאת, או לשמור את הדוח ולחשוב על זה בנחת.</p>
+        <div class="wedding-image-download-row wedding-image-modal-actions">
+          <button type="button" class="btn btn-primary" data-follow-up-decision="continue">
+            להמשיך לארגן את החתונה איתנו
+          </button>
+          <button type="button" class="btn btn-secondary" data-follow-up-decision="thinking">
+            תודה, אשמור את הדוח ואחשוב על זה
+          </button>
+        </div>
+      </div>
+    `);
   });
 }
 
@@ -1292,11 +1307,40 @@ function saveInvitationData() {
   }
 }
 
+function saveCountdownData() {
+  try {
+    const style = latestQuestionnaire?.style || '';
+    const title = style ? `ספירה לאחור לחתונה בסגנון ${style}` : 'ספירה לאחור לחתונה';
+
+    localStorage.setItem('wedwise_countdown', JSON.stringify({
+      coupleNames: latestPayload?.lead?.full_name || '',
+      customTitle: title,
+      region: latestQuestionnaire?.regionName || '',
+      style,
+      colors: latestQuestionnaire?.colors || '',
+      flowers: latestQuestionnaire?.flowers || '',
+      decorations: latestQuestionnaire?.decorations || '',
+      reportText: latestReportText || '',
+      savedAt: new Date().toISOString(),
+    }));
+  } catch {
+    // storage quota — navigate anyway
+  }
+}
+
 if (btnOpenInvitationGenerator) {
   btnOpenInvitationGenerator.addEventListener('click', (event) => {
     event.preventDefault();
     saveInvitationData();
     window.location.href = 'invitation.html';
+  });
+}
+
+if (btnOpenCountdownGenerator) {
+  btnOpenCountdownGenerator.addEventListener('click', (event) => {
+    event.preventDefault();
+    saveCountdownData();
+    window.location.href = 'countdown.html?from=report';
   });
 }
 

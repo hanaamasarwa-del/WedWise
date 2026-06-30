@@ -18,6 +18,18 @@ const downloadGeneratedBtn = document.getElementById('download-generated-btn');
 let uploadedImageFile = null;
 let uploadedImageDataUrl = null;
 
+function setReportPrefillNotice(message) {
+  const existing = document.querySelector('.countdown-prefill-note');
+  if (existing) existing.remove();
+
+  if (!message || !form) return;
+
+  const note = document.createElement('div');
+  note.className = 'countdown-prefill-note';
+  note.textContent = message;
+  form.prepend(note);
+}
+
 // Calculate months and days between today and a target date
 function calculateCountdown(targetDate) {
   const today = new Date();
@@ -293,4 +305,24 @@ document.addEventListener('DOMContentLoaded', () => {
   noResult.hidden = false;
   resultContainer.hidden = true;
   errorMessage.hidden = true;
+
+  try {
+    const raw = localStorage.getItem('wedwise_countdown');
+    if (!raw) return;
+
+    const saved = JSON.parse(raw);
+    if (saved.coupleNames && coupleNamesInput) coupleNamesInput.value = saved.coupleNames;
+    if (saved.customTitle && customTitleInput) customTitleInput.value = saved.customTitle;
+    if (saved.weddingDate && weddingDateInput) weddingDateInput.value = saved.weddingDate;
+
+    if (saved.weddingDate) {
+      renderCountdown(saved.weddingDate, coupleNamesInput.value, customTitleInput.value);
+      setReportPrefillNotice('הפרטים מהדוח נטענו לספירה לאחור.');
+    } else {
+      setReportPrefillNotice('הפרטים מהדוח נטענו. בחרו תאריך חתונה כדי ליצור את הספירה.');
+      noResult.innerHTML = '<p>הפרטים מהדוח כבר מולאו. בחרו תאריך חתונה ולחצו על "יצירת ספירה".</p>';
+    }
+  } catch {
+    setReportPrefillNotice('');
+  }
 });

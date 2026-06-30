@@ -257,15 +257,23 @@
         <div id="report-content" class="report-content"></div>
         <div class="report-actions">
           <button type="button" id="btn-confirm-report" class="btn btn-primary btn-report-main">אישור הדוח</button>
-          <button type="button" id="btn-generate-image" class="btn btn-primary btn-report-main" hidden>יצירת תמונת חתונה</button>
           <button type="button" id="btn-edit-answers" class="btn btn-secondary">עריכת התשובות</button>
           <button type="button" id="btn-restart" class="btn btn-secondary">התחילו מחדש</button>
         </div>
         <div id="wedding-image-result" class="wedding-image-result" hidden aria-live="polite"></div>
         <div id="invitation-cta" class="invitation-cta" hidden>
-          <button type="button" id="btn-open-invitation-generator" class="btn btn-primary btn-invitation-cta">
-            💌 צור הזמנה תואמת לחתונה
-          </button>
+          <div class="report-tool-actions">
+            <button type="button" id="btn-generate-image" class="btn btn-primary btn-invitation-cta">
+              צרו הדמיית חתונה
+            </button>
+            <button type="button" id="btn-open-invitation-generator" class="btn btn-primary btn-invitation-cta">
+              עצבו הזמנה תואמת
+            </button>
+            <button type="button" id="btn-open-countdown-generator" class="btn btn-primary btn-invitation-cta">
+              בנו ספירה לאחור
+            </button>
+          </div>
+          <p class="invitation-cta-notice">הכלים יקבלו את הפרטים שמילאתם בדוח. בספירה לאחור תצטרכו לבחור תאריך אם עדיין לא הזנתם אחד.</p>
         </div>
       </div>
     </section>

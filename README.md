@@ -61,8 +61,9 @@ Working in the active user flow:
   English, and Arabic invitation text modes plus PNG/PDF export options.
 - Local initial report generation.
 - Report review flow with answer editing, explicit report confirmation, wedding
-  image generation, preview modal, image download, final follow-up decision,
-  Telegram notification, and Supabase follow-up persistence.
+  image generation, matching invitation creation, matching countdown handoff,
+  preview modal, image download, final follow-up decision, Telegram
+  notification, and Supabase follow-up persistence.
 - Venue recommendation modal based on the questionnaire's region, budget, and
   guest count. The data source is local demo JSON under `backend/data/venues/`.
 - Non-venue supplier recommendation modals from the report for DJ, photography,
@@ -190,6 +191,13 @@ Most pages share `frontend/styles/site.css` and the floating chatbot from
 `frontend/scripts/chat-widget.js`. Page-specific styles live in
 `frontend/styles/countdown.css` and `frontend/styles/blessing-helper.css`.
 
+Subpage hero areas should use the quiet FAQ-style visual treatment: a subtle
+real photo background, a strong cream overlay, dark readable text, centered
+heading underline, and a soft fade into the page background. This applies to
+the planning questionnaire, countdown, blessing helper, tips/guides, about,
+and FAQ pages. Do not use dark cinematic overlays or white hero text on these
+subpages unless the design direction is explicitly changed.
+
 ### Questionnaire Sync Rule
 
 The active wedding questionnaire appears in two places:
@@ -199,11 +207,16 @@ The active wedding questionnaire appears in two places:
 
 The form content, step order, field names, options, placeholders, helper text,
 validation attributes, progress controls, and submit/back/next buttons must stay
-identical between these two pages. The homepage may keep a different page-level
-layout and scale so it fits the landing page, but the actual
-`<form id="wedding-form">...</form>` content should be updated in both files
-whenever questionnaire content changes. After editing either page, compare the
-two form blocks and verify they still match.
+identical between these two pages. The post-report action area must also stay
+identical: report confirmation, answer editing/restart, wedding visualization,
+matching invitation, and matching countdown actions should exist in both flows.
+
+The homepage may keep a different page-level layout and scale so it fits the
+landing page, but the actual `<form id="wedding-form">...</form>` content and
+`<section id="report-section">...</section>` content should be updated in both
+files whenever questionnaire or report-action behavior changes. After editing
+either page, compare both the form blocks and the report-section blocks and
+verify they still match.
 
 ### Tips and Guides Content Rules
 
@@ -241,8 +254,10 @@ The server calls OpenAI, so the API key is never sent to the browser.
 
 After a visitor completes the questionnaire, the browser renders the initial
 report. The visitor can either edit the answers or confirm the report. Once the
-report is confirmed, the confirm button is replaced with the wedding image
-generation button.
+report is confirmed, the confirm button is hidden, the follow-up decision modal
+opens, and the report action panel shows three separate actions: create a
+wedding visualization, design a matching invitation, or build a matching
+countdown. Do not collapse those actions into the submit/confirm button.
 
 The frontend sends the confirmed report text and structured questionnaire
 details to:
@@ -253,9 +268,9 @@ POST /api/generate-image
 
 The backend builds a photorealistic wedding visualization prompt and calls the
 OpenAI Images API. The generated image is shown in a modal with a download
-button. The modal also lets the visitor choose whether to continue organizing
-the wedding with WedWise or think about it first. Both choices are saved to
-Supabase and sent to the configured Telegram bot when those services are
+button. The report-confirmation modal also lets the visitor choose whether to
+continue organizing the wedding with WedWise or save the report and think about
+it first. Both choices are saved to Supabase and sent to the configured Telegram bot when those services are
 configured. If Supabase is unavailable but Telegram is configured, the backend
 still notifies the team and reports the database status in the API response.
 The OpenAI API key stays server-side in `backend/.env`.
@@ -493,8 +508,10 @@ node --check backend/routes/chat.js
 node --check backend/routes/blessing.js
 node --check backend/routes/countdown-design.js
 node --check backend/routes/image.js
+node --check backend/routes/suppliers.js
 node --check backend/routes/venues.js
 node --check backend/services/chat-service.js
+node --check backend/services/supplier-service.js
 node --check frontend/scripts/app.js
 node --check frontend/scripts/chat-widget.js
 node --check frontend/scripts/blessing-helper.js
