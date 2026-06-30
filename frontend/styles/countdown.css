@@ -24,14 +24,27 @@
 }
 
 .countdown-hero h1 {
+  display: inline-block;
   font-family: var(--font-display);
   font-size: clamp(2.4rem, 5vw, 3.6rem);
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 1.85rem;
   color: var(--color-text);
   position: relative;
   z-index: 1;
   letter-spacing: 0;
+}
+
+.countdown-hero h1::after {
+  content: "";
+  position: absolute;
+  right: 50%;
+  bottom: -0.85rem;
+  width: min(160px, 46%);
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--color-primary), var(--color-secondary), transparent);
+  border-radius: var(--radius-pill);
+  transform: translateX(50%);
 }
 
 .countdown-subtitle {
