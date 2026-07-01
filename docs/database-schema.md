@@ -117,7 +117,7 @@ Indexes:
 ---
 
 ## wedding_follow_ups
-Stores the user's final decision after the generated wedding visualization.
+Stores the user's final decision after confirming the report.
 
 | Column | Type | Notes |
 |--------|------|-------|
@@ -133,6 +133,42 @@ Indexes:
 
 - `idx_wedding_follow_ups_decision_created_at`
 - `idx_wedding_follow_ups_submission_id`
+
+## secured_clients
+Stores contacts who selected `continue`.
+
+| Column | Type | Notes |
+|--------|------|-------|
+| id | uuid PK | auto-generated |
+| submission_id | uuid FK -> submissions | nullable, set null on delete |
+| lead_id | uuid FK -> leads | nullable, set null on delete |
+| full_name | text | required |
+| phone | text | required |
+| email | text | optional |
+| created_at | timestamptz | auto-set |
+
+Indexes:
+
+- `idx_secured_clients_created_at`
+- `idx_secured_clients_submission_id`
+
+## potential_clients
+Stores contacts who selected `thinking`.
+
+| Column | Type | Notes |
+|--------|------|-------|
+| id | uuid PK | auto-generated |
+| submission_id | uuid FK -> submissions | nullable, set null on delete |
+| lead_id | uuid FK -> leads | nullable, set null on delete |
+| full_name | text | required |
+| phone | text | required |
+| email | text | optional |
+| created_at | timestamptz | auto-set |
+
+Indexes:
+
+- `idx_potential_clients_created_at`
+- `idx_potential_clients_submission_id`
 
 Security:
 

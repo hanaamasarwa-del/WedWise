@@ -115,6 +115,35 @@ async function recordClientOutcome(payload, submissionId, leadId) {
   if (error) throw new Error(`Failed to save client outcome: ${error.message}`);
 }
 
+router.patch("/:id/image-generated", async (req, res) => {
+  try {
+    const id = cleanText(req.params.id, 80);
+    if (!id) return res.status(400).json({ error: "Follow-up id is required" });
+
+    const imageGenerated = req.body.imageGenerated !== false;
+    const { data, error } = await supabase
+      .from("wedding_follow_ups")
+      .update({ image_generated: imageGenerated })
+      .eq("id", id)
+      .select("id, image_generated")
+      .single();
+
+    if (error) throw new Error(`Failed to update image status: ${error.message}`);
+
+    return res.json({
+      status: "saved",
+      followUpId: data.id,
+      imageGenerated: data.image_generated,
+    });
+  } catch (err) {
+    console.error("Wedding follow-up image status error:", err.message);
+    return res.status(500).json({
+      error: "Failed to update wedding follow-up image status",
+      message: err.message,
+    });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     const payload = normalizePayload(req.body);

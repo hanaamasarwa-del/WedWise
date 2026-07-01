@@ -216,7 +216,7 @@ Save a contact lead and notify via Telegram.
 ---
 
 ## POST /api/wedding-follow-up
-Save the user's decision after the generated wedding image and send a Telegram
+Save the user's decision after confirming the report and send a Telegram
 notification to the team.
 
 **Request body**
@@ -242,7 +242,7 @@ notification to the team.
     "inspirationUrl": "https://www.pinterest.com/..."
   },
   "reportText": "Confirmed report text...",
-  "imageGenerated": true
+  "imageGenerated": false
 }
 ```
 
@@ -253,6 +253,11 @@ notification to the team.
 
 If `submissionId` or `leadId` is missing, the backend creates the missing
 submission/lead before saving the follow-up decision.
+
+The backend also sorts the contact into an outcome table:
+
+- `secured_clients` for `continue`.
+- `potential_clients` for `thinking`.
 
 **Response 201**
 ```json
@@ -287,3 +292,30 @@ If Supabase save fails but Telegram notification succeeds, the endpoint returns
 |------|--------|
 | 400 | Invalid decision or missing required contact/questionnaire fields |
 | 500 | Both database save and Telegram notification failed, or unexpected server error |
+
+## PATCH /api/wedding-follow-up/:id/image-generated
+Mark an existing follow-up decision as having generated a wedding image. This is
+called after successful image generation and does not ask the user for another
+decision.
+
+**Request body**
+```json
+{
+  "imageGenerated": true
+}
+```
+
+**Response 200**
+```json
+{
+  "status": "saved",
+  "followUpId": "uuid",
+  "imageGenerated": true
+}
+```
+
+**Errors**
+| Code | Reason |
+|------|--------|
+| 400 | Missing follow-up id |
+| 500 | Database error |

@@ -188,6 +188,7 @@ let latestQuestionnaire = null;
 let latestPayload = null;
 let latestSubmissionId = null;
 let latestLeadId = null;
+let latestFollowUpId = null;
 let latestImageGenerated = false;
 let isReportConfirmed = false;
 
@@ -868,6 +869,7 @@ function renderReport(html) {
   reportContent.innerHTML = html;
   i18n?.translateTree?.(reportContent, i18n.getLang());
   latestReportText = reportContent.innerText.replace(/\s+/g, ' ').trim();
+  latestFollowUpId = null;
   isReportConfirmed = false;
   if (btnConfirmReport) {
     btnConfirmReport.hidden = false;
@@ -994,6 +996,25 @@ function closeWeddingImageModal() {
   if (!weddingImageModal) return;
   weddingImageModal.hidden = true;
   document.body.classList.remove('modal-open');
+}
+
+async function markFollowUpImageGenerated() {
+  if (!latestFollowUpId) return;
+
+  try {
+    const response = await fetch(`/api/wedding-follow-up/${encodeURIComponent(latestFollowUpId)}/image-generated`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageGenerated: true }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data.message || data.error || 'Follow-up image update failed');
+    }
+  } catch (error) {
+    console.warn('WedWise: follow-up image status update failed:', error.message);
+  }
 }
 
 // ── Venue recommendations ──────────────────────────────────────────────
@@ -1324,15 +1345,13 @@ async function generateWeddingImageFromReport() {
         <a href="${data.imageUrl}" download="wedwise-wedding-visualization.png" class="btn btn-primary">
           ${tx('שמירת התמונה', 'Save image')}
         </a>
-        <button type="button" class="btn btn-primary" data-follow-up-decision="continue">
-          ${tx('להמשיך לארגן את החתונה איתנו', 'Continue planning the wedding with us')}
-        </button>
-        <button type="button" class="btn btn-secondary" data-follow-up-decision="thinking">
-          ${tx('תודה, זה נראה מעולה, אבל עוד אחשוב על זה', 'Thanks, this looks great, but I will think about it')}
+        <button type="button" class="btn btn-secondary" data-close-image-modal>
+          ${tx('סגירה וחזרה לדוח', 'Close and return to report')}
         </button>
       </div>
     `);
     latestImageGenerated = true;
+    markFollowUpImageGenerated();
   } catch (error) {
     console.error('WedWise: wedding image generation failed:', error);
     setWeddingImageModal('error', `
@@ -1402,6 +1421,7 @@ async function submitWeddingFollowUp(decision) {
 
     if (data.submissionId) latestSubmissionId = data.submissionId;
     if (data.leadId) latestLeadId = data.leadId;
+    if (data.followUpId) latestFollowUpId = data.followUpId;
 
     const title = decision === 'continue'
       ? tx('תודה, הפרטים נשלחו לצוות שלנו', 'Thank you, the details were sent to our team')
@@ -1479,6 +1499,7 @@ async function submitQuestionnaire(payload, state) {
   latestPayload = payload;
   latestSubmissionId = null;
   latestLeadId = null;
+  latestFollowUpId = null;
   latestImageGenerated = false;
 
   // Telegram notification — fires in background, does not block report rendering
@@ -1550,6 +1571,7 @@ function resetForm() {
   latestPayload = null;
   latestSubmissionId = null;
   latestLeadId = null;
+  latestFollowUpId = null;
   latestImageGenerated = false;
   isReportConfirmed = false;
   if (btnConfirmReport) {
@@ -1627,7 +1649,20 @@ if (btnConfirmReport) {
     }
     if (invitationCta) invitationCta.hidden = false;
     setWeddingImageStatus('confirmed', `<p>${tx('הדוח אושר. אפשר לבחור כלי המשך מתחת לדוח, או לעדכן אותנו אם תרצו שנמשיך איתכם מכאן.', 'The report is confirmed. You can choose a follow-up tool below the report or let us know if you want us to continue with you from here.')}</p>`);
-    closeWeddingImageModal();
+    setWeddingImageModal('ready', `
+      <div class="wedding-image-modal-message">
+        <h2 id="wedding-image-modal-title">${tx('הדוח נראה לכם נכון?', 'Does the report look right?')}</h2>
+        <p>${tx('אפשר להמשיך עם WedWise מהנקודה הזאת, או לשמור את הדוח ולחשוב על זה בנחת.', 'You can continue with WedWise from here, or save the report and think about it calmly.')}</p>
+        <div class="wedding-image-download-row wedding-image-modal-actions">
+          <button type="button" class="btn btn-primary" data-follow-up-decision="continue">
+            ${tx('להמשיך לארגן את החתונה איתנו', 'Continue planning the wedding with us')}
+          </button>
+          <button type="button" class="btn btn-secondary" data-follow-up-decision="thinking">
+            ${tx('תודה, אשמור את הדוח ואחשוב על זה', 'Thanks, I will save the report and think about it')}
+          </button>
+        </div>
+      </div>
+    `);
   });
 }
 

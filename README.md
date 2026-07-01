@@ -29,10 +29,12 @@ The current website lets a visitor:
 6. Receive an initial browser-generated planning report with a suggested budget
    breakdown, design direction, supplier categories, and next steps.
 7. Review the report, edit questionnaire answers if needed, confirm the report,
-   and generate a realistic wedding visualization from the confirmed report.
-8. Save the generated wedding visualization from the preview modal.
-9. Choose whether to continue organizing the wedding with WedWise or think
+   and choose whether to continue organizing the wedding with WedWise or think
    about it first; the decision is saved and sent to the agency Telegram bot.
+8. Generate and save a realistic wedding visualization from the confirmed
+   report. If a decision was already saved, the image flow only marks that
+   follow-up as having generated an image.
+9. Continue with invitation, countdown, blessing, and guide tools.
 10. Create a wedding countdown card, write a wedding blessing draft, and browse
    practical wedding-planning tips from dedicated pages.
 11. Open a wedding invitation editor from the report flow and export the
@@ -74,8 +76,8 @@ Working in the active user flow:
 - Local initial report generation.
 - Report review flow with answer editing, explicit report confirmation, wedding
   image generation, matching invitation creation, matching countdown handoff,
-  preview modal, image download, final follow-up decision, Telegram
-  notification, and Supabase follow-up persistence.
+  preview modal, image download, report-confirmation follow-up decision,
+  Telegram notification, and Supabase follow-up persistence.
 - Venue recommendation modal based on the questionnaire's region, budget, and
   guest count. The data source is local demo JSON under `backend/data/venues/`.
 - Non-venue supplier recommendation modals from the report for DJ, photography,
@@ -287,7 +289,10 @@ report. The visitor can either edit the answers or confirm the report. Once the
 report is confirmed, the confirm button is hidden, the follow-up decision modal
 opens, and the report action panel shows three separate actions: create a
 wedding visualization, design a matching invitation, or build a matching
-countdown. Do not collapse those actions into the submit/confirm button.
+countdown. Image generation does not ask for the follow-up decision again; it
+only updates the saved follow-up with `image_generated=true` when a saved
+follow-up id exists. Do not collapse those actions into the submit/confirm
+button.
 
 The frontend sends a language-neutral image-generation summary plus structured
 questionnaire details to:
@@ -414,6 +419,13 @@ The Supabase schema is stored at:
 backend/database/supabase-schema.sql
 ```
 
+For existing Supabase projects that already have the base schema, run this
+incremental script to add the follow-up outcome queues:
+
+```text
+backend/database/add-follow-up-outcome-tables.sql
+```
+
 Backend routes for submissions, reports, images, suppliers, and leads are
 documented in:
 
@@ -471,6 +483,7 @@ recommendations.
 | `POST` | `/api/generate-blessing` | Active OpenAI blessing/speech generation endpoint. |
 | `POST` | `/api/generate-countdown-design` | Optional OpenAI countdown design endpoint; requires uploaded image and API key. |
 | `POST` | `/api/wedding-follow-up` | Active final decision endpoint; saves to Supabase and notifies Telegram. |
+| `PATCH` | `/api/wedding-follow-up/:id/image-generated` | Marks a saved follow-up as having generated an image. |
 | `POST` | `/api/venues/recommend` | Active local venue recommendation endpoint using `backend/data/venues/`. |
 | `POST` | `/api/suppliers/recommend` | Active non-venue supplier recommendation endpoint for DJ, photography, design/flowers, and catering. Uses Supabase suppliers when configured, with local demo-catalog fallback for development. |
 | `GET` | `/api/suppliers/recommendations` | Available; uses demo suppliers and a saved submission. |
