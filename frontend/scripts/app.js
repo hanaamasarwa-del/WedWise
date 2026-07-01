@@ -1026,11 +1026,12 @@ function closeWeddingImageModal() {
   document.body.classList.remove('modal-open');
 }
 
-function renderFollowUpChoiceStatus() {
+function renderFollowUpChoiceStatus(errorMessage = '') {
   setWeddingImageStatus('confirmed', `
     <div class="wedding-follow-up-inline">
       <h3>${tx('הדוח אושר', 'Report confirmed')}</h3>
       <p>${tx('בחרו אם תרצו שנמשיך איתכם מכאן, או המשיכו להשתמש בכלים שמתחת לדוח.', 'Choose whether you want us to continue with you from here, or keep using the tools below the report.')}</p>
+      ${errorMessage ? `<p class="wedding-follow-up-error">${errorMessage}</p>` : ''}
       <div class="wedding-image-download-row wedding-image-modal-actions">
         <button type="button" class="btn btn-primary" data-follow-up-decision="continue">
           ${tx('להמשיך לארגן את החתונה איתנו', 'Continue planning the wedding with us')}
@@ -1440,9 +1441,9 @@ async function generateWeddingImageFromReport() {
 
 async function submitWeddingFollowUp(decision) {
   if (!latestPayload || !latestQuestionnaire) {
-    setWeddingImageModal('error', `
-      <div class="wedding-image-modal-message">
-        <h2 id="wedding-image-modal-title">${tx('לא מצאנו את פרטי השאלון', 'We could not find the questionnaire details')}</h2>
+    setWeddingImageStatus('error', `
+      <div class="wedding-follow-up-inline">
+        <h3>${tx('לא מצאנו את פרטי השאלון', 'We could not find the questionnaire details')}</h3>
         <p>${tx('כדי לשלוח את הבחירה, מלאו את השאלון מחדש.', 'To send your choice, please fill out the questionnaire again.')}</p>
       </div>
     `);
@@ -1453,15 +1454,8 @@ async function submitWeddingFollowUp(decision) {
   buttons.forEach((button) => {
     button.disabled = true;
   });
+  closeWeddingImageModal();
   renderFollowUpSendingStatus();
-
-  setWeddingImageModal('loading', `
-    <div class="wedding-image-loading wedding-image-modal-loading" role="status">
-      <span aria-hidden="true"></span>
-      <h2 id="wedding-image-modal-title">${tx('שולחים את הבחירה שלכם', 'Sending your choice')}</h2>
-      <p>${tx('אנחנו שומרים את הפרטים ומעדכנים את הצוות.', 'We are saving the details and updating the team.')}</p>
-    </div>
-  `);
 
   try {
     const response = await fetch('/api/wedding-follow-up', {
@@ -1492,32 +1486,9 @@ async function submitWeddingFollowUp(decision) {
     if (data.followUpId) latestFollowUpId = data.followUpId;
 
     renderFollowUpSavedStatus(decision);
-
-    const title = decision === 'continue'
-      ? tx('תודה, הפרטים נשלחו לצוות שלנו', 'Thank you, the details were sent to our team')
-      : tx('תודה, הבחירה שלכם נשמרה', 'Thank you, your choice was saved');
-    const message = decision === 'continue'
-      ? tx('הנתונים שלכם כבר נשלחו לנציג/ה שלנו. ביום העבודה הקרוב ניצור איתכם קשר.', 'Your details were sent to our representative. We will contact you on the next business day.')
-      : tx('שמרנו את הבחירה שלכם. תוכלו לחזור לדוח, ליצור הזמנה או ספירה לאחור, ואם תרצו להמשיך איתנו בהמשך נשמח לעזור.', 'We saved your choice. You can return to the report, create an invitation or countdown, and if you want to continue with us later we will be happy to help.');
-
-    setWeddingImageModal('ready', `
-      <div class="wedding-image-modal-message">
-        <h2 id="wedding-image-modal-title">${title}</h2>
-        <p>${message}</p>
-        <p class="wedding-image-decision-note">${tx('בחירה שנשלחה:', 'Choice sent:')} ${getFinalDecisionText(decision)}</p>
-        <button type="button" class="btn btn-primary" data-close-image-modal>${tx('סגירה', 'Close')}</button>
-      </div>
-    `);
   } catch (error) {
     console.error('WedWise: wedding follow-up failed:', error);
-    renderFollowUpChoiceStatus();
-    setWeddingImageModal('error', `
-      <div class="wedding-image-modal-message">
-        <h2 id="wedding-image-modal-title">${tx('לא הצלחנו לשלוח את הבחירה', 'We could not send the choice')}</h2>
-        <p>${tx('הפרטים לא נשמרו כרגע. נסו שוב בעוד רגע.', 'The details were not saved right now. Please try again in a moment.')}</p>
-        <button type="button" class="btn btn-secondary" data-close-image-modal>${tx('סגירה', 'Close')}</button>
-      </div>
-    `);
+    renderFollowUpChoiceStatus(tx('לא הצלחנו לשלוח את הבחירה. נסו שוב בעוד רגע.', 'We could not send the choice. Please try again in a moment.'));
   }
 }
 

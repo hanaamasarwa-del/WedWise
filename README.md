@@ -300,12 +300,12 @@ report. The visitor can either edit the answers or confirm the report. Once the
 report is confirmed, the confirm button is hidden, an inline follow-up decision
 panel appears under the report, and the report action panel shows three
 separate actions: create a wedding visualization, design a matching invitation,
-or build a matching countdown. The decision send/save step uses the modal for
-loading and final confirmation, but the initial choice must stay visible inline
-so the report page does not feel blocked. Image generation does not ask for the
-follow-up decision again; it only updates the saved follow-up with
-`image_generated=true` when a saved follow-up id exists. Do not collapse those
-actions into the submit/confirm button.
+or build a matching countdown. The decision send/save step also stays inline:
+the choice buttons are replaced by sending and saved/error states, without a
+full-screen overlay. Image generation does not ask for the follow-up decision
+again; it only updates the saved follow-up with `image_generated=true` when a
+saved follow-up id exists. Do not collapse those actions into the
+submit/confirm button.
 
 The frontend sends a language-neutral image-generation summary plus structured
 questionnaire details to:

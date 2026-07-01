@@ -1878,6 +1878,11 @@ select {
   max-width: 42rem;
 }
 
+.wedding-follow-up-inline .wedding-follow-up-error {
+  color: var(--color-error);
+  font-weight: 800;
+}
+
 .wedding-image-loading {
   display: flex;
   align-items: center;

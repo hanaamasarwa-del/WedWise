@@ -78,12 +78,13 @@ confirm the report. Once confirmed, the confirm button is hidden, an inline
 choice panel lets the visitor decide whether to continue organizing the wedding
 with WedWise or save the report and think about it, and the report shows tools
 for a wedding image, matching invitation, and matching countdown. Sending the
-choice uses a modal for the loading and final confirmation states. The image
-generation opens a modal that asks the visitor to wait while WedWise prepares
-an example photo-style visualization of the wedding. When the image is ready,
-the visitor can save/download it. The follow-up choice is saved and notifies
-the agency Telegram bot when the backend is configured. This feature requires
-the server to have an OpenAI API key configured.
+choice stays inline and replaces the buttons with sending and saved/error
+states, without a full-screen overlay. The image generation opens a modal that
+asks the visitor to wait while WedWise prepares an example photo-style
+visualization of the wedding. When the image is ready, the visitor can
+save/download it. The follow-up choice is saved and notifies the agency
+Telegram bot when the backend is configured. This feature requires the server
+to have an OpenAI API key configured.
 
 PLANNED PRODUCT DIRECTION
 The product brief describes richer future capabilities: deeper AI analysis,
