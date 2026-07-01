@@ -70,9 +70,9 @@
               </div>
 
               <div class="form-group">
-                <label for="inspiration-image">תמונת השראה (אופציונלי)</label>
+                <label for="inspiration-image">תמונת רקע לכרטיס (אופציונלי)</label>
                 <input type="file" id="inspiration-image" name="inspiration-image" accept="image/*" onchange="previewImage(this)">
-                <p class="field-hint">העלו תמונת השראה כדי שה-AI יוכל ליצור עיצוב דומה לאירוע שלכם</p>
+                <p class="field-hint">העלו תמונה שתשמש כרקע של כרטיס הספירה המעוצב</p>
                 <div id="image-preview" style="display: none; margin-top: 1rem;">
                   <img id="preview-img" src="" alt="Preview" style="max-width: 100%; max-height: 300px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
                 </div>
@@ -93,6 +93,9 @@
                 <div class="countdown-card-content">
                   <div id="card-title" class="countdown-card-title" style="display: none;"></div>
                   <div id="card-couple" class="countdown-card-couple" style="display: none;"></div>
+                  <div class="countdown-card-accent" aria-hidden="true">
+                    <span></span>
+                  </div>
 
                   <div class="countdown-display">
                     <div class="countdown-number-group">
@@ -123,7 +126,7 @@
               <div class="countdown-actions">
                 <button type="button" id="download-btn" class="btn btn-primary">הורדת התמונה</button>
                 <button type="button" id="copy-btn" class="btn btn-secondary">העתקה</button>
-                <button type="button" id="generate-ai-btn" class="btn btn-primary" style="display: none;">יצירת עיצוב AI</button>
+                <button type="button" id="generate-ai-btn" class="btn btn-primary" style="display: none;" hidden>יצירת עיצוב AI</button>
               </div>
 
               <p id="copy-message" class="copy-success" style="display: none;">✓ התמונה הועתקה!</p>

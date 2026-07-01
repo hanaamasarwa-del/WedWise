@@ -257,12 +257,10 @@ function renderCountdown(targetDate, coupleNames, customTitle) {
   const cardCouple = document.getElementById('card-couple');
   const cardFooter = document.getElementById('card-footer');
 
-  if (customTitle && customTitle.trim()) {
-    cardTitle.textContent = customTitle.trim();
-    cardTitle.style.display = 'block';
-  } else {
-    cardTitle.style.display = 'none';
-  }
+  cardTitle.textContent = customTitle && customTitle.trim()
+    ? customTitle.trim()
+    : tx('מתקרבים ליום שלנו', 'Getting closer to our day');
+  cardTitle.style.display = 'block';
 
   if (coupleNames && coupleNames.trim()) {
     cardCouple.textContent = coupleNames.trim();
@@ -271,21 +269,18 @@ function renderCountdown(targetDate, coupleNames, customTitle) {
     cardCouple.style.display = 'none';
   }
 
-  // Add a default footer message if no custom title
-  if (!customTitle || !customTitle.trim()) {
-    cardFooter.textContent = tx('עד ליום הגדול', 'Until the big day');
-    cardFooter.style.display = 'block';
-  } else {
-    cardFooter.style.display = 'none';
-  }
+  cardFooter.textContent = customTitle && customTitle.trim()
+    ? tx('עד ליום הגדול', 'Until the big day')
+    : tx('הדרך אל החופה מתחילה כאן', 'The path to the chuppah begins here');
+  cardFooter.style.display = 'block';
 
   // Apply background image if uploaded
   if (uploadedImageDataUrl) {
-    countdownCard.style.backgroundImage = `url('${uploadedImageDataUrl}')`;
-    countdownCard.style.backgroundSize = 'cover';
-    countdownCard.style.backgroundPosition = 'center';
+    countdownCard.style.setProperty('--countdown-card-image', `url("${uploadedImageDataUrl}")`);
+    countdownCard.classList.add('has-image');
   } else {
-    countdownCard.style.backgroundImage = 'none';
+    countdownCard.style.removeProperty('--countdown-card-image');
+    countdownCard.classList.remove('has-image');
   }
 
   // Show result
@@ -301,7 +296,7 @@ async function downloadCard() {
 
     const canvas = await html2canvas(countdownCard, {
       scale: 2,
-      backgroundColor: '#FDFBF7',
+      backgroundColor: null,
       logging: false,
       useCORS: true,
     });
@@ -377,10 +372,12 @@ form.addEventListener('reset', () => {
   hideError();
   uploadedImageDataUrl = null;
   uploadedImageFile = null;
-  countdownCard.style.backgroundImage = 'none';
+  countdownCard.style.removeProperty('--countdown-card-image');
+  countdownCard.classList.remove('has-image');
   document.getElementById('image-preview').style.display = 'none';
   document.getElementById('inspiration-image').value = '';
   generateAiBtn.style.display = 'none';
+  generateAiBtn.hidden = true;
   window.setTimeout(refreshCountdownDateControls, 0);
 });
 
@@ -393,7 +390,8 @@ function previewImage(input) {
       uploadedImageDataUrl = e.target.result;
       document.getElementById('preview-img').src = e.target.result;
       document.getElementById('image-preview').style.display = 'block';
-      generateAiBtn.style.display = 'inline-block';
+      generateAiBtn.style.display = 'none';
+      generateAiBtn.hidden = true;
     };
     reader.readAsDataURL(input.files[0]);
   }
