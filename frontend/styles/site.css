@@ -4280,30 +4280,30 @@ select {
 
 /* ── Invitation Style Selector ─────────────────────── */
 .inv-style-selector {
-  margin-bottom: 2rem;
+  margin-bottom: 2.25rem;
 }
 
 .inv-style-selector-title {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--color-primary-dark);
   letter-spacing: 0.02em;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .inv-style-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 0.9rem;
   justify-content: center;
 }
 
 .inv-style-card {
   position: relative;
   cursor: pointer;
-  flex: 1 1 100px;
-  max-width: 130px;
-  min-width: 88px;
+  flex: 1 1 108px;
+  max-width: 148px;
+  min-width: 96px;
 }
 
 .inv-style-card input[type="radio"] {
@@ -4319,151 +4319,178 @@ select {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.55rem;
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-md);
+  gap: 0.6rem;
+  padding: 0.65rem 0.65rem 0.9rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: 14px;
   background: var(--color-surface);
+  box-shadow:
+    0 2px 8px rgba(141, 118, 104, 0.07),
+    0 1px 2px rgba(141, 118, 104, 0.05);
   transition:
     border-color var(--transition),
     box-shadow var(--transition),
-    transform var(--transition);
+    transform var(--transition),
+    background var(--transition);
 }
 
 .inv-style-card:hover .inv-style-card-inner {
-  transform: translateY(-3px);
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-gold);
+  transform: translateY(-5px);
+  border-color: var(--color-primary-light);
+  background: var(--color-surface-soft);
+  box-shadow:
+    0 12px 28px rgba(185, 133, 125, 0.18),
+    0 4px 10px rgba(141, 118, 104, 0.1);
 }
 
 .inv-style-card input:checked + .inv-style-card-inner {
   border-color: var(--color-secondary);
-  box-shadow: 0 0 0 2px rgba(185, 133, 125, 0.28), var(--shadow-gold);
+  background: var(--color-surface);
+  box-shadow:
+    0 0 0 2.5px rgba(185, 133, 125, 0.32),
+    0 12px 28px rgba(185, 133, 125, 0.16),
+    0 4px 10px rgba(141, 118, 104, 0.1);
 }
 
 .inv-style-card input:checked + .inv-style-card-inner::after {
   content: '✓';
   position: absolute;
-  top: 0.3rem;
-  left: 0.3rem;
-  width: 1.25rem;
-  height: 1.25rem;
+  top: 0.4rem;
+  left: 0.4rem;
+  width: 1.3rem;
+  height: 1.3rem;
   background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
   border-radius: 50%;
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   font-weight: 900;
-  line-height: 1.25rem;
+  line-height: 1.3rem;
   text-align: center;
   color: var(--color-surface);
   pointer-events: none;
+  box-shadow: 0 2px 6px rgba(185, 133, 125, 0.45);
 }
 
 .inv-style-card input:focus-visible + .inv-style-card-inner {
   outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
 .inv-style-name {
-  font-size: 0.78rem;
-  font-weight: 600;
+  font-size: 0.68rem;
+  font-weight: 700;
   color: var(--color-muted);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.1em;
   text-align: center;
+  text-transform: uppercase;
   transition: color var(--transition);
 }
 
 .inv-style-card input:checked + .inv-style-card-inner .inv-style-name {
-  color: var(--color-primary-dark);
+  color: var(--color-secondary);
 }
 
 /* ── Mini invitation previews ── */
+/*
+  Layer order (frontmost first):
+  1. ornament-top   — small diamond dot
+  2. invite-line    — thin intro text
+  3. names          — wide bold bar (couple names)
+  4. divider        — full-width hairline
+  5. date           — medium bar
+  6. venue          — shorter bar
+  7. ornament-bottom — small diamond dot
+*/
 .inv-mini {
   width: 100%;
-  height: 88px;
-  border-radius: 3px;
+  height: 102px;
+  border-radius: 6px;
   background-repeat: no-repeat;
-  /* Shared layer order: ornament-top | invite-line | names | divider | date | venue | ornament-bottom */
   background-size:
-    5px 5px,
-    52% 2px,
-    62% 4px,
-    80% 1px,
-    44% 2px,
-    34% 2px,
-    5px 5px;
+    6px 6px,
+    48% 2px,
+    64% 5px,
+    76% 1px,
+    42% 2px,
+    30% 2px,
+    6px 6px;
   background-position:
-    center 8px,
-    center 22px,
-    center 34px,
-    center 46px,
-    center 56px,
-    center 65px,
-    center 78px;
+    center 9px,
+    center 25px,
+    center 38px,
+    center 52px,
+    center 63px,
+    center 74px,
+    center 90px;
 }
 
 .inv-mini--elegant {
   background-color: #FBF7EF;
-  box-shadow: inset 0 0 0 1px rgba(192, 152, 136, 0.25);
+  border: 1px solid rgba(192, 152, 136, 0.18);
+  border-top: 3px solid #C09888;
   background-image:
     radial-gradient(circle, #C09888 0%, #C09888 100%),
-    linear-gradient(#A88070 0%, #A88070 100%),
+    linear-gradient(#C4A494 0%, #C4A494 100%),
     linear-gradient(#5F5148 0%, #5F5148 100%),
-    linear-gradient(#C09888 0%, #C09888 100%),
-    linear-gradient(#8D7668 0%, #8D7668 100%),
-    linear-gradient(#8D7668 0%, #8D7668 100%),
+    linear-gradient(#DECCBA 0%, #DECCBA 100%),
+    linear-gradient(#9A7E6E 0%, #9A7E6E 100%),
+    linear-gradient(#9A7E6E 0%, #9A7E6E 100%),
     radial-gradient(circle, #C09888 0%, #C09888 100%);
 }
 
 .inv-mini--luxury {
-  background-color: #1C1A18;
-  box-shadow: inset 0 0 0 1px rgba(201, 164, 85, 0.3);
+  background-color: #17140E;
+  border: 1px solid rgba(201, 164, 85, 0.22);
+  border-top: 3px solid #C9A455;
   background-image:
     radial-gradient(circle, #C9A455 0%, #C9A455 100%),
-    linear-gradient(#9A7D44 0%, #9A7D44 100%),
-    linear-gradient(#E8C97A 0%, #E8C97A 100%),
+    linear-gradient(#6A5228 0%, #6A5228 100%),
+    linear-gradient(#EDD07C 0%, #EDD07C 100%),
+    linear-gradient(#4A3818 0%, #4A3818 100%),
     linear-gradient(#C9A455 0%, #C9A455 100%),
-    linear-gradient(#B08B42 0%, #B08B42 100%),
-    linear-gradient(#B08B42 0%, #B08B42 100%),
+    linear-gradient(#9A7530 0%, #9A7530 100%),
     radial-gradient(circle, #C9A455 0%, #C9A455 100%);
 }
 
 .inv-mini--modern {
-  background-color: #FFFFFF;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  background-color: #F7F7F7;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-top: 3px solid #282828;
   background-image:
-    radial-gradient(circle, #444444 0%, #444444 100%),
-    linear-gradient(#BBBBBB 0%, #BBBBBB 100%),
-    linear-gradient(#111111 0%, #111111 100%),
-    linear-gradient(#DDDDDD 0%, #DDDDDD 100%),
-    linear-gradient(#888888 0%, #888888 100%),
-    linear-gradient(#888888 0%, #888888 100%),
-    radial-gradient(circle, #444444 0%, #444444 100%);
+    radial-gradient(circle, #282828 0%, #282828 100%),
+    linear-gradient(#C4C4C4 0%, #C4C4C4 100%),
+    linear-gradient(#181818 0%, #181818 100%),
+    linear-gradient(#DEDEDE 0%, #DEDEDE 100%),
+    linear-gradient(#8A8A8A 0%, #8A8A8A 100%),
+    linear-gradient(#8A8A8A 0%, #8A8A8A 100%),
+    radial-gradient(circle, #282828 0%, #282828 100%);
 }
 
 .inv-mini--garden {
-  background-color: #F1F5EC;
-  box-shadow: inset 0 0 0 1px rgba(90, 122, 74, 0.2);
+  background-color: #EDF4E8;
+  border: 1px solid rgba(80, 120, 64, 0.16);
+  border-top: 3px solid #5F9248;
   background-image:
-    radial-gradient(circle, #5A7A4A 0%, #5A7A4A 100%),
-    linear-gradient(#7A9E6E 0%, #7A9E6E 100%),
-    linear-gradient(#3D5E32 0%, #3D5E32 100%),
-    linear-gradient(#7A9E6E 0%, #7A9E6E 100%),
-    linear-gradient(#5A7A4A 0%, #5A7A4A 100%),
-    linear-gradient(#5A7A4A 0%, #5A7A4A 100%),
-    radial-gradient(circle, #5A7A4A 0%, #5A7A4A 100%);
+    radial-gradient(circle, #5F9248 0%, #5F9248 100%),
+    linear-gradient(#88B874 0%, #88B874 100%),
+    linear-gradient(#355A28 0%, #355A28 100%),
+    linear-gradient(#A8CCA0 0%, #A8CCA0 100%),
+    linear-gradient(#537A40 0%, #537A40 100%),
+    linear-gradient(#537A40 0%, #537A40 100%),
+    radial-gradient(circle, #5F9248 0%, #5F9248 100%);
 }
 
 .inv-mini--classic {
-  background-color: #FFFFFF;
-  box-shadow: inset 0 0 0 1px rgba(43, 58, 110, 0.15);
+  background-color: #F6F8FC;
+  border: 1px solid rgba(35, 50, 100, 0.1);
+  border-top: 3px solid #243064;
   background-image:
-    radial-gradient(circle, #2B3A6E 0%, #2B3A6E 100%),
-    linear-gradient(#6B7CAA 0%, #6B7CAA 100%),
-    linear-gradient(#1E2B4E 0%, #1E2B4E 100%),
-    linear-gradient(#4A5888 0%, #4A5888 100%),
-    linear-gradient(#3B4C7E 0%, #3B4C7E 100%),
-    linear-gradient(#3B4C7E 0%, #3B4C7E 100%),
-    radial-gradient(circle, #2B3A6E 0%, #2B3A6E 100%);
+    radial-gradient(circle, #243064 0%, #243064 100%),
+    linear-gradient(#7888C0 0%, #7888C0 100%),
+    linear-gradient(#142040 0%, #142040 100%),
+    linear-gradient(#C0C8E4 0%, #C0C8E4 100%),
+    linear-gradient(#3C5090 0%, #3C5090 100%),
+    linear-gradient(#3C5090 0%, #3C5090 100%),
+    radial-gradient(circle, #243064 0%, #243064 100%);
 }
 
 /* ── Print / PDF ────────────────────────────────────── */
