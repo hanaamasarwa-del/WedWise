@@ -111,6 +111,26 @@
   color: var(--color-text);
 }
 
+.countdown-date-grid {
+  gap: 1rem;
+  padding: 1rem;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(246, 243, 232, 0.78));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.countdown-date-grid .field-group {
+  gap: 0.45rem;
+}
+
+.countdown-date-grid select {
+  min-height: 3.25rem;
+  background-color: var(--color-bg);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+}
+
 .form-group input {
   padding: 0.875rem 1rem;
   border: 1px solid var(--color-border);

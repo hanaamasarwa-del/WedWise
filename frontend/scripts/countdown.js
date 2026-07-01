@@ -2,6 +2,9 @@
 
 const form = document.getElementById('countdown-form');
 const weddingDateInput = document.getElementById('wedding-date');
+const weddingYearSelect = document.getElementById('countdown-wedding-year');
+const weddingMonthSelect = document.getElementById('countdown-wedding-month');
+const weddingDaySelect = document.getElementById('countdown-wedding-day');
 const coupleNamesInput = document.getElementById('couple-names');
 const customTitleInput = document.getElementById('custom-title');
 
@@ -20,6 +23,7 @@ let uploadedImageDataUrl = null;
 const i18n = window.WedWiseI18n;
 const isEnglish = () => i18n?.isEnglish?.() === true;
 const tx = (heText, enText) => (isEnglish() ? enText : heText);
+const currentLocale = () => (isEnglish() ? 'en-US' : 'he-IL');
 
 function setReportPrefillNotice(message) {
   const existing = document.querySelector('.countdown-prefill-note');
@@ -31,6 +35,145 @@ function setReportPrefillNotice(message) {
   note.className = 'countdown-prefill-note';
   note.textContent = message;
   form.prepend(note);
+}
+
+function padDatePart(value) {
+  return String(value).padStart(2, '0');
+}
+
+function getStartOfToday() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return today;
+}
+
+function getEarliestSelectableDate() {
+  const date = getStartOfToday();
+  date.setDate(date.getDate() + 1);
+  return date;
+}
+
+function getDaysInMonth(year, month) {
+  return new Date(Number(year), Number(month), 0).getDate();
+}
+
+function getMonthName(monthIndex) {
+  return new Date(2026, monthIndex - 1, 1).toLocaleDateString(currentLocale(), {
+    month: 'long',
+  });
+}
+
+function parseIsoDate(value) {
+  if (!value) return null;
+  const [year, month, day] = value.split('-').map(Number);
+  if (!year || !month || !day) return null;
+
+  const date = new Date(year, month - 1, day);
+  date.setHours(0, 0, 0, 0);
+
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    return null;
+  }
+
+  return date;
+}
+
+function isFutureWeddingDate(value) {
+  const date = parseIsoDate(value);
+  return Boolean(date && date >= getEarliestSelectableDate());
+}
+
+function setSelectOptions(select, options, placeholder) {
+  if (!select) return;
+  const currentValue = select.value;
+  select.innerHTML = '';
+
+  const placeholderOption = document.createElement('option');
+  placeholderOption.value = '';
+  placeholderOption.textContent = placeholder;
+  select.appendChild(placeholderOption);
+
+  options.forEach((option) => {
+    const el = document.createElement('option');
+    el.value = option.value;
+    el.textContent = option.label;
+    el.disabled = Boolean(option.disabled);
+    select.appendChild(el);
+  });
+
+  if (currentValue && Array.from(select.options).some((option) => option.value === currentValue && !option.disabled)) {
+    select.value = currentValue;
+  }
+}
+
+function populateCountdownDateControls() {
+  if (!weddingYearSelect || !weddingMonthSelect || !weddingDaySelect) return;
+
+  const earliestDate = getEarliestSelectableDate();
+  const earliestYear = earliestDate.getFullYear();
+  const earliestMonth = earliestDate.getMonth() + 1;
+  const earliestDay = earliestDate.getDate();
+  const selectedYear = Number(weddingYearSelect.value) || earliestYear;
+  const selectedMonth = Number(weddingMonthSelect.value) || earliestMonth;
+
+  const yearOptions = Array.from({ length: 16 }, (_, index) => {
+    const year = earliestYear + index;
+    return { value: String(year), label: String(year) };
+  });
+  setSelectOptions(weddingYearSelect, yearOptions, tx('בחרו שנה', 'Choose year'));
+
+  const monthOptions = Array.from({ length: 12 }, (_, index) => {
+    const month = index + 1;
+    return {
+      value: padDatePart(month),
+      label: getMonthName(month),
+      disabled: selectedYear === earliestYear && month < earliestMonth,
+    };
+  });
+  setSelectOptions(weddingMonthSelect, monthOptions, tx('בחרו חודש', 'Choose month'));
+
+  const daysInMonth = getDaysInMonth(selectedYear, selectedMonth);
+  const dayOptions = Array.from({ length: daysInMonth }, (_, index) => {
+    const day = index + 1;
+    return {
+      value: padDatePart(day),
+      label: String(day),
+      disabled: selectedYear === earliestYear && selectedMonth === earliestMonth && day < earliestDay,
+    };
+  });
+  setSelectOptions(weddingDaySelect, dayOptions, tx('בחרו יום', 'Choose day'));
+}
+
+function syncCountdownDateValue() {
+  if (!weddingDateInput) return;
+  const year = weddingYearSelect?.value || '';
+  const month = weddingMonthSelect?.value || '';
+  const day = weddingDaySelect?.value || '';
+  const value = year && month && day ? `${year}-${month}-${day}` : '';
+  weddingDateInput.value = isFutureWeddingDate(value) ? value : '';
+}
+
+function refreshCountdownDateControls() {
+  populateCountdownDateControls();
+  syncCountdownDateValue();
+}
+
+function setCountdownDateValue(value) {
+  if (!isFutureWeddingDate(value)) {
+    if (weddingDateInput) weddingDateInput.value = '';
+    return false;
+  }
+
+  const [year, month, day] = value.split('-');
+  if (weddingYearSelect) weddingYearSelect.value = year;
+  if (weddingMonthSelect) weddingMonthSelect.value = month;
+  if (weddingDaySelect) weddingDaySelect.value = day;
+  refreshCountdownDateControls();
+  return weddingDateInput?.value === value;
 }
 
 // Calculate months and days between today and a target date
@@ -209,6 +352,7 @@ async function copyToClipboard() {
 // Form submission handler
 form.addEventListener('submit', (e) => {
   e.preventDefault();
+  refreshCountdownDateControls();
 
   const weddingDate = weddingDateInput.value;
   const coupleNames = coupleNamesInput.value;
@@ -237,6 +381,7 @@ form.addEventListener('reset', () => {
   document.getElementById('image-preview').style.display = 'none';
   document.getElementById('inspiration-image').value = '';
   generateAiBtn.style.display = 'none';
+  window.setTimeout(refreshCountdownDateControls, 0);
 });
 
 // Image preview
@@ -303,11 +448,16 @@ downloadGeneratedBtn.addEventListener('click', () => {
 
 generateAiBtn.addEventListener('click', generateAiImage);
 
+[weddingYearSelect, weddingMonthSelect, weddingDaySelect].forEach((select) => {
+  select?.addEventListener('change', refreshCountdownDateControls);
+});
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
   noResult.hidden = false;
   resultContainer.hidden = true;
   errorMessage.hidden = true;
+  refreshCountdownDateControls();
 
   try {
     const raw = localStorage.getItem('wedwise_countdown');
@@ -316,10 +466,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const saved = JSON.parse(raw);
     if (saved.coupleNames && coupleNamesInput) coupleNamesInput.value = saved.coupleNames;
     if (saved.customTitle && customTitleInput) customTitleInput.value = saved.customTitle;
-    if (saved.weddingDate && weddingDateInput) weddingDateInput.value = saved.weddingDate;
+    if (saved.weddingDate) setCountdownDateValue(saved.weddingDate);
 
-    if (saved.weddingDate) {
-      renderCountdown(saved.weddingDate, coupleNamesInput.value, customTitleInput.value);
+    if (saved.weddingDate && weddingDateInput.value) {
+      renderCountdown(weddingDateInput.value, coupleNamesInput.value, customTitleInput.value);
       setReportPrefillNotice(tx('הפרטים מהדוח נטענו לספירה לאחור.', 'Report details were loaded into the countdown.'));
     } else {
       setReportPrefillNotice(tx('הפרטים מהדוח נטענו. בחרו תאריך חתונה כדי ליצור את הספירה.', 'Report details were loaded. Choose a wedding date to create the countdown.'));

@@ -41,8 +41,22 @@
           <div class="countdown-form-section">
             <form id="countdown-form">
               <div class="form-group">
-                <label for="wedding-date">תאריך החתונה *</label>
-                <input type="date" id="wedding-date" name="wedding-date" required>
+                <label id="countdown-date-label" for="countdown-wedding-year">תאריך החתונה *</label>
+                <div class="exact-date-grid countdown-date-grid" role="group" aria-labelledby="countdown-date-label">
+                  <div class="field-group">
+                    <label for="countdown-wedding-year">שנה</label>
+                    <select id="countdown-wedding-year" name="countdown-wedding-year"></select>
+                  </div>
+                  <div class="field-group">
+                    <label for="countdown-wedding-month">חודש</label>
+                    <select id="countdown-wedding-month" name="countdown-wedding-month"></select>
+                  </div>
+                  <div class="field-group">
+                    <label for="countdown-wedding-day">יום</label>
+                    <select id="countdown-wedding-day" name="countdown-wedding-day"></select>
+                  </div>
+                </div>
+                <input type="hidden" id="wedding-date" name="wedding-date" required>
               </div>
 
               <div class="form-group">
