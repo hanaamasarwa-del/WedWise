@@ -23,8 +23,9 @@ The current website lets a visitor:
    menu.
 4. Switch the site interface between Hebrew and English from the top language
    toggle.
-5. Enter a budget, guest count, region, style, colors, flowers, decorations,
-   personal notes, an optional inspiration link, and contact details.
+5. Enter a budget, guest count, wedding date or estimated date range, region,
+   style, colors, flowers, decorations, personal notes, an optional inspiration
+   link, and contact details.
 6. Receive an initial browser-generated planning report with a suggested budget
    breakdown, design direction, supplier categories, and next steps.
 7. Review the report, edit questionnaire answers if needed, confirm the report,
@@ -57,7 +58,10 @@ Working in the active user flow:
   language is stored in `localStorage`, updates `lang`/`dir`, and keeps the
   toggle position stable when switching directions.
 - Protected landing hero image with subtle petal motion.
-- Six-step questionnaire with validation and back/next navigation.
+- Six-step questionnaire with validation and back/next navigation. The first
+  step asks for budget, guest count, and wedding timing: either an exact date
+  through explicit year/month/day selects or an estimated month/year range.
+  Past dates and past months are blocked; future years remain available.
 - Wedding countdown helper page.
 - Wedding blessing writing page, labeled `כתיבת ברכה` in the navigation.
 - Wedding tips/guides page, labeled `טיפים ומדריכים`, with a visual tips grid,
@@ -223,6 +227,10 @@ validation attributes, progress controls, and submit/back/next buttons must stay
 identical between these two pages. The post-report action area must also stay
 identical: report confirmation, answer editing/restart, wedding visualization,
 matching invitation, and matching countdown actions should exist in both flows.
+The wedding date controls must also stay synchronized: exact date selection uses
+the same `wedding_year_exact`, `wedding_month_exact`, `wedding_day_exact`, and
+hidden `wedding_date_exact` fields in both questionnaires, while estimated date
+ranges use the same `wedding_month_from` and `wedding_month_to` fields.
 
 The homepage may keep a different page-level layout and scale so it fits the
 landing page, but the actual `<form id="wedding-form">...</form>` content and

@@ -159,8 +159,21 @@
                     </label>
                   </div>
                   <div class="date-mode-fields" data-date-mode-panel="exact">
-                    <label for="wedding_date_exact">בחרו תאריך</label>
-                    <input type="date" id="wedding_date_exact" name="wedding_date_exact">
+                    <div class="exact-date-grid">
+                      <div class="field-group">
+                        <label for="wedding_year_exact">שנה</label>
+                        <select id="wedding_year_exact" name="wedding_year_exact"></select>
+                      </div>
+                      <div class="field-group">
+                        <label for="wedding_month_exact">חודש</label>
+                        <select id="wedding_month_exact" name="wedding_month_exact"></select>
+                      </div>
+                      <div class="field-group">
+                        <label for="wedding_day_exact">יום</label>
+                        <select id="wedding_day_exact" name="wedding_day_exact"></select>
+                      </div>
+                    </div>
+                    <input type="hidden" id="wedding_date_exact" name="wedding_date_exact">
                   </div>
                   <div class="date-mode-fields" data-date-mode-panel="range" hidden>
                     <div class="field-grid">
