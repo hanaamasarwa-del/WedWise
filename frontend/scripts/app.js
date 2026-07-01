@@ -1182,6 +1182,7 @@ async function showVenueRecommendations(btn) {
     region_id: Number(btn.dataset.regionId),
     budget: Number(btn.dataset.budget),
     guests: Number(btn.dataset.guests),
+    submissionId: latestSubmissionId,
   };
   openVenueModal(`
     <div class="venue-modal-loading">
@@ -1308,6 +1309,7 @@ async function showSupplierRecommendations(btn) {
     budget: Number(btn.dataset.budget),
     guests: Number(btn.dataset.guests),
     style: btn.dataset.style,
+    submissionId: latestSubmissionId,
   };
 
   openSupplierModal(`

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const supabase = require("../services/supabase-client");
 const { getRecommendations, recommendSupplierCategory } = require("../services/supplier-service");
+const { saveRecommendedVendors } = require("../services/recommended-vendors-store");
 
 // GET /api/suppliers/recommendations?submissionId=uuid
 router.get("/recommendations", async (req, res) => {
@@ -30,7 +31,7 @@ router.get("/recommendations", async (req, res) => {
 // intentionally stay under /api/venues/recommend.
 router.post("/recommend", async (req, res) => {
   try {
-    const { category, region, region_id, budget, guests, style } = req.body;
+    const { category, region, region_id, budget, guests, style, submissionId } = req.body;
 
     if (!category) return res.status(400).json({ error: "Missing required field: category" });
     if (!budget || Number(budget) <= 0)
@@ -54,6 +55,11 @@ router.post("/recommend", async (req, res) => {
         error: "No suppliers found for this category",
         ...result,
       });
+    }
+
+    // Record what this couple was shown (best-effort, never blocks the response).
+    if (submissionId) {
+      saveRecommendedVendors(submissionId, "supplier", category, result.suppliers);
     }
 
     return res.json(result);
