@@ -47,7 +47,9 @@ CURRENT PAGE STRUCTURE
   About page, and FAQ share a matching footer, chatbot, and navigation style.
 
 QUESTIONNAIRE DETAILS
-1. Estimated total budget in Israeli shekels and expected guest count.
+1. Estimated total budget in Israeli shekels, expected guest count, and wedding
+   timing. The date controls allow an exact date or estimated month range from
+   the current year through five years ahead.
 2. Preferred area in Israel and wedding style. The visible area options are
    Jerusalem and surroundings, Center, North, and South. Visible style examples
    include romantic, elegant, rustic, modern, boho, minimalist, urban, and
@@ -72,15 +74,16 @@ commitment.
 
 WEDDING IMAGE GENERATION
 After the report appears, visitors can edit their questionnaire answers or
-confirm the report. Once confirmed, the confirm button is replaced by a button
-to generate a wedding image. The image generation opens a modal that asks the
-visitor to wait while WedWise prepares an example photo-style visualization of
-the wedding. When the image is ready, the visitor can save/download it. The
-modal then offers two choices: continue organizing the wedding with WedWise, or
-say that the result looks good but they want to think about it. Both choices
-save the decision and notify the agency Telegram bot when the backend is
-configured. This feature requires the server to have an OpenAI API key
-configured.
+confirm the report. Once confirmed, the confirm button is hidden, an inline
+choice panel lets the visitor decide whether to continue organizing the wedding
+with WedWise or save the report and think about it, and the report shows tools
+for a wedding image, matching invitation, and matching countdown. Sending the
+choice uses a modal for the loading and final confirmation states. The image
+generation opens a modal that asks the visitor to wait while WedWise prepares
+an example photo-style visualization of the wedding. When the image is ready,
+the visitor can save/download it. The follow-up choice is saved and notifies
+the agency Telegram bot when the backend is configured. This feature requires
+the server to have an OpenAI API key configured.
 
 PLANNED PRODUCT DIRECTION
 The product brief describes richer future capabilities: deeper AI analysis,

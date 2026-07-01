@@ -57,27 +57,28 @@ Working in the active user flow:
   footer sections.
 - Shared top navigation across all frontend pages.
 - Shared Hebrew/English language toggle across all frontend pages. The selected
-  language is stored in `localStorage`, updates `lang`/`dir`, and keeps the
-  toggle position stable when switching directions.
+  language is stored in `localStorage`, updates `lang`/`dir`, keeps the toggle
+  position stable when switching directions, and covers the dynamic guide
+  reader/buttons on the tips page.
 - Protected landing hero image with subtle petal motion.
 - Six-step questionnaire with validation and back/next navigation. The first
   step asks for budget, guest count, and wedding timing: either an exact date
   through explicit year/month/day selects or an estimated month/year range
   through explicit from/to year and month selects. Native browser date/month
   pickers are avoided here so labels, month names, and year selection stay
-  consistent in Hebrew and English. Past dates and past months are blocked;
-  future years remain available.
-- Wedding countdown helper page.
+  consistent in Hebrew and English. Past dates and past months are blocked,
+  and year selection is limited to the current year through five years ahead.
+- Wedding countdown helper page with future-only year/month/day date selection.
 - Wedding blessing writing page, labeled `כתיבת ברכה` in the navigation.
 - Wedding tips/guides page, labeled `טיפים ומדריכים`, with a visual tips grid,
-  expanded guide reader, and supplier-meeting checklist.
+  language-aware expanded guide reader, and supplier-meeting checklist.
 - Wedding invitation editor, reachable from the report flow, with Hebrew,
   English, and Arabic invitation text modes plus PNG/PDF export options.
 - Local initial report generation.
-- Report review flow with answer editing, explicit report confirmation, wedding
-  image generation, matching invitation creation, matching countdown handoff,
-  preview modal, image download, report-confirmation follow-up decision,
-  Telegram notification, and Supabase follow-up persistence.
+- Report review flow with answer editing, explicit report confirmation, inline
+  follow-up decision, wedding image generation, matching invitation creation,
+  matching countdown handoff, preview modal, image download, Telegram
+  notification, and Supabase follow-up persistence.
 - Venue recommendation modal based on the questionnaire's region, budget, and
   guest count. The data source is local demo JSON under `backend/data/venues/`.
 - Non-venue supplier recommendation modals from the report for DJ, photography,
@@ -196,9 +197,9 @@ entry point served by Express:
 | --- | --- |
 | `frontend/index.html` | Landing page, questionnaire entry, report flow, image generation, venue recommendations, and final follow-up decision. |
 | `frontend/questionnaire.html` | Dedicated questionnaire page using the shared questionnaire/report script. |
-| `frontend/countdown.html` | Wedding countdown card builder with optional AI design generation from an inspiration image. |
+| `frontend/countdown.html` | Wedding countdown card builder with future-only date selection and optional AI design generation from an inspiration image. |
 | `frontend/blessing-helper.html` | Wedding blessing/speech generator. |
-| `frontend/articles.html` | Tips and guides hub labeled `טיפים ומדריכים`, with quick tips, deeper guide reader, and supplier-meeting checklist. |
+| `frontend/articles.html` | Tips and guides hub labeled `טיפים ומדריכים`, with quick tips, language-aware deeper guide reader, and supplier-meeting checklist. |
 | `frontend/invitation.html` | Invitation editor reached from the report flow, with PNG/PDF export. |
 | `frontend/about.html` | About page. |
 | `frontend/faq.html` | FAQ page. |
@@ -212,6 +213,9 @@ Hebrew/English language toggle appears in the fixed header and static copy can
 be translated consistently. Dynamic strings rendered after user actions should
 use the existing page-level language helpers so validation messages, modals,
 generated report text, and loading states match the selected language.
+When adding visible Hebrew copy, placeholders, labels, button text,
+`aria-label` values, titles, or image `alt` text, add the matching English
+entry to `frontend/scripts/i18n.js`.
 English mode should be left-to-right and left-aligned across the main content
 areas, while Hebrew remains right-to-left. If new centered Hebrew section
 headers or cards are added, add a `.lang-en` override when needed so the
@@ -267,6 +271,13 @@ verify they still match.
 Do not make all cards the same length. The page title is `טיפים ומדריכים`
 because it should clearly contain both quick tips and deeper guides.
 
+The expanded article modal is language-aware. When adding or editing a guide or
+tip card, update both the Hebrew `articleDetails` data and the English
+`articleDetailsEn` data in `frontend/articles.html`. The read-more button text
+and modal should also respond to the shared `wedwise:languagechange` event so
+switching between Hebrew and English does not leave mixed-language article
+content on screen.
+
 ## Chatbot
 
 The chatbot appears as a floating button in the corner of the screen. It is
@@ -286,13 +297,15 @@ The server calls OpenAI, so the API key is never sent to the browser.
 
 After a visitor completes the questionnaire, the browser renders the initial
 report. The visitor can either edit the answers or confirm the report. Once the
-report is confirmed, the confirm button is hidden, the follow-up decision modal
-opens, and the report action panel shows three separate actions: create a
-wedding visualization, design a matching invitation, or build a matching
-countdown. Image generation does not ask for the follow-up decision again; it
-only updates the saved follow-up with `image_generated=true` when a saved
-follow-up id exists. Do not collapse those actions into the submit/confirm
-button.
+report is confirmed, the confirm button is hidden, an inline follow-up decision
+panel appears under the report, and the report action panel shows three
+separate actions: create a wedding visualization, design a matching invitation,
+or build a matching countdown. The decision send/save step uses the modal for
+loading and final confirmation, but the initial choice must stay visible inline
+so the report page does not feel blocked. Image generation does not ask for the
+follow-up decision again; it only updates the saved follow-up with
+`image_generated=true` when a saved follow-up id exists. Do not collapse those
+actions into the submit/confirm button.
 
 The frontend sends a language-neutral image-generation summary plus structured
 questionnaire details to:
@@ -305,14 +318,13 @@ The backend builds a photorealistic wedding visualization prompt and calls the
 OpenAI Images API. The image prompt must not depend on the visible report DOM
 language: Hebrew and English UI modes should send equivalent structured values
 for region, wedding date, style, colors, flowers, decor, and notes. The
-generated image is shown in a modal with a download button. The
-report-confirmation modal also lets the visitor choose whether to continue
-organizing the wedding with WedWise or save the report and think about it
-first. Both choices are saved to Supabase and sent to the configured Telegram
-bot when those services are configured. If Supabase is unavailable but Telegram
-is configured, the backend still notifies the team and reports the database
-status in the API response. The OpenAI API key stays server-side in
-`backend/.env`.
+generated image is shown in a modal with a download button. The inline
+follow-up panel lets the visitor choose whether to continue organizing the
+wedding with WedWise or save the report and think about it first. Both choices
+are saved to Supabase and sent to the configured Telegram bot when those
+services are configured. If Supabase is unavailable but Telegram is configured,
+the backend still notifies the team and reports the database status in the API
+response. The OpenAI API key stays server-side in `backend/.env`.
 
 Required for real image generation:
 
@@ -402,9 +414,11 @@ design approval. The relevant files are:
 3. Send `/start` to the bot from the destination private chat.
 4. Set `TELEGRAM_CHAT_ID` explicitly if the bot has more than one private chat.
 
-The active questionnaire posts to `/api/telegram-lead`. If Telegram delivery
-fails, the frontend still displays the local report and logs a warning in the
-browser console.
+The active questionnaire posts to `/api/telegram-lead`. The first Telegram
+message includes contact details, budget, guest count, region, wedding
+date/range, style, design preferences, and personal notes. If Telegram
+delivery fails, the frontend still displays the local report and logs a warning
+in the browser console.
 
 The later `/api/wedding-follow-up` Telegram message is intentionally short. The
 first lead message already contains the questionnaire details, so the follow-up
@@ -568,9 +582,14 @@ node --check frontend/scripts/app.js
 node --check frontend/scripts/chat-widget.js
 node --check frontend/scripts/blessing-helper.js
 node --check frontend/scripts/countdown.js
+node --check frontend/scripts/i18n.js
 node --check frontend/scripts/invitation.js
 git diff --check
 ```
+
+For translation changes, also run a static Hebrew-string audit against
+`frontend/scripts/i18n.js`, and recheck any page-specific dynamic content such
+as the article modal after switching languages in the browser.
 
 For chatbot changes, also run a live relevant-question test and an unrelated
 question test when an OpenAI key and network access are available.
