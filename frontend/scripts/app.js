@@ -5,12 +5,54 @@
  */
 
 const TOTAL_STEPS = 6;
+const i18n = window.WedWiseI18n;
+const isEnglish = () => i18n?.isEnglish?.() === true;
+const tx = (heText, enText) => (isEnglish() ? enText : heText);
+const currentLocale = () => (isEnglish() ? 'en-US' : 'he-IL');
 
 const REGION_NAMES = {
   '1': 'ירושלים והסביבה',
   '2': 'המרכז',
   '3': 'הצפון',
   '4': 'הדרום',
+};
+
+const REGION_NAMES_EN = {
+  '1': 'Jerusalem area',
+  '2': 'Central Israel',
+  '3': 'Northern Israel',
+  '4': 'Southern Israel',
+};
+
+const VALUE_LABELS_EN = {
+  'ירושלים והסביבה': 'Jerusalem area',
+  'המרכז': 'Central Israel',
+  'הצפון': 'Northern Israel',
+  'הדרום': 'Southern Israel',
+  'רומנטי': 'Romantic',
+  'אלגנטי': 'Elegant',
+  'כפרי': 'Rustic',
+  'מודרני': 'Modern',
+  'בוהו': 'Boho',
+  'מינימליסטי': 'Minimalist',
+  'אורבני': 'Urban',
+  'מסורתי': 'Traditional',
+  'ורדים': 'Roses',
+  'אנמונים': 'Anemones',
+  'אביביים': 'Spring flowers',
+  'סוקולנטים': 'Succulents',
+  'סחלבים': 'Orchids',
+  'פרחי שדה': 'Wildflowers',
+  'נרות': 'Candles',
+  'תאורה רכה': 'Soft lighting',
+  'בדים ווילונות': 'Fabrics and drapes',
+  'עץ וטבע': 'Wood and nature',
+  'זהב ומתכת': 'Gold and metal',
+  'אולם / גן אירועים': 'Venue / event garden',
+  'די־ג׳יי': 'DJ',
+  'צילום': 'Photography',
+  'עיצוב ופרחים': 'Design and flowers',
+  'קייטרינג': 'Catering',
 };
 
 const SUPPLIER_CATEGORIES = [
@@ -30,12 +72,27 @@ const SUPPLIER_RECOMMENDATION_LABELS = {
   'קייטרינג': 'הצג המלצות קייטרינג',
 };
 
+const SUPPLIER_RECOMMENDATION_LABELS_EN = {
+  'די־ג׳יי': 'Show DJ recommendations',
+  'צילום': 'Show photography recommendations',
+  'עיצוב ופרחים': 'Show design recommendations',
+  'קייטרינג': 'Show catering recommendations',
+};
+
 function formatNumberInput(input) {
   input.value = input.value.replace(/[^\d]/g, '');
   const num = parseInt(input.value, 10);
   if (!isNaN(num)) {
-    input.value = num.toLocaleString('he-IL');
+    input.value = num.toLocaleString(currentLocale());
   }
+}
+
+function displayValue(value) {
+  return isEnglish() ? (VALUE_LABELS_EN[value] || value) : value;
+}
+
+function displayList(values) {
+  return values.map(displayValue).join(', ');
 }
 
 let currentStep = 1;
@@ -116,6 +173,9 @@ function getFormState() {
     guest_count: parseInt(form.guest_count.value.replace(/[^\d]/g, ''), 10) || 0,
     region_id: form.region_id.value,
     region_name: REGION_NAMES[form.region_id.value] || '',
+    region_display_name: isEnglish()
+      ? (REGION_NAMES_EN[form.region_id.value] || '')
+      : (REGION_NAMES[form.region_id.value] || ''),
     preferred_style: styleInput ? styleInput.value : '',
     preferred_colors: form.preferred_colors.value.trim(),
     flowers: getCheckedValues('flowers'),
@@ -176,29 +236,29 @@ function validateStep(stepIndex) {
   switch (stepIndex) {
     case 1:
       if (!state.estimated_budget_ils || state.estimated_budget_ils <= 0) {
-        showError('נא להזין תקציב משוער גדול מאפס.');
+        showError(tx('נא להזין תקציב משוער גדול מאפס.', 'Please enter an estimated budget greater than zero.'));
         return false;
       }
       if (!state.guest_count || state.guest_count < 20) {
-        showError('נא להזין מספר אורחים של לפחות 20.');
+        showError(tx('נא להזין מספר אורחים של לפחות 20.', 'Please enter at least 20 guests.'));
         return false;
       }
       return true;
 
     case 2:
       if (!state.region_id) {
-        showError('נא לבחור אזור בארץ.');
+        showError(tx('נא לבחור אזור בארץ.', 'Please choose a region in Israel.'));
         return false;
       }
       if (!state.preferred_style) {
-        showError('נא לבחור סגנון חתונה.');
+        showError(tx('נא לבחור סגנון חתונה.', 'Please choose a wedding style.'));
         return false;
       }
       return true;
 
     case 3:
       if (!state.preferred_colors) {
-        showError('נא להזין צבעים מועדפים.');
+        showError(tx('נא להזין צבעים מועדפים.', 'Please enter preferred colors.'));
         return false;
       }
       return true;
@@ -213,23 +273,26 @@ function validateStep(stepIndex) {
         new URL(url);
         return true;
       } catch {
-        showError('נא להזין קישור תקין (לדוגמה: https://www.pinterest.com/...) או לרוקן את השדה ולדלג.');
+        showError(tx(
+          'נא להזין קישור תקין (לדוגמה: https://www.pinterest.com/...) או לרוקן את השדה ולדלג.',
+          'Please enter a valid link (for example: https://www.pinterest.com/...) or clear the field and skip it.'
+        ));
         return false;
       }
     }
 
     case 6: {
       if (!state.full_name) {
-        showError('נא להזין שם מלא.');
+        showError(tx('נא להזין שם מלא.', 'Please enter a full name.'));
         return false;
       }
       if (!state.phone || state.phone.length < 9) {
-        showError('נא להזין מספר טלפון תקין.');
+        showError(tx('נא להזין מספר טלפון תקין.', 'Please enter a valid phone number.'));
         return false;
       }
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!state.email || !emailPattern.test(state.email)) {
-        showError('נא להזין כתובת אימייל תקינה.');
+        showError(tx('נא להזין כתובת אימייל תקינה.', 'Please enter a valid email address.'));
         return false;
       }
       return true;
@@ -241,7 +304,7 @@ function validateStep(stepIndex) {
 }
 
 function updateProgress(step) {
-  progressLabel.textContent = `שלב ${step} מתוך ${TOTAL_STEPS}`;
+  progressLabel.textContent = tx(`שלב ${step} מתוך ${TOTAL_STEPS}`, `Step ${step} of ${TOTAL_STEPS}`);
   progressFill.style.width = `${(step / TOTAL_STEPS) * 100}%`;
   progressBar.setAttribute('aria-valuenow', String(step));
 
@@ -254,7 +317,9 @@ function updateProgress(step) {
 
 function updateNavButtons(step) {
   btnBack.hidden = step === 1;
-  btnNext.textContent = step === TOTAL_STEPS ? 'שליחה וקבלת דוח' : 'הבא';
+  btnNext.textContent = step === TOTAL_STEPS
+    ? tx('שליחה וקבלת דוח', 'Submit and get report')
+    : tx('הבא', 'Next');
 }
 
 function goToStep(step, options = {}) {
@@ -281,7 +346,7 @@ function goToStep(step, options = {}) {
 }
 
 function formatCurrency(amount) {
-  return amount.toLocaleString('he-IL') + ' ₪';
+  return amount.toLocaleString(currentLocale()) + ' ₪';
 }
 
 function generateMockReport(payload) {
@@ -291,7 +356,10 @@ function generateMockReport(payload) {
   const guests = wr.guest_count;
   const perGuest = Math.round(budget / guests);
   const style = JSON.parse(wr.preferred_styles_json)[0];
-  const region = REGION_NAMES[String(wr.region_id)] || '';
+  const styleLabel = displayValue(style);
+  const region = isEnglish()
+    ? (REGION_NAMES_EN[String(wr.region_id)] || '')
+    : (REGION_NAMES[String(wr.region_id)] || '');
 
   const venueBudget    = Math.round(budget * 0.45);
   const cateringBudget = Math.round(budget * 0.30);
@@ -316,15 +384,15 @@ function generateMockReport(payload) {
   // Generic chip builder
   const chips = (text) =>
     (text || '').split(', ').filter(Boolean)
-      .map((t) => `<span class="rpt-chip">${t.trim()}</span>`).join('');
+      .map((t) => `<span class="rpt-chip">${displayValue(t.trim())}</span>`).join('');
 
   const flowerChips = chips(fdParts['פרחים']);
   const decorChips  = chips(fdParts['קישוטים']);
 
   const flowersSection = (flowerChips || decorChips) ? `
     <div class="rpt-design-row">
-      ${flowerChips ? `<div class="rpt-design-item"><span class="rpt-design-label">פרחים</span><div class="rpt-chips">${flowerChips}</div></div>` : ''}
-      ${decorChips  ? `<div class="rpt-design-item"><span class="rpt-design-label">קישוטים</span><div class="rpt-chips">${decorChips}</div></div>`  : ''}
+      ${flowerChips ? `<div class="rpt-design-item"><span class="rpt-design-label">${tx('פרחים', 'Flowers')}</span><div class="rpt-chips">${flowerChips}</div></div>` : ''}
+      ${decorChips  ? `<div class="rpt-design-item"><span class="rpt-design-label">${tx('קישוטים', 'Decorations')}</span><div class="rpt-chips">${decorChips}</div></div>`  : ''}
     </div>` : '';
 
   // Free text as a styled quote
@@ -338,23 +406,23 @@ function generateMockReport(payload) {
     const venueBtn = isVenue ? `
       <button type="button" class="rpt-venue-btn" data-venue-recommend
         data-region-id="${wr.region_id}" data-budget="${budget}" data-guests="${guests}">
-        הצג המלצות אולמות
+        ${tx('הצג המלצות אולמות', 'Show venue recommendations')}
       </button>` : '';
     const supplierBtn = supplierButtonLabel ? `
       <button type="button" class="rpt-venue-btn rpt-supplier-btn" data-supplier-recommend
         data-category="${escapeHtml(cat)}" data-region-id="${wr.region_id}"
         data-region="${escapeHtml(region)}" data-budget="${budget}"
         data-guests="${guests}" data-style="${escapeHtml(style)}">
-        ${supplierButtonLabel}
+        ${isEnglish() ? (SUPPLIER_RECOMMENDATION_LABELS_EN[cat] || supplierButtonLabel) : supplierButtonLabel}
       </button>` : '';
     return `
     <div class="rpt-supplier-card${isVenue ? ' rpt-supplier-card--venue' : supplierButtonLabel ? ' rpt-supplier-card--recommendable' : ''}">
-      <span class="rpt-supplier-name">${cat}</span>
+      <span class="rpt-supplier-name">${displayValue(cat)}</span>
       ${venueBtn || supplierBtn}
     </div>`;
   }).join('');
 
-  const reportDate = new Date().toLocaleDateString('he-IL');
+  const reportDate = new Date().toLocaleDateString(currentLocale());
   const reportId = `#WW-${String(Date.now()).slice(-6)}`;
 
   // Optional inspiration link block — only rendered when a URL was provided
@@ -362,7 +430,7 @@ function generateMockReport(payload) {
     <section class="rpt-section">
       <div class="rpt-section-heading">
         <span class="rpt-mark" aria-hidden="true">↗</span>
-        <h3>השראה לחתונה</h3>
+        <h3>${tx('השראה לחתונה', 'Wedding inspiration')}</h3>
       </div>
       <a href="${wr.inspiration_url}" target="_blank" rel="noopener noreferrer" class="rpt-inspiration-link">
         <span aria-hidden="true">↗</span>
@@ -371,7 +439,7 @@ function generateMockReport(payload) {
     </section>` : '';
 
   return `
-    <article class="rpt-document" aria-label="דוח תכנון חתונה">
+    <article class="rpt-document" aria-label="${tx('דוח תכנון חתונה', 'Wedding planning report')}">
       <div class="rpt-floral rpt-floral-top" aria-hidden="true"></div>
       <div class="rpt-floral rpt-floral-bottom" aria-hidden="true"></div>
 
@@ -380,32 +448,32 @@ function generateMockReport(payload) {
           <h2>WedWise</h2>
         </div>
         <div class="rpt-doc-meta">
-          <span>מספר דוח: ${reportId}</span>
-          <span>תאריך הפקה: ${reportDate}</span>
+          <span>${tx('מספר דוח:', 'Report ID:')} ${reportId}</span>
+          <span>${tx('תאריך הפקה:', 'Generated:')} ${reportDate}</span>
         </div>
       </header>
 
       <div class="rpt-report-title">
-        <h3>סיכום תכנון אסטרטגי</h3>
-        <p>שלום <strong>${lead.full_name}</strong>, הנה תמונת המצב הראשונית שלכם לפי התשובות בשאלון.</p>
+        <h3>${tx('סיכום תכנון אסטרטגי', 'Strategic planning summary')}</h3>
+        <p>${tx('שלום', 'Hello')} <strong>${lead.full_name}</strong>, ${tx('הנה תמונת המצב הראשונית שלכם לפי התשובות בשאלון.', 'here is your initial planning picture based on the questionnaire answers.')}</p>
       </div>
 
       <section class="rpt-section">
         <div class="rpt-section-heading">
           <span class="rpt-mark" aria-hidden="true">♥</span>
-          <h3>סקירת חתונה</h3>
+          <h3>${tx('סקירת חתונה', 'Wedding overview')}</h3>
         </div>
         <div class="rpt-overview-grid">
           <div>
-            <span>איש קשר</span>
+            <span>${tx('איש קשר', 'Contact person')}</span>
             <strong>${lead.full_name}</strong>
           </div>
           <div>
-            <span>כמות מוזמנים</span>
-            <strong>${guests.toLocaleString('he-IL')} אורחים</strong>
+            <span>${tx('כמות מוזמנים', 'Guest count')}</span>
+            <strong>${guests.toLocaleString(currentLocale())} ${tx('אורחים', 'guests')}</strong>
           </div>
           <div>
-            <span>מיקום מועדף</span>
+            <span>${tx('מיקום מועדף', 'Preferred location')}</span>
             <strong>${region}</strong>
           </div>
         </div>
@@ -414,24 +482,24 @@ function generateMockReport(payload) {
       <section class="rpt-section">
         <div class="rpt-section-heading">
           <span class="rpt-mark" aria-hidden="true">§</span>
-          <h3>פרטי תכנון מהשאלון</h3>
+          <h3>${tx('פרטי תכנון מהשאלון', 'Planning details from the questionnaire')}</h3>
         </div>
         <div class="rpt-details-grid">
           <div class="rpt-detail-row">
-            <span>תקציב יעד</span>
+            <span>${tx('תקציב יעד', 'Target budget')}</span>
             <strong>${formatCurrency(budget)}</strong>
           </div>
           <div class="rpt-detail-row">
-            <span>עלות משוערת לאורח</span>
+            <span>${tx('עלות משוערת לאורח', 'Estimated cost per guest')}</span>
             <strong>${formatCurrency(perGuest)}</strong>
           </div>
           <div class="rpt-detail-row">
-            <span>סגנון עיצובי</span>
-            <strong>${style}</strong>
+            <span>${tx('סגנון עיצובי', 'Design style')}</span>
+            <strong>${styleLabel}</strong>
           </div>
           <div class="rpt-detail-row">
-            <span>צבעים מועדפים</span>
-            <strong>${wr.preferred_colors || 'לא צוין'}</strong>
+            <span>${tx('צבעים מועדפים', 'Preferred colors')}</span>
+            <strong>${wr.preferred_colors || tx('לא צוין', 'Not specified')}</strong>
           </div>
         </div>
       </section>
@@ -439,16 +507,16 @@ function generateMockReport(payload) {
       <section class="rpt-section">
         <div class="rpt-section-heading">
           <span class="rpt-mark" aria-hidden="true">✦</span>
-          <h3>כיוון עיצובי</h3>
+          <h3>${tx('כיוון עיצובי', 'Design direction')}</h3>
         </div>
         <div class="rpt-design-summary">
           <div>
-            <span class="rpt-design-label">סגנון</span>
-            <span class="rpt-style-badge">${style}</span>
+            <span class="rpt-design-label">${tx('סגנון', 'Style')}</span>
+            <span class="rpt-style-badge">${styleLabel}</span>
           </div>
           <div>
-            <span class="rpt-design-label">צבעים</span>
-            <div class="rpt-chips">${colorTags || '<span class="rpt-chip">לא צוין</span>'}</div>
+            <span class="rpt-design-label">${tx('צבעים', 'Colors')}</span>
+            <div class="rpt-chips">${colorTags || `<span class="rpt-chip">${tx('לא צוין', 'Not specified')}</span>`}</div>
           </div>
           ${flowersSection}
         </div>
@@ -460,16 +528,16 @@ function generateMockReport(payload) {
       <section class="rpt-section">
         <div class="rpt-section-heading">
           <span class="rpt-mark" aria-hidden="true">◇</span>
-          <h3>סדר פעולות מומלץ</h3>
+          <h3>${tx('סדר פעולות מומלץ', 'Recommended action plan')}</h3>
         </div>
         <div class="rpt-timeline-grid">
           <div>
-            <span>שלב פתיחה</span>
-            <p>בחירת מקום, בדיקת צילום, די־ג׳יי וקייטרינג לפי דחיפות האירוע.</p>
+            <span>${tx('שלב פתיחה', 'Opening stage')}</span>
+            <p>${tx('בחירת מקום, בדיקת צילום, די־ג׳יי וקייטרינג לפי דחיפות האירוע.', 'Choose a venue and check photography, DJ, and catering according to event urgency.')}</p>
           </div>
           <div>
-            <span>שלב המשך</span>
-            <p>גיבוש עיצוב, פרחים, לוח השראה וסגירת ספקים מרכזיים לפי לוח הזמנים שלכם.</p>
+            <span>${tx('שלב המשך', 'Next stage')}</span>
+            <p>${tx('גיבוש עיצוב, פרחים, לוח השראה וסגירת ספקים מרכזיים לפי לוח הזמנים שלכם.', 'Refine design, flowers, mood board, and key suppliers according to your timeline.')}</p>
           </div>
         </div>
       </section>
@@ -477,35 +545,35 @@ function generateMockReport(payload) {
       <section class="rpt-section rpt-budget-analysis">
         <div class="rpt-section-heading">
           <span class="rpt-mark" aria-hidden="true">₪</span>
-          <h3>ניתוח תקציבי מקצועי</h3>
+          <h3>${tx('ניתוח תקציבי מקצועי', 'Professional budget analysis')}</h3>
         </div>
         <div class="rpt-budget-layout">
           <div class="rpt-budget-bars">
             <div class="rpt-budget-row">
-              <div class="rpt-budget-meta"><span>אולם / גן אירועים</span><strong>${formatCurrency(venueBudget)}</strong></div>
+              <div class="rpt-budget-meta"><span>${tx('אולם / גן אירועים', 'Venue / event garden')}</span><strong>${formatCurrency(venueBudget)}</strong></div>
               <div class="rpt-bar-wrap"><div class="rpt-bar-track"><div class="rpt-bar-fill" style="width:45%"></div></div><span class="rpt-bar-pct">45%</span></div>
             </div>
             <div class="rpt-budget-row">
-              <div class="rpt-budget-meta"><span>קייטרינג</span><strong>${formatCurrency(cateringBudget)}</strong></div>
+              <div class="rpt-budget-meta"><span>${tx('קייטרינג', 'Catering')}</span><strong>${formatCurrency(cateringBudget)}</strong></div>
               <div class="rpt-bar-wrap"><div class="rpt-bar-track"><div class="rpt-bar-fill" style="width:30%"></div></div><span class="rpt-bar-pct">30%</span></div>
             </div>
             <div class="rpt-budget-row">
-              <div class="rpt-budget-meta"><span>עיצוב, צילום ודי־ג׳יי</span><strong>${formatCurrency(servicesBudget)}</strong></div>
+              <div class="rpt-budget-meta"><span>${tx('עיצוב, צילום ודי־ג׳יי', 'Design, photography, and DJ')}</span><strong>${formatCurrency(servicesBudget)}</strong></div>
               <div class="rpt-bar-wrap"><div class="rpt-bar-track"><div class="rpt-bar-fill" style="width:25%"></div></div><span class="rpt-bar-pct">25%</span></div>
             </div>
           </div>
           <div class="rpt-budget-summary">
             <div>
-              <span>תקציב יעד</span>
+              <span>${tx('תקציב יעד', 'Target budget')}</span>
               <strong>${formatCurrency(budget)}</strong>
             </div>
             <div>
-              <span>רמת היתכנות</span>
-              <strong>ראשונית</strong>
+              <span>${tx('רמת היתכנות', 'Feasibility level')}</span>
+              <strong>${tx('ראשונית', 'Initial')}</strong>
             </div>
             <div class="rpt-budget-deviation">
-              <span>אפשרות סטייה מהתקציב</span>
-              <strong>± ${formatCurrency(budgetDeviation)} (עד 8%)</strong>
+              <span>${tx('אפשרות סטייה מהתקציב', 'Possible budget deviation')}</span>
+              <strong>± ${formatCurrency(budgetDeviation)} ${tx('(עד 8%)', '(up to 8%)')}</strong>
             </div>
           </div>
         </div>
@@ -514,9 +582,9 @@ function generateMockReport(payload) {
       <section class="rpt-section">
         <div class="rpt-section-heading">
           <span class="rpt-mark" aria-hidden="true">✓</span>
-          <h3>קטגוריות ספקים לבדיקה</h3>
+          <h3>${tx('קטגוריות ספקים לבדיקה', 'Supplier categories to check')}</h3>
         </div>
-        <p class="rpt-block-sub">ההתאמות כאן מבוססות על האזור, הסגנון והתקציב שציינתם בשאלון.</p>
+        <p class="rpt-block-sub">${tx('ההתאמות כאן מבוססות על האזור, הסגנון והתקציב שציינתם בשאלון.', 'These matches are based on the region, style, and budget you entered in the questionnaire.')}</p>
         <div class="rpt-suppliers">
           ${supplierCards}
         </div>
@@ -525,23 +593,23 @@ function generateMockReport(payload) {
       <section class="rpt-section">
         <div class="rpt-section-heading">
           <span class="rpt-mark" aria-hidden="true">•</span>
-          <h3>צעדים הבאים</h3>
+          <h3>${tx('צעדים הבאים', 'Next steps')}</h3>
         </div>
         <ul class="rpt-next-list">
-          <li>תיאום בדיקה עם 3 ספקים מובילים באזור ${region}.</li>
-          <li>איסוף השראה עיצובית נוספת לפי סגנון ${style}.</li>
-          <li>עדכון רשימת מוזמנים ראשונית לפני פגישת המשך.</li>
+          <li>${tx('תיאום בדיקה עם 3 ספקים מובילים באזור', 'Schedule checks with 3 leading suppliers in')} ${region}.</li>
+          <li>${tx('איסוף השראה עיצובית נוספת לפי סגנון', 'Collect additional design inspiration for the')} ${styleLabel} ${tx('סגנון.', 'style.')}</li>
+          <li>${tx('עדכון רשימת מוזמנים ראשונית לפני פגישת המשך.', 'Update the initial guest list before the follow-up meeting.')}</li>
         </ul>
       </section>
 
       <footer class="rpt-doc-footer">
         <div class="rpt-footer-notes">
-          <p>* דוח זה הופק באופן אוטומטי על ידי מערכת WedWise.</p>
-          <p>הנתונים הם הערכה ראשונית ואינם מהווים הצעת מחיר או אישור ספק.</p>
+          <p>${tx('* דוח זה הופק באופן אוטומטי על ידי מערכת WedWise.', '* This report was generated automatically by WedWise.')}</p>
+          <p>${tx('הנתונים הם הערכה ראשונית ואינם מהווים הצעת מחיר או אישור ספק.', 'The data is an initial estimate and does not constitute a price quote or supplier approval.')}</p>
         </div>
-        <div class="rpt-seal" aria-label="חותמת אימות WedWise">
+        <div class="rpt-seal" aria-label="${tx('חותמת אימות WedWise', 'WedWise verification seal')}">
           <span aria-hidden="true">✓</span>
-          <strong>מאומת<br>על ידי<br>WedWise</strong>
+          <strong>${tx('מאומת', 'Verified')}<br>${tx('על ידי', 'by')}<br>WedWise</strong>
         </div>
       </footer>
     </article>
@@ -552,17 +620,18 @@ function generateMockReport(payload) {
 
 function renderReport(html) {
   reportContent.innerHTML = html;
+  i18n?.translateTree?.(reportContent, i18n.getLang());
   latestReportText = reportContent.innerText.replace(/\s+/g, ' ').trim();
   isReportConfirmed = false;
   if (btnConfirmReport) {
     btnConfirmReport.hidden = false;
     btnConfirmReport.disabled = false;
-    btnConfirmReport.textContent = 'אישור הדוח';
+    btnConfirmReport.textContent = tx('אישור הדוח', 'Confirm report');
   }
   if (btnGenerateImage) {
     btnGenerateImage.hidden = true;
     btnGenerateImage.disabled = false;
-    btnGenerateImage.textContent = 'צרו הדמיית חתונה';
+    btnGenerateImage.textContent = tx('צרו הדמיית חתונה', 'Create wedding visualization');
   }
   if (weddingImageResult) {
     weddingImageResult.hidden = true;
@@ -580,10 +649,12 @@ function buildImageQuestionnaire(state) {
     budget: state.estimated_budget_ils,
     guestCount: state.guest_count,
     regionName: state.region_name,
+    regionDisplayName: state.region_display_name,
     style: state.preferred_style,
+    styleDisplay: displayValue(state.preferred_style),
     colors: state.preferred_colors,
-    flowers: state.flowers.join(', '),
-    decorations: state.decorations.join(', '),
+    flowers: displayList(state.flowers),
+    decorations: displayList(state.decorations),
     freeText: state.free_text,
     inspirationUrl: state.inspiration_url,
   };
@@ -594,6 +665,7 @@ function setWeddingImageStatus(type, html) {
   weddingImageResult.hidden = false;
   weddingImageResult.className = `wedding-image-result ${type ? `is-${type}` : ''}`;
   weddingImageResult.innerHTML = html;
+  i18n?.translateTree?.(weddingImageResult, i18n.getLang());
 }
 
 function setWeddingImageModal(type, html) {
@@ -604,6 +676,7 @@ function setWeddingImageModal(type, html) {
 
   weddingImageModalContent.className = `wedding-image-modal-content ${type ? `is-${type}` : ''}`;
   weddingImageModalContent.innerHTML = html;
+  i18n?.translateTree?.(weddingImageModalContent, i18n.getLang());
   weddingImageModal.hidden = false;
   document.body.classList.add('modal-open');
 }
@@ -643,6 +716,7 @@ function ensureVenueModal() {
 function openVenueModal(html) {
   const { modal, content } = ensureVenueModal();
   content.innerHTML = html;
+  i18n?.translateTree?.(content, i18n.getLang());
   modal.hidden = false;
   document.body.classList.add('modal-open');
 }
@@ -656,13 +730,13 @@ function closeVenueModal() {
 
 function venueCardHtml(v) {
   const price = v.priceMin != null
-    ? `₪${v.priceMin.toLocaleString('he-IL')}${v.priceMax && v.priceMax !== v.priceMin ? `–${v.priceMax.toLocaleString('he-IL')}` : ''} לאורח`
-    : 'מחיר לפי בקשה';
+    ? `₪${v.priceMin.toLocaleString(currentLocale())}${v.priceMax && v.priceMax !== v.priceMin ? `–${v.priceMax.toLocaleString(currentLocale())}` : ''} ${tx('לאורח', 'per guest')}`
+    : tx('מחיר לפי בקשה', 'Price on request');
   const capacity = (v.capacityMin != null && v.capacityMax != null)
-    ? `${v.capacityMin.toLocaleString('he-IL')}–${v.capacityMax.toLocaleString('he-IL')} אורחים`
+    ? `${v.capacityMin.toLocaleString(currentLocale())}–${v.capacityMax.toLocaleString(currentLocale())} ${tx('אורחים', 'guests')}`
     : '';
   const place = v.city || v.region || '';
-  const genericNote = v.imageIsGeneric ? '<span class="venue-card-photo-note">תמונה להמחשה</span>' : '';
+  const genericNote = v.imageIsGeneric ? `<span class="venue-card-photo-note">${tx('תמונה להמחשה', 'Illustration image')}</span>` : '';
   return `
     <article class="venue-card">
       <div class="venue-card-photo">
@@ -678,9 +752,9 @@ function venueCardHtml(v) {
         </ul>
         ${v.reason ? `<p class="venue-card-reason">${escapeHtml(v.reason)}</p>` : ''}
         <a class="venue-card-rating" href="${escapeHtml(v.mapsUrl)}" target="_blank" rel="noopener"
-           title="צפייה בדירוג ובמיקום בגוגל מפות">
+           title="${tx('צפייה בדירוג ובמיקום בגוגל מפות', 'View rating and location on Google Maps')}">
           <span class="venue-stars" aria-hidden="true">★★★★★</span>
-          <span class="venue-rating-label">דירוג ומיקום בגוגל מפות ↗</span>
+          <span class="venue-rating-label">${tx('דירוג ומיקום בגוגל מפות ↗', 'Rating and location on Google Maps ↗')}</span>
         </a>
       </div>
     </article>`;
@@ -688,17 +762,20 @@ function venueCardHtml(v) {
 
 function renderVenueRecommendations(data) {
   const intro = data.perGuestBudget > 0
-    ? `לפי תקציב של כ־₪${data.perGuestBudget.toLocaleString('he-IL')} לאורח לאולם, הנה שלוש המלצות מובילות עבורכם.`
-    : 'הנה שלוש המלצות אולמות מובילות עבורכם.';
+    ? tx(
+      `לפי תקציב של כ־₪${data.perGuestBudget.toLocaleString('he-IL')} לאורח לאולם, הנה שלוש המלצות מובילות עבורכם.`,
+      `Based on a venue budget of about ₪${data.perGuestBudget.toLocaleString(currentLocale())} per guest, here are three leading recommendations for you.`
+    )
+    : tx('הנה שלוש המלצות אולמות מובילות עבורכם.', 'Here are three leading venue recommendations for you.');
   openVenueModal(`
     <div class="venue-modal-head">
-      <h2 id="venue-modal-title">אולמות מומלצים עבורכם</h2>
+      <h2 id="venue-modal-title">${tx('אולמות מומלצים עבורכם', 'Recommended venues for you')}</h2>
       <p>${intro}</p>
     </div>
     <div class="venue-card-grid">
       ${data.venues.map(venueCardHtml).join('')}
     </div>
-    <p class="venue-modal-foot">לחיצה על הכוכבים תפתח את הדירוג והמיקום של האולם בגוגל מפות בחלון חדש.</p>
+    <p class="venue-modal-foot">${tx('לחיצה על הכוכבים תפתח את הדירוג והמיקום של האולם בגוגל מפות בחלון חדש.', 'Clicking the stars opens the venue rating and location on Google Maps in a new window.')}</p>
   `);
 }
 
@@ -710,8 +787,8 @@ async function showVenueRecommendations(btn) {
   };
   openVenueModal(`
     <div class="venue-modal-loading">
-      <h2>מחפשים אולמות מתאימים…</h2>
-      <p>בודקים התאמה לפי אזור, תקציב ומספר אורחים.</p>
+      <h2>${tx('מחפשים אולמות מתאימים…', 'Finding suitable venues...')}</h2>
+      <p>${tx('בודקים התאמה לפי אזור, תקציב ומספר אורחים.', 'Checking fit by region, budget, and guest count.')}</p>
     </div>`);
   try {
     const res = await fetch('/api/venues/recommend', {
@@ -727,9 +804,9 @@ async function showVenueRecommendations(btn) {
   } catch (err) {
     openVenueModal(`
       <div class="venue-modal-message">
-        <h2>לא הצלחנו לטעון המלצות כרגע</h2>
-        <p>אפשר לנסות שוב בעוד רגע. אנחנו כאן כדי לעזור לכם למצוא את האולם המושלם.</p>
-        <button type="button" class="btn btn-secondary" data-close-venue-modal>סגירה</button>
+        <h2>${tx('לא הצלחנו לטעון המלצות כרגע', 'We could not load recommendations right now')}</h2>
+        <p>${tx('אפשר לנסות שוב בעוד רגע. אנחנו כאן כדי לעזור לכם למצוא את האולם המושלם.', 'Please try again in a moment. We are here to help you find the perfect venue.')}</p>
+        <button type="button" class="btn btn-secondary" data-close-venue-modal>${tx('סגירה', 'Close')}</button>
       </div>`);
   }
 }
@@ -755,6 +832,7 @@ function ensureSupplierModal() {
 function openSupplierModal(html) {
   const { modal, content } = ensureSupplierModal();
   content.innerHTML = html;
+  i18n?.translateTree?.(content, i18n.getLang());
   modal.hidden = false;
   document.body.classList.add('modal-open');
 }
@@ -767,10 +845,10 @@ function closeSupplierModal() {
 }
 
 function supplierPriceText(supplier) {
-  if (supplier.priceMin == null) return 'מחיר לפי בדיקה';
-  const min = Number(supplier.priceMin).toLocaleString('he-IL');
+  if (supplier.priceMin == null) return tx('מחיר לפי בדיקה', 'Price after review');
+  const min = Number(supplier.priceMin).toLocaleString(currentLocale());
   const max = supplier.priceMax != null && supplier.priceMax !== supplier.priceMin
-    ? `–${Number(supplier.priceMax).toLocaleString('he-IL')}`
+    ? `–${Number(supplier.priceMax).toLocaleString(currentLocale())}`
     : '';
   const unit = supplier.priceUnit ? ` ${escapeHtml(supplier.priceUnit)}` : '';
   return `${min}${max} ₪${unit}`;
@@ -785,7 +863,7 @@ function supplierCardHtml(supplier) {
   return `
     <article class="venue-card supplier-match-card">
       <div class="venue-card-body">
-        <span class="supplier-match-label">${escapeHtml(supplier.category)}</span>
+        <span class="supplier-match-label">${escapeHtml(displayValue(supplier.category))}</span>
         <h4 class="venue-card-name">${escapeHtml(supplier.name)}</h4>
         ${place ? `<p class="venue-card-city">${escapeHtml(place)}</p>` : ''}
         <ul class="venue-card-meta">
@@ -803,18 +881,24 @@ function renderSupplierRecommendations(data) {
     ? `${formatCurrency(Number(data.targetBudget.amount))} ${escapeHtml(data.targetBudget.unit || '')}`.trim()
     : '';
   const intro = budget
-    ? `לפי אזור ${escapeHtml(data.region || '')}, סגנון האירוע ומסגרת של כ־${budget}, אלו ההתאמות הראשוניות שמצאנו.`
-    : `לפי אזור ${escapeHtml(data.region || '')} וסגנון האירוע, אלו ההתאמות הראשוניות שמצאנו.`;
+    ? tx(
+      `לפי אזור ${escapeHtml(data.region || '')}, סגנון האירוע ומסגרת של כ־${budget}, אלו ההתאמות הראשוניות שמצאנו.`,
+      `Based on ${escapeHtml(displayValue(data.region || ''))}, the event style, and a frame of about ${budget}, these are the initial matches we found.`
+    )
+    : tx(
+      `לפי אזור ${escapeHtml(data.region || '')} וסגנון האירוע, אלו ההתאמות הראשוניות שמצאנו.`,
+      `Based on ${escapeHtml(displayValue(data.region || ''))} and the event style, these are the initial matches we found.`
+    );
 
   openSupplierModal(`
     <div class="venue-modal-head">
-      <h2 id="supplier-modal-title">המלצות ${escapeHtml(data.category)}</h2>
+      <h2 id="supplier-modal-title">${tx('המלצות', 'Recommended')} ${escapeHtml(displayValue(data.category))}</h2>
       <p>${intro}</p>
     </div>
     <div class="venue-card-grid">
       ${data.suppliers.map(supplierCardHtml).join('')}
     </div>
-    <p class="venue-modal-foot">ההתאמות הן הצעה ראשונית מתוך מאגר הספקים. מחירים, זמינות ופרטים סופיים חייבים בדיקה מול הספק.</p>
+    <p class="venue-modal-foot">${tx('ההתאמות הן הצעה ראשונית מתוך מאגר הספקים. מחירים, זמינות ופרטים סופיים חייבים בדיקה מול הספק.', 'These matches are an initial suggestion from the supplier database. Prices, availability, and final details must be checked with the supplier.')}</p>
   `);
 }
 
@@ -830,8 +914,8 @@ async function showSupplierRecommendations(btn) {
 
   openSupplierModal(`
     <div class="venue-modal-loading">
-      <h2>מחפשים ${escapeHtml(payload.category)} שמתאימים לכם...</h2>
-      <p>בודקים התאמה לפי אזור, תקציב, סגנון וכמות אורחים.</p>
+      <h2>${tx('מחפשים', 'Finding')} ${escapeHtml(displayValue(payload.category))} ${tx('שמתאימים לכם...', 'that fit you...')}</h2>
+      <p>${tx('בודקים התאמה לפי אזור, תקציב, סגנון וכמות אורחים.', 'Checking fit by region, budget, style, and guest count.')}</p>
     </div>`);
 
   try {
@@ -848,17 +932,18 @@ async function showSupplierRecommendations(btn) {
   } catch (err) {
     openSupplierModal(`
       <div class="venue-modal-message">
-        <h2>לא הצלחנו לטעון המלצות כרגע</h2>
-        <p>אפשר לנסות שוב בעוד רגע. אם התקלה חוזרת, נציג שלנו יוכל לבדוק עבורכם ספקים מתאימים ידנית.</p>
-        <button type="button" class="btn btn-secondary" data-close-supplier-modal>סגירה</button>
+        <h2>${tx('לא הצלחנו לטעון המלצות כרגע', 'We could not load recommendations right now')}</h2>
+        <p>${tx('אפשר לנסות שוב בעוד רגע. אם התקלה חוזרת, נציג שלנו יוכל לבדוק עבורכם ספקים מתאימים ידנית.', 'Please try again in a moment. If the issue continues, our representative can manually check suitable suppliers for you.')}</p>
+        <button type="button" class="btn btn-secondary" data-close-supplier-modal>${tx('סגירה', 'Close')}</button>
       </div>`);
   }
 }
 
 function getFinalDecisionText(decision) {
-  return decision === 'continue'
-    ? 'רוצה להמשיך לארגן את החתונה עם WedWise'
-    : 'רוצה לשמור את הדוח ולחשוב על זה';
+  if (decision === 'continue') {
+    return tx('רוצה להמשיך לארגן את החתונה עם WedWise', 'Wants to continue planning the wedding with WedWise');
+  }
+  return tx('רוצה לשמור את הדוח ולחשוב על זה', 'Wants to save the report and think about it');
 }
 
 function editAnswersFromReport() {
@@ -866,12 +951,12 @@ function editAnswersFromReport() {
   if (btnConfirmReport) {
     btnConfirmReport.hidden = false;
     btnConfirmReport.disabled = false;
-    btnConfirmReport.textContent = 'אישור הדוח';
+    btnConfirmReport.textContent = tx('אישור הדוח', 'Confirm report');
   }
   if (btnGenerateImage) {
     btnGenerateImage.hidden = true;
     btnGenerateImage.disabled = false;
-    btnGenerateImage.textContent = 'צרו הדמיית חתונה';
+    btnGenerateImage.textContent = tx('צרו הדמיית חתונה', 'Create wedding visualization');
   }
   if (weddingImageResult) {
     weddingImageResult.hidden = true;
@@ -887,22 +972,22 @@ function editAnswersFromReport() {
 
 async function generateWeddingImageFromReport() {
   if (!latestReportText || !latestQuestionnaire) {
-    setWeddingImageStatus('error', '<p>לא מצאנו דוח מוכן ליצירת תמונה. נסו למלא את השאלון מחדש.</p>');
+    setWeddingImageStatus('error', `<p>${tx('לא מצאנו דוח מוכן ליצירת תמונה. נסו למלא את השאלון מחדש.', 'We could not find a ready report for image creation. Please fill out the questionnaire again.')}</p>`);
     return;
   }
 
   if (!isReportConfirmed) {
-    setWeddingImageStatus('error', '<p>לפני יצירת תמונה צריך לאשר שהדוח נראה נכון.</p>');
+    setWeddingImageStatus('error', `<p>${tx('לפני יצירת תמונה צריך לאשר שהדוח נראה נכון.', 'Before creating an image, please confirm that the report looks correct.')}</p>`);
     return;
   }
 
   btnGenerateImage.disabled = true;
-  btnGenerateImage.textContent = 'יוצרים תמונה...';
+  btnGenerateImage.textContent = tx('יוצרים תמונה...', 'Creating image...');
   setWeddingImageModal('loading', `
     <div class="wedding-image-loading wedding-image-modal-loading" role="status">
       <span aria-hidden="true"></span>
-      <h2 id="wedding-image-modal-title">רק כמה רגעים</h2>
-      <p>אנחנו מכינים עבורכם דוגמה לתמונה מהחתונה שלכם לפי הדוח שאישרתם.</p>
+      <h2 id="wedding-image-modal-title">${tx('רק כמה רגעים', 'Just a few moments')}</h2>
+      <p>${tx('אנחנו מכינים עבורכם דוגמה לתמונה מהחתונה שלכם לפי הדוח שאישרתם.', 'We are preparing a sample wedding image based on the report you approved.')}</p>
     </div>
   `);
 
@@ -923,18 +1008,18 @@ async function generateWeddingImageFromReport() {
 
     setWeddingImageModal('ready', `
       <figure class="wedding-image-card">
-        <img src="${data.imageUrl}" alt="הדמיית חתונה שנוצרה לפי הדוח">
-        <figcaption>הדמיית חתונה ראשונית לפי הדוח המאושר.</figcaption>
+        <img src="${data.imageUrl}" alt="${tx('הדמיית חתונה שנוצרה לפי הדוח', 'Wedding visualization generated from the report')}">
+        <figcaption>${tx('הדמיית חתונה ראשונית לפי הדוח המאושר.', 'Initial wedding visualization based on the approved report.')}</figcaption>
       </figure>
       <div class="wedding-image-download-row wedding-image-modal-actions">
         <a href="${data.imageUrl}" download="wedwise-wedding-visualization.png" class="btn btn-primary">
-          שמירת התמונה
+          ${tx('שמירת התמונה', 'Save image')}
         </a>
         <button type="button" class="btn btn-primary" data-follow-up-decision="continue">
-          להמשיך לארגן את החתונה איתנו
+          ${tx('להמשיך לארגן את החתונה איתנו', 'Continue planning the wedding with us')}
         </button>
         <button type="button" class="btn btn-secondary" data-follow-up-decision="thinking">
-          תודה, זה נראה מעולה, אבל עוד אחשוב על זה
+          ${tx('תודה, זה נראה מעולה, אבל עוד אחשוב על זה', 'Thanks, this looks great, but I will think about it')}
         </button>
       </div>
     `);
@@ -943,17 +1028,17 @@ async function generateWeddingImageFromReport() {
     console.error('WedWise: wedding image generation failed:', error);
     setWeddingImageModal('error', `
       <div class="wedding-image-modal-message">
-        <h2 id="wedding-image-modal-title">לא הצלחנו ליצור תמונה כרגע</h2>
-        <p>בדקו שה־OpenAI API key מוגדר בשרת ונסו שוב.</p>
+        <h2 id="wedding-image-modal-title">${tx('לא הצלחנו ליצור תמונה כרגע', 'We could not create an image right now')}</h2>
+        <p>${tx('בדקו שה־OpenAI API key מוגדר בשרת ונסו שוב.', 'Check that the OpenAI API key is configured on the server and try again.')}</p>
         <div class="modal-error-actions">
-          <button type="button" class="btn btn-primary" data-go-to-invitation>💌 המשיכו ליצירת ההזמנה</button>
-          <button type="button" class="btn btn-secondary" data-close-image-modal>סגירה וחזרה לדוח</button>
+          <button type="button" class="btn btn-primary" data-go-to-invitation>${tx('💌 המשיכו ליצירת ההזמנה', 'Continue to invitation creation')}</button>
+          <button type="button" class="btn btn-secondary" data-close-image-modal>${tx('סגירה וחזרה לדוח', 'Close and return to report')}</button>
         </div>
       </div>
     `);
   } finally {
     btnGenerateImage.disabled = false;
-    btnGenerateImage.textContent = 'צרו הדמיית חתונה';
+    btnGenerateImage.textContent = tx('צרו הדמיית חתונה', 'Create wedding visualization');
   }
 }
 
@@ -961,8 +1046,8 @@ async function submitWeddingFollowUp(decision) {
   if (!latestPayload || !latestQuestionnaire) {
     setWeddingImageModal('error', `
       <div class="wedding-image-modal-message">
-        <h2 id="wedding-image-modal-title">לא מצאנו את פרטי השאלון</h2>
-        <p>כדי לשלוח את הבחירה, מלאו את השאלון מחדש.</p>
+        <h2 id="wedding-image-modal-title">${tx('לא מצאנו את פרטי השאלון', 'We could not find the questionnaire details')}</h2>
+        <p>${tx('כדי לשלוח את הבחירה, מלאו את השאלון מחדש.', 'To send your choice, please fill out the questionnaire again.')}</p>
       </div>
     `);
     return;
@@ -976,8 +1061,8 @@ async function submitWeddingFollowUp(decision) {
   setWeddingImageModal('loading', `
     <div class="wedding-image-loading wedding-image-modal-loading" role="status">
       <span aria-hidden="true"></span>
-      <h2 id="wedding-image-modal-title">שולחים את הבחירה שלכם</h2>
-      <p>אנחנו שומרים את הפרטים ומעדכנים את הצוות.</p>
+      <h2 id="wedding-image-modal-title">${tx('שולחים את הבחירה שלכם', 'Sending your choice')}</h2>
+      <p>${tx('אנחנו שומרים את הפרטים ומעדכנים את הצוות.', 'We are saving the details and updating the team.')}</p>
     </div>
   `);
 
@@ -1009,27 +1094,27 @@ async function submitWeddingFollowUp(decision) {
     if (data.leadId) latestLeadId = data.leadId;
 
     const title = decision === 'continue'
-      ? 'תודה, הפרטים נשלחו לצוות שלנו'
-      : 'תודה, הבחירה שלכם נשמרה';
+      ? tx('תודה, הפרטים נשלחו לצוות שלנו', 'Thank you, the details were sent to our team')
+      : tx('תודה, הבחירה שלכם נשמרה', 'Thank you, your choice was saved');
     const message = decision === 'continue'
-      ? 'הנתונים שלכם כבר נשלחו לנציג/ה שלנו. ביום העבודה הקרוב ניצור איתכם קשר.'
-      : 'שמרנו את הבחירה שלכם. תוכלו לחזור לדוח, ליצור הזמנה או ספירה לאחור, ואם תרצו להמשיך איתנו בהמשך נשמח לעזור.';
+      ? tx('הנתונים שלכם כבר נשלחו לנציג/ה שלנו. ביום העבודה הקרוב ניצור איתכם קשר.', 'Your details were sent to our representative. We will contact you on the next business day.')
+      : tx('שמרנו את הבחירה שלכם. תוכלו לחזור לדוח, ליצור הזמנה או ספירה לאחור, ואם תרצו להמשיך איתנו בהמשך נשמח לעזור.', 'We saved your choice. You can return to the report, create an invitation or countdown, and if you want to continue with us later we will be happy to help.');
 
     setWeddingImageModal('ready', `
       <div class="wedding-image-modal-message">
         <h2 id="wedding-image-modal-title">${title}</h2>
         <p>${message}</p>
-        <p class="wedding-image-decision-note">בחירה שנשלחה: ${getFinalDecisionText(decision)}</p>
-        <button type="button" class="btn btn-primary" data-close-image-modal>סגירה</button>
+        <p class="wedding-image-decision-note">${tx('בחירה שנשלחה:', 'Choice sent:')} ${getFinalDecisionText(decision)}</p>
+        <button type="button" class="btn btn-primary" data-close-image-modal>${tx('סגירה', 'Close')}</button>
       </div>
     `);
   } catch (error) {
     console.error('WedWise: wedding follow-up failed:', error);
     setWeddingImageModal('error', `
       <div class="wedding-image-modal-message">
-        <h2 id="wedding-image-modal-title">לא הצלחנו לשלוח את הבחירה</h2>
-        <p>הפרטים לא נשמרו כרגע. נסו שוב בעוד רגע.</p>
-        <button type="button" class="btn btn-secondary" data-close-image-modal>סגירה</button>
+        <h2 id="wedding-image-modal-title">${tx('לא הצלחנו לשלוח את הבחירה', 'We could not send the choice')}</h2>
+        <p>${tx('הפרטים לא נשמרו כרגע. נסו שוב בעוד רגע.', 'The details were not saved right now. Please try again in a moment.')}</p>
+        <button type="button" class="btn btn-secondary" data-close-image-modal>${tx('סגירה', 'Close')}</button>
       </div>
     `);
   }
@@ -1151,12 +1236,12 @@ function resetForm() {
   if (btnConfirmReport) {
     btnConfirmReport.hidden = false;
     btnConfirmReport.disabled = false;
-    btnConfirmReport.textContent = 'אישור הדוח';
+    btnConfirmReport.textContent = tx('אישור הדוח', 'Confirm report');
   }
   if (btnGenerateImage) {
     btnGenerateImage.hidden = true;
     btnGenerateImage.disabled = false;
-    btnGenerateImage.textContent = 'צרו הדמיית חתונה';
+    btnGenerateImage.textContent = tx('צרו הדמיית חתונה', 'Create wedding visualization');
   }
   goToStep(1);
   reportSection.hidden = true;
@@ -1196,7 +1281,7 @@ form.addEventListener('submit', async (e) => {
   latestQuestionnaire = buildImageQuestionnaire(state);
 
   btnNext.disabled = true;
-  btnNext.textContent = 'מייצרים את הדוח...';
+  btnNext.textContent = tx('מייצרים את הדוח...', 'Generating the report...');
 
   try {
     const reportHtml = await submitQuestionnaire(payload, state);
@@ -1222,17 +1307,17 @@ if (btnConfirmReport) {
       btnGenerateImage.disabled = false;
     }
     if (invitationCta) invitationCta.hidden = false;
-    setWeddingImageStatus('confirmed', '<p>הדוח אושר. אפשר לבחור כלי המשך מתחת לדוח, או לעדכן אותנו אם תרצו שנמשיך איתכם מכאן.</p>');
+    setWeddingImageStatus('confirmed', `<p>${tx('הדוח אושר. אפשר לבחור כלי המשך מתחת לדוח, או לעדכן אותנו אם תרצו שנמשיך איתכם מכאן.', 'The report is confirmed. You can choose a follow-up tool below the report or let us know if you want us to continue with you from here.')}</p>`);
     setWeddingImageModal('ready', `
       <div class="wedding-image-modal-message">
-        <h2 id="wedding-image-modal-title">הדוח נראה לכם נכון?</h2>
-        <p>אפשר להמשיך עם WedWise מהנקודה הזאת, או לשמור את הדוח ולחשוב על זה בנחת.</p>
+        <h2 id="wedding-image-modal-title">${tx('הדוח נראה לכם נכון?', 'Does the report look right?')}</h2>
+        <p>${tx('אפשר להמשיך עם WedWise מהנקודה הזאת, או לשמור את הדוח ולחשוב על זה בנחת.', 'You can continue with WedWise from here, or save the report and think about it calmly.')}</p>
         <div class="wedding-image-download-row wedding-image-modal-actions">
           <button type="button" class="btn btn-primary" data-follow-up-decision="continue">
-            להמשיך לארגן את החתונה איתנו
+            ${tx('להמשיך לארגן את החתונה איתנו', 'Continue planning the wedding with us')}
           </button>
           <button type="button" class="btn btn-secondary" data-follow-up-decision="thinking">
-            תודה, אשמור את הדוח ואחשוב על זה
+            ${tx('תודה, אשמור את הדוח ואחשוב על זה', 'Thanks, I will save the report and think about it')}
           </button>
         </div>
       </div>
@@ -1304,7 +1389,9 @@ function saveInvitationData() {
 function saveCountdownData() {
   try {
     const style = latestQuestionnaire?.style || '';
-    const title = style ? `ספירה לאחור לחתונה בסגנון ${style}` : 'ספירה לאחור לחתונה';
+    const title = isEnglish()
+      ? (style ? `Wedding countdown in ${displayValue(style)} style` : 'Wedding countdown')
+      : (style ? `ספירה לאחור לחתונה בסגנון ${style}` : 'ספירה לאחור לחתונה');
 
     localStorage.setItem('wedwise_countdown', JSON.stringify({
       coupleNames: latestPayload?.lead?.full_name || '',

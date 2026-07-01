@@ -11,6 +11,9 @@ let invitationData = {
   body: INV_DEFAULTS.he, lang: 'he',
   style: '', colors: '', flowers: '',
 };
+const i18n = window.WedWiseI18n;
+const isEnglishSite = () => i18n?.isEnglish?.() === true;
+const tx = (heText, enText) => (isEnglishSite() ? enText : heText);
 
 const invitationCard  = document.getElementById('invitation-card');
 const invName1        = document.getElementById('inv-name1');
@@ -78,7 +81,7 @@ if (btnBackToReport) {
 
 async function downloadAsPng() {
   if (!invitationCard || typeof html2canvas === 'undefined') return;
-  if (btnDownloadPng) { btnDownloadPng.disabled = true; btnDownloadPng.textContent = 'מייצא...'; }
+  if (btnDownloadPng) { btnDownloadPng.disabled = true; btnDownloadPng.textContent = tx('מייצא...', 'Exporting...'); }
   try {
     const canvas = await html2canvas(invitationCard, {
       backgroundColor: '#ffffff',
@@ -90,7 +93,7 @@ async function downloadAsPng() {
     link.href = canvas.toDataURL('image/png');
     link.click();
   } finally {
-    if (btnDownloadPng) { btnDownloadPng.disabled = false; btnDownloadPng.textContent = 'הורדת PNG'; }
+    if (btnDownloadPng) { btnDownloadPng.disabled = false; btnDownloadPng.textContent = tx('הורדת PNG', 'Download PNG'); }
   }
 }
 
@@ -113,4 +116,11 @@ function loadFromStorage() {
 }
 
 loadFromStorage();
+if (isEnglishSite() && invitationData.lang === 'he' && !invBody?.value) {
+  invitationData.lang = 'en';
+  invitationData.body = INV_DEFAULTS.en;
+  const englishInput = invLangInputs.find((input) => input.value === 'en');
+  if (englishInput) englishInput.checked = true;
+  if (invBody) invBody.value = INV_DEFAULTS.en;
+}
 renderInvitationCard();

@@ -1,5 +1,8 @@
 (() => {
   const defaultGreeting = 'שלום! אני כאן כדי לעזור בקצרה עם WedWise, השאלון, הדוח וכלי האתר.';
+  const i18n = window.WedWiseI18n;
+  const isEnglish = () => i18n?.isEnglish?.() === true;
+  const tx = (heText, enText) => (isEnglish() ? enText : heText);
 
   const fallbackWidget = `
     <aside class="chat-widget" id="chat-widget">
@@ -70,20 +73,20 @@
 
     if (title) title.textContent = 'WedWise Assistant';
     if (launcherIcon) launcherIcon.textContent = '✦';
-    if (launcherLabel) launcherLabel.textContent = 'אפשר לעזור?';
-    if (firstMessage) firstMessage.textContent = defaultGreeting;
+    if (launcherLabel) launcherLabel.textContent = tx('אפשר לעזור?', 'Need help?');
+    if (firstMessage) firstMessage.textContent = tx(defaultGreeting, 'Hi! I am here to help with WedWise, the questionnaire, the report, and the site tools.');
     if (closeButton) closeButton.textContent = '×';
     if (sendIcon) sendIcon.textContent = '➤';
-    input.placeholder = 'איך אפשר לעזור?';
+    input.placeholder = tx('איך אפשר לעזור?', 'How can I help?');
 
     if (!messagesEl.querySelector('.chat-suggestions')) {
       const suggestions = document.createElement('div');
       suggestions.className = 'chat-suggestions';
-      suggestions.setAttribute('aria-label', 'שאלות מהירות');
+      suggestions.setAttribute('aria-label', tx('שאלות מהירות', 'Quick questions'));
       suggestions.innerHTML = `
-        <button type="button" data-chat-prompt="מה WedWise עושה?">מה WedWise עושה?</button>
-        <button type="button" data-chat-prompt="איך מתחילים את השאלון?">איך מתחילים?</button>
-        <button type="button" data-chat-prompt="מה כולל הדוח הראשוני?">מה כולל הדוח?</button>
+        <button type="button" data-chat-prompt="${tx('מה WedWise עושה?', 'What does WedWise do?')}">${tx('מה WedWise עושה?', 'What does WedWise do?')}</button>
+        <button type="button" data-chat-prompt="${tx('איך מתחילים את השאלון?', 'How do I start the questionnaire?')}">${tx('איך מתחילים?', 'How do I start?')}</button>
+        <button type="button" data-chat-prompt="${tx('מה כולל הדוח הראשוני?', 'What is included in the initial report?')}">${tx('מה כולל הדוח?', 'What is in the report?')}</button>
       `;
       messagesEl.appendChild(suggestions);
     }
@@ -162,7 +165,7 @@
       appendMessage(text, 'user');
       conversation.push({ role: 'user', content: text });
 
-      const typing = createMessage('רגע, בודק בשבילכם...', 'assistant');
+      const typing = createMessage(tx('רגע, בודק בשבילכם...', 'One moment, checking for you...'), 'assistant');
       typing.classList.add('chat-message--typing');
       messagesEl.appendChild(typing);
       messagesEl.scrollTop = messagesEl.scrollHeight;
@@ -180,12 +183,12 @@
           throw new Error(data.error || 'Chat request failed');
         }
 
-        const reply = data.reply || 'לא הצלחתי לנסח תשובה כרגע. נסו שוב בעוד רגע.';
+        const reply = data.reply || tx('לא הצלחתי לנסח תשובה כרגע. נסו שוב בעוד רגע.', 'I could not write an answer right now. Please try again in a moment.');
         conversation.push({ role: 'assistant', content: reply });
         typing.replaceWith(createMessage(reply, 'assistant'));
       } catch (error) {
         console.error('Chat widget error:', error);
-        typing.replaceWith(createMessage('הצ׳אט לא זמין כרגע. אפשר להשאיר פרטים דרך השאלון ונחזור אליכם.', 'assistant'));
+        typing.replaceWith(createMessage(tx('הצ׳אט לא זמין כרגע. אפשר להשאיר פרטים דרך השאלון ונחזור אליכם.', 'The chat is not available right now. You can leave details through the questionnaire and we will get back to you.'), 'assistant'));
       } finally {
         setBusy(false);
         input.focus();

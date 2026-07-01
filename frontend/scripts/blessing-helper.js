@@ -9,11 +9,56 @@ const regenerateBtn = document.getElementById('regenerate-btn');
 
 let lastFormData = null;
 let isGenerating = false;
+const i18n = window.WedWiseI18n;
+const isEnglish = () => i18n?.isEnglish?.() === true;
+const tx = (heText, enText) => (isEnglish() ? enText : heText);
+
+const blessingValueLabels = {
+  'חברה-טובה': 'close female friend',
+  'חבר-טוב': 'close male friend',
+  'אחות': 'sister',
+  'אח': 'brother',
+  'אמא': 'mother',
+  'אבא': 'father',
+  'בן-משפחה': 'male family member',
+  'בת-משפחה': 'female family member',
+  'מלווה': 'wedding attendant',
+  'אורח': 'guest',
+  'מרגש': 'emotional',
+  'קליל-וחם': 'light and warm',
+  'אלגנטי': 'elegant',
+  'מצחיק': 'gently funny',
+  'קצר-ופשוט': 'short and simple',
+  'אישי': 'personal and family-oriented',
+  'מסורתי': 'traditional and gentle',
+  'קצר-מאוד': 'very short (up to 3 sentences)',
+  'קצר': 'short (about 5-7 sentences)',
+  'בינוני': 'medium (about 10-12 sentences)',
+};
+
+function labelFor(value) {
+  return isEnglish() ? (blessingValueLabels[value] || value) : value;
+}
 
 async function generateBlessingWithAI(speaker, brideName, groomName, tone, length, details) {
   isGenerating = true;
 
-  const prompt = `
+  const prompt = isEnglish() ? `
+You are an AI assistant that writes natural wedding blessings in English.
+Write a wedding blessing/speech for a bride named ${brideName} and a groom named ${groomName}.
+
+Speaker: ${labelFor(speaker)}
+Tone: ${labelFor(tone)}
+Length: ${labelFor(length)}
+${details ? `Personal details: ${details}` : ''}
+
+Requirements:
+- Natural, warm English
+- Suitable for a wedding setting
+- Avoid heavy religious language unless the selected tone is traditional
+- Keep the voice appropriate for ${labelFor(speaker)}
+- Write only the blessing, without explanations or extra notes.`
+  : `
 אתה עוזר AI לכתיבת ברכות חתונה בעברית.
 כתוב ברכה/נאום לחתונה של כלה בשם ${brideName} וחתן בשם ${groomName}.
 
@@ -41,10 +86,10 @@ ${details ? `פרטים אישיים: ${details}` : ''}
     if (!response.ok) throw new Error('API error');
 
     const data = await response.json();
-    return data.blessing || 'לא הצלחנו לייצר ברכה. אנא נסו שוב.';
+    return data.blessing || tx('לא הצלחנו לייצר ברכה. אנא נסו שוב.', 'We could not generate a blessing. Please try again.');
   } catch (error) {
     console.error('Error generating blessing:', error);
-    return 'לא הצלחנו להתחבר לשירות. אנא בדקו את חיבור האינטרנט וחזרו שנית.';
+    return tx('לא הצלחנו להתחבר לשירות. אנא בדקו את חיבור האינטרנט וחזרו שנית.', 'We could not connect to the service. Please check the connection and try again.');
   } finally {
     isGenerating = false;
   }
@@ -61,14 +106,14 @@ form.addEventListener('submit', async (e) => {
   const details = document.getElementById('details').value;
 
   if (!speaker || !brideName || !groomName || !tone || !length) {
-    alert('אנא מלאו את כל השדות הדרושים');
+    alert(tx('אנא מלאו את כל השדות הדרושים', 'Please fill in all required fields'));
     return;
   }
 
   lastFormData = { speaker, brideName, groomName, tone, length, details };
 
   // Show loading state
-  blessingOutput.textContent = 'יוצרים את הברכה שלכם...';
+  blessingOutput.textContent = tx('יוצרים את הברכה שלכם...', 'Creating your blessing...');
   resultContainer.hidden = false;
   noResult.hidden = true;
 
@@ -86,20 +131,20 @@ copyBtn.addEventListener('click', () => {
   navigator.clipboard.writeText(text).then(() => {
     const message = document.createElement('div');
     message.className = 'copy-success';
-    message.textContent = '✓ ברכה הועתקה להדבקה!';
+    message.textContent = tx('✓ ברכה הועתקה להדבקה!', '✓ Blessing copied!');
     copyBtn.parentElement.appendChild(message);
 
     setTimeout(() => {
       message.remove();
     }, 2000);
   }).catch(() => {
-    alert('לא הצלחנו להעתיק את הברכה');
+    alert(tx('לא הצלחנו להעתיק את הברכה', 'We could not copy the blessing'));
   });
 });
 
 regenerateBtn.addEventListener('click', async () => {
   if (lastFormData && !isGenerating) {
-    blessingOutput.textContent = 'יוצרים ברכה חדשה...';
+    blessingOutput.textContent = tx('יוצרים ברכה חדשה...', 'Creating a new blessing...');
     const blessing = await generateBlessingWithAI(
       lastFormData.speaker,
       lastFormData.brideName,

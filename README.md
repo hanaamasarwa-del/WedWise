@@ -21,21 +21,23 @@ The current website lets a visitor:
 3. Move between the main page, planning questionnaire, countdown tool, wedding
    blessing writing page, and tips/guides page from one consistent navigation
    menu.
-4. Enter a budget, guest count, region, style, colors, flowers, decorations,
+4. Switch the site interface between Hebrew and English from the top language
+   toggle.
+5. Enter a budget, guest count, region, style, colors, flowers, decorations,
    personal notes, an optional inspiration link, and contact details.
-5. Receive an initial browser-generated planning report with a suggested budget
+6. Receive an initial browser-generated planning report with a suggested budget
    breakdown, design direction, supplier categories, and next steps.
-6. Review the report, edit questionnaire answers if needed, confirm the report,
+7. Review the report, edit questionnaire answers if needed, confirm the report,
    and generate a realistic wedding visualization from the confirmed report.
-7. Save the generated wedding visualization from the preview modal.
-8. Choose whether to continue organizing the wedding with WedWise or think
+8. Save the generated wedding visualization from the preview modal.
+9. Choose whether to continue organizing the wedding with WedWise or think
    about it first; the decision is saved and sent to the agency Telegram bot.
-9. Create a wedding countdown card, write a wedding blessing draft, and browse
+10. Create a wedding countdown card, write a wedding blessing draft, and browse
    practical wedding-planning tips from dedicated pages.
-10. Open a wedding invitation editor from the report flow and export the
+11. Open a wedding invitation editor from the report flow and export the
    invitation as PNG or print/save it as PDF.
-11. Send the completed questionnaire to the agency through Telegram.
-12. Open a floating AI support chatbot for short questions about WedWise and how
+12. Send the completed questionnaire to the agency through Telegram.
+13. Open a floating AI support chatbot for short questions about WedWise and how
    to use the website.
 
 The protected product brief also describes future work such as deeper
@@ -51,6 +53,9 @@ Working in the active user flow:
 - Responsive Hebrew landing page with polished hero, inspiration, benefits, and
   footer sections.
 - Shared top navigation across all frontend pages.
+- Shared Hebrew/English language toggle across all frontend pages. The selected
+  language is stored in `localStorage`, updates `lang`/`dir`, and keeps the
+  toggle position stable when switching directions.
 - Protected landing hero image with subtle petal motion.
 - Six-step questionnaire with validation and back/next navigation.
 - Wedding countdown helper page.
@@ -103,6 +108,8 @@ Important limitations:
 ## Technology
 
 - Frontend: HTML, CSS, and vanilla JavaScript.
+- Frontend i18n: shared `frontend/scripts/i18n.js` plus page-specific dynamic
+  copy helpers where forms, modals, reports, and AI states render after load.
 - Server: Node.js and Express.
 - AI chatbot: OpenAI Responses API.
 - Chatbot model: `gpt-5.4-mini` by default.
@@ -190,6 +197,12 @@ entry point served by Express:
 Most pages share `frontend/styles/site.css` and the floating chatbot from
 `frontend/scripts/chat-widget.js`. Page-specific styles live in
 `frontend/styles/countdown.css` and `frontend/styles/blessing-helper.css`.
+
+All active frontend pages must include `frontend/scripts/i18n.js` so the
+Hebrew/English language toggle appears in the fixed header and static copy can
+be translated consistently. Dynamic strings rendered after user actions should
+use the existing page-level language helpers so validation messages, modals,
+generated report text, and loading states match the selected language.
 
 Subpage hero areas should use the quiet FAQ-style visual treatment: a subtle
 real photo background, a strong cream overlay, dark readable text, centered

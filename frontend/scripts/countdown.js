@@ -17,6 +17,9 @@ const generateAiBtn = document.getElementById('generate-ai-btn');
 const downloadGeneratedBtn = document.getElementById('download-generated-btn');
 let uploadedImageFile = null;
 let uploadedImageDataUrl = null;
+const i18n = window.WedWiseI18n;
+const isEnglish = () => i18n?.isEnglish?.() === true;
+const tx = (heText, enText) => (isEnglish() ? enText : heText);
 
 function setReportPrefillNotice(message) {
   const existing = document.querySelector('.countdown-prefill-note');
@@ -93,12 +96,12 @@ function renderCountdown(targetDate, coupleNames, customTitle) {
   hideError();
 
   if (countdown.isToday) {
-    showError('היום הגדול הגיע! 🎉');
+    showError(tx('היום הגדול הגיע! 🎉', 'The big day is here!'));
     return;
   }
 
   if (countdown.isPast) {
-    showError('בחרו תאריך בעתיד.');
+    showError(tx('בחרו תאריך בעתיד.', 'Choose a future date.'));
     return;
   }
 
@@ -127,7 +130,7 @@ function renderCountdown(targetDate, coupleNames, customTitle) {
 
   // Add a default footer message if no custom title
   if (!customTitle || !customTitle.trim()) {
-    cardFooter.textContent = 'עד ליום הגדול';
+    cardFooter.textContent = tx('עד ליום הגדול', 'Until the big day');
     cardFooter.style.display = 'block';
   } else {
     cardFooter.style.display = 'none';
@@ -151,7 +154,7 @@ function renderCountdown(targetDate, coupleNames, customTitle) {
 async function downloadCard() {
   try {
     downloadBtn.disabled = true;
-    downloadBtn.textContent = 'מעדכן...';
+    downloadBtn.textContent = tx('מעדכן...', 'Preparing...');
 
     const canvas = await html2canvas(countdownCard, {
       scale: 2,
@@ -166,12 +169,12 @@ async function downloadCard() {
     link.click();
 
     downloadBtn.disabled = false;
-    downloadBtn.textContent = 'הורדת התמונה';
+    downloadBtn.textContent = tx('הורדת התמונה', 'Download image');
   } catch (error) {
     console.error('Error downloading image:', error);
-    alert('לא הצלחנו להוריד את התמונה. אנא נסו שנית.');
+    alert(tx('לא הצלחנו להוריד את התמונה. אנא נסו שנית.', 'We could not download the image. Please try again.'));
     downloadBtn.disabled = false;
-    downloadBtn.textContent = 'הורדת התמונה';
+    downloadBtn.textContent = tx('הורדת התמונה', 'Download image');
   }
 }
 
@@ -188,7 +191,7 @@ async function copyToClipboard() {
       text = `${coupleNames}\n${text}`;
     }
 
-    text += '\n\nחודשים : ימים';
+    text += tx('\n\nחודשים : ימים', '\n\nMonths : Days');
 
     await navigator.clipboard.writeText(text);
 
@@ -199,7 +202,7 @@ async function copyToClipboard() {
     }, 2000);
   } catch (error) {
     console.error('Error copying to clipboard:', error);
-    alert('לא הצלחנו להעתיק. אנא נסו שנית.');
+    alert(tx('לא הצלחנו להעתיק. אנא נסו שנית.', 'We could not copy. Please try again.'));
   }
 }
 
@@ -212,7 +215,7 @@ form.addEventListener('submit', (e) => {
   const customTitle = customTitleInput.value;
 
   if (!weddingDate) {
-    showError('בחרו תאריך לחתונה.');
+    showError(tx('בחרו תאריך לחתונה.', 'Choose a wedding date.'));
     return;
   }
 
@@ -254,12 +257,12 @@ function previewImage(input) {
 // Generate AI image
 async function generateAiImage() {
   if (!uploadedImageFile) {
-    alert('אנא בחרו תמונת השראה');
+    alert(tx('אנא בחרו תמונת השראה', 'Please choose an inspiration image'));
     return;
   }
 
   generateAiBtn.disabled = true;
-  generateAiBtn.textContent = 'יוצרים עיצוב...';
+  generateAiBtn.textContent = tx('יוצרים עיצוב...', 'Creating design...');
 
   try {
     const formData = new FormData();
@@ -282,10 +285,10 @@ async function generateAiImage() {
     document.getElementById('generated-image-container').style.display = 'block';
   } catch (error) {
     console.error('Error generating image:', error);
-    alert('לא הצלחנו ליצור את העיצוב. אנא נסו שוב.');
+    alert(tx('לא הצלחנו ליצור את העיצוב. אנא נסו שוב.', 'We could not create the design. Please try again.'));
   } finally {
     generateAiBtn.disabled = false;
-    generateAiBtn.textContent = 'יצירת עיצוב AI';
+    generateAiBtn.textContent = tx('יצירת עיצוב AI', 'Create AI design');
   }
 }
 
@@ -317,10 +320,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (saved.weddingDate) {
       renderCountdown(saved.weddingDate, coupleNamesInput.value, customTitleInput.value);
-      setReportPrefillNotice('הפרטים מהדוח נטענו לספירה לאחור.');
+      setReportPrefillNotice(tx('הפרטים מהדוח נטענו לספירה לאחור.', 'Report details were loaded into the countdown.'));
     } else {
-      setReportPrefillNotice('הפרטים מהדוח נטענו. בחרו תאריך חתונה כדי ליצור את הספירה.');
-      noResult.innerHTML = '<p>הפרטים מהדוח כבר מולאו. בחרו תאריך חתונה ולחצו על "יצירת ספירה".</p>';
+      setReportPrefillNotice(tx('הפרטים מהדוח נטענו. בחרו תאריך חתונה כדי ליצור את הספירה.', 'Report details were loaded. Choose a wedding date to create the countdown.'));
+      noResult.innerHTML = `<p>${tx('הפרטים מהדוח כבר מולאו. בחרו תאריך חתונה ולחצו על "יצירת ספירה".', 'Report details are already filled in. Choose a wedding date and click "Create countdown".')}</p>`;
+      i18n?.translateTree?.(noResult, i18n.getLang());
     }
   } catch {
     setReportPrefillNotice('');
