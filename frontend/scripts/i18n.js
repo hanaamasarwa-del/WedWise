@@ -19,7 +19,7 @@
 
     'WedWise – תכנון חתונות חכם ואישי': 'WedWise - Smart, personal wedding planning',
     'תכנון חתונות חכם ואישי': 'Smart, personal wedding planning',
-    'WedWise – צור את החתונה הייחודית שלך': 'WedWise - Create your one-of-a-kind wedding',
+    'WedWise – צור את החתונה הייחודית שלך': 'WedWise - Create Your Unique, Personalized Wedding',
     'WedWise הוא אתר חכם לתכנון חתונות, שעוזר לזוגות להתחיל את התהליך בצורה מסודרת, אישית ומותאמת לתקציב. ממלאים שאלון קצר על החתונה שחולמים עליה — ומקבלים דוח מותאם אישית עם כיוון עיצובי והמלצות ראשוניות.': 'WedWise is a smart wedding-planning site that helps couples start the process in an organized, personal, budget-aware way. Fill out a short questionnaire about the wedding you imagine and receive a personalized report with design direction and initial recommendations.',
     'התחילו את השאלון': 'Start the questionnaire',
     'איך זה עובד?': 'How it works',

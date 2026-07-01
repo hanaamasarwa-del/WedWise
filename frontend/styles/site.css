@@ -265,6 +265,45 @@ button, input, select, textarea {
   direction: ltr;
 }
 
+.lang-en :where(
+  .hero-content,
+  .section-heading,
+  .how-it-works-header,
+  .questionnaire-header,
+  .why-us-header,
+  .tool-strip-header,
+  .step-card,
+  .benefit-card,
+  .inspiration-content,
+  .assistant-panel,
+  .field-group,
+  .field-label,
+  .field-hint,
+  .designer-bubble,
+  .report-content,
+  .rpt-document,
+  .footer-inner,
+  .chat-panel,
+  .countdown-hero,
+  .countdown-wrapper,
+  .blessing-hero,
+  .blessing-wrapper,
+  .about-hero,
+  .about-text,
+  .faq-hero,
+  .faq-content,
+  .articles-hero,
+  .article-card,
+  .invitation-section
+) {
+  text-align: left;
+}
+
+.lang-en .inspiration-content h2::after {
+  right: auto;
+  left: 0;
+}
+
 .nav-links a {
   color: var(--color-muted);
   text-decoration: none;

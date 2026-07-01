@@ -207,6 +207,10 @@ Hebrew/English language toggle appears in the fixed header and static copy can
 be translated consistently. Dynamic strings rendered after user actions should
 use the existing page-level language helpers so validation messages, modals,
 generated report text, and loading states match the selected language.
+English mode should be left-to-right and left-aligned across the main content
+areas, while Hebrew remains right-to-left. If new centered Hebrew section
+headers or cards are added, add a `.lang-en` override when needed so the
+English version keeps left-edge text alignment.
 
 Subpage hero areas should use the quiet FAQ-style visual treatment: a subtle
 real photo background, a strong cream overlay, dark readable text, centered
