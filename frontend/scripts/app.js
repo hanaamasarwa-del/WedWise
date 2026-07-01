@@ -340,8 +340,16 @@ function validateStep(stepIndex) {
         showError(tx('נא להזין תקציב משוער גדול מאפס.', 'Please enter an estimated budget greater than zero.'));
         return false;
       }
+      if (state.estimated_budget_ils > 1000000) {
+        showError(tx('התקציב המרבי הוא ₪1,000,000.', 'The maximum budget is ₪1,000,000.'));
+        return false;
+      }
       if (!state.guest_count || state.guest_count < 20) {
         showError(tx('נא להזין מספר אורחים של לפחות 20.', 'Please enter at least 20 guests.'));
+        return false;
+      }
+      if (state.guest_count > 5000) {
+        showError(tx('מספר האורחים המרבי הוא 5,000.', 'The maximum number of guests is 5,000.'));
         return false;
       }
       if (state.wedding_date_mode === 'range') {
