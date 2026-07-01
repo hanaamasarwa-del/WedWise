@@ -78,6 +78,7 @@ function buildFormMessage(submission) {
     `💰 תקציב: ${submission.budget.toLocaleString("he-IL")} ₪`,
     `👥 מספר אורחים: ${submission.guests.toLocaleString("he-IL")}`,
     `📍 אזור: ${submission.region}`,
+    `📅 תאריך חתונה: ${submission.weddingDate || "לא צוין"}`,
     `✨ סגנון: ${formatList(submission.styles)}`,
     `🎨 צבעים: ${submission.colors || "לא צוין"}`,
     `🌸 פרחים: ${formatList(submission.flowers)}`,
