@@ -3950,6 +3950,11 @@ select {
   border-radius: var(--radius-lg);
   text-align: center;
   box-shadow: var(--shadow-gold), 0 2px 48px rgba(141, 118, 104, 0.1);
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    box-shadow var(--transition),
+    color var(--transition);
 }
 
 .invitation-card::before {
@@ -4070,6 +4075,262 @@ select {
   margin: 0.5rem 0 0;
   font-style: italic;
 }
+
+/* ── Invitation Card Style Themes ───────────────────── */
+/*
+  Corner bracket ornaments use the CSS multi-layer background-image gradient
+  technique: 8 single-color linear-gradients (4 corners × horizontal + vertical)
+  positioned with the 4-value background-position syntax to form L-shaped
+  corner accents. background-image layers sit above background-color.
+*/
+
+/* Style: Elegant ─ ivory, rose-gold L-corner brackets, soft inner frame */
+.invitation-card.inv-card--elegant {
+  background-color: #FBF7EF;
+  /* 4 corner L-brackets: TL / TR / BL / BR, each = H-line + V-line */
+  background-image:
+    linear-gradient(#C09888, #C09888), linear-gradient(#C09888, #C09888),
+    linear-gradient(#C09888, #C09888), linear-gradient(#C09888, #C09888),
+    linear-gradient(#C09888, #C09888), linear-gradient(#C09888, #C09888),
+    linear-gradient(#C09888, #C09888), linear-gradient(#C09888, #C09888);
+  background-size:
+    28px 1px, 1px 28px,
+    28px 1px, 1px 28px,
+    28px 1px, 1px 28px,
+    28px 1px, 1px 28px;
+  background-position:
+    left 18px top 18px,  left 18px top 18px,
+    right 18px top 18px, right 18px top 18px,
+    left 18px bottom 18px,  left 18px bottom 18px,
+    right 18px bottom 18px, right 18px bottom 18px;
+  background-repeat: no-repeat;
+  border: 1px solid rgba(192, 152, 136, 0.22);
+  border-top: 2px solid rgba(192, 152, 136, 0.45);
+  box-shadow: 0 8px 40px rgba(192, 152, 136, 0.14), 0 2px 8px rgba(141, 118, 104, 0.06);
+}
+.invitation-card.inv-card--elegant::before {
+  border-color: rgba(192, 152, 136, 0.2);
+}
+.invitation-card.inv-card--elegant .inv-ornament {
+  color: #C09888;
+  font-size: 1.35rem;
+  letter-spacing: 0.5em;
+}
+.invitation-card.inv-card--elegant .inv-couple-names { color: #5F5148; }
+.invitation-card.inv-card--elegant .inv-ampersand { color: #C09888; }
+.invitation-card.inv-card--elegant .inv-invite-line { color: #A88070; }
+.invitation-card.inv-card--elegant .inv-divider {
+  width: 90px;
+  background: linear-gradient(90deg, transparent, #C09888, transparent);
+}
+.invitation-card.inv-card--elegant .inv-date { color: #5F5148; }
+.invitation-card.inv-card--elegant .inv-venue { color: #8D7668; }
+
+/* Style: Luxury ─ near-black, bright gold L-corners + glowing ornament */
+.invitation-card.inv-card--luxury {
+  background-color: #17140E;
+  background-image:
+    linear-gradient(#C9A455, #C9A455), linear-gradient(#C9A455, #C9A455),
+    linear-gradient(#C9A455, #C9A455), linear-gradient(#C9A455, #C9A455),
+    linear-gradient(#C9A455, #C9A455), linear-gradient(#C9A455, #C9A455),
+    linear-gradient(#C9A455, #C9A455), linear-gradient(#C9A455, #C9A455);
+  background-size:
+    36px 1px, 1px 36px,
+    36px 1px, 1px 36px,
+    36px 1px, 1px 36px,
+    36px 1px, 1px 36px;
+  background-position:
+    left 14px top 14px,  left 14px top 14px,
+    right 14px top 14px, right 14px top 14px,
+    left 14px bottom 14px,  left 14px bottom 14px,
+    right 14px bottom 14px, right 14px bottom 14px;
+  background-repeat: no-repeat;
+  border: 1px solid rgba(201, 164, 85, 0.35);
+  border-top: 3px solid #C9A455;
+  box-shadow: 0 16px 60px rgba(0, 0, 0, 0.55), 0 4px 20px rgba(201, 164, 85, 0.1);
+}
+.invitation-card.inv-card--luxury::before {
+  border-color: rgba(201, 164, 85, 0.18);
+}
+.invitation-card.inv-card--luxury::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: radial-gradient(ellipse at 50% 100%, rgba(201, 164, 85, 0.07) 0%, transparent 70%);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  pointer-events: none;
+}
+.invitation-card.inv-card--luxury .inv-ornament {
+  color: #C9A455;
+  font-size: 1.4rem;
+  letter-spacing: 0.6em;
+  text-shadow: 0 0 20px rgba(201, 164, 85, 0.45);
+}
+.invitation-card.inv-card--luxury .inv-couple-names { color: #EDD07C; }
+.invitation-card.inv-card--luxury .inv-ampersand { color: #C9A455; }
+.invitation-card.inv-card--luxury .inv-invite-line { color: #7A5E24; }
+.invitation-card.inv-card--luxury .inv-divider {
+  width: 120px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #C9A455 20%, #EDD07C 50%, #C9A455 80%, transparent);
+  margin: 1.75rem auto;
+}
+.invitation-card.inv-card--luxury .inv-date { color: #E8C97A; }
+.invitation-card.inv-card--luxury .inv-venue { color: #9A7530; }
+.invitation-card.inv-card--luxury .inv-placeholder { color: rgba(201, 164, 85, 0.3); }
+
+/* Style: Modern ─ pure white, razor-sharp, heavy sans-serif, maximum space */
+.invitation-card.inv-card--modern {
+  background-color: #FFFFFF;
+  background-image: none;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-top: 3px solid #181818;
+  border-radius: 4px;
+  padding: 5rem 3.5rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.03);
+}
+.invitation-card.inv-card--modern::before { display: none; }
+.invitation-card.inv-card--modern .inv-ornament {
+  font-size: 0.45rem;
+  color: #CCCCCC;
+  letter-spacing: 1.5em;
+  margin-bottom: 1.75rem;
+}
+.invitation-card.inv-card--modern .inv-ornament:last-child {
+  margin-top: 1.75rem;
+  margin-bottom: 0;
+}
+.invitation-card.inv-card--modern .inv-couple-names {
+  font-family: 'Heebo', 'Assistant', sans-serif;
+  font-weight: 800;
+  color: #0D0D0D;
+  letter-spacing: -0.03em;
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+}
+.invitation-card.inv-card--modern .inv-ampersand {
+  font-family: 'Heebo', sans-serif;
+  font-style: normal;
+  font-weight: 200;
+  font-size: 1.6rem;
+  color: #C8C8C8;
+  letter-spacing: 0;
+}
+.invitation-card.inv-card--modern .inv-invite-line {
+  font-style: normal;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  color: #AAAAAA;
+  margin-bottom: 2rem;
+}
+.invitation-card.inv-card--modern .inv-divider {
+  width: 28px;
+  height: 2px;
+  background: #0D0D0D;
+  margin: 2.5rem auto;
+}
+.invitation-card.inv-card--modern .inv-date {
+  color: #0D0D0D;
+  letter-spacing: 0.05em;
+  font-size: 0.95rem;
+}
+.invitation-card.inv-card--modern .inv-venue {
+  color: #888888;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+}
+
+/* Style: Garden ─ sage, botanical corner blooms, organic greens */
+.invitation-card.inv-card--garden {
+  background-color: #EDF4E8;
+  /* 4 radial blooms in corners simulate botanical/floral corner accents */
+  background-image:
+    radial-gradient(ellipse 90px 90px at left top,    rgba(95, 146, 72, 0.22) 0%, transparent 100%),
+    radial-gradient(ellipse 90px 90px at right top,   rgba(95, 146, 72, 0.18) 0%, transparent 100%),
+    radial-gradient(ellipse 90px 90px at left bottom, rgba(95, 146, 72, 0.18) 0%, transparent 100%),
+    radial-gradient(ellipse 90px 90px at right bottom,rgba(95, 146, 72, 0.22) 0%, transparent 100%);
+  border: 1px solid rgba(95, 146, 72, 0.22);
+  border-top: 3px solid #5F9248;
+  box-shadow: 0 8px 40px rgba(95, 146, 72, 0.12), 0 2px 10px rgba(95, 146, 72, 0.06);
+}
+.invitation-card.inv-card--garden::before {
+  border-color: rgba(95, 146, 72, 0.15);
+}
+.invitation-card.inv-card--garden .inv-ornament {
+  color: #5F9248;
+  font-size: 1.3rem;
+  letter-spacing: 0.4em;
+}
+.invitation-card.inv-card--garden .inv-couple-names { color: #2D4E20; }
+.invitation-card.inv-card--garden .inv-ampersand { color: #5F9248; }
+.invitation-card.inv-card--garden .inv-invite-line { color: #537A40; }
+.invitation-card.inv-card--garden .inv-divider {
+  width: 100px;
+  background: linear-gradient(90deg, transparent, #5F9248 30%, #8AB874 50%, #5F9248 70%, transparent);
+}
+.invitation-card.inv-card--garden .inv-date { color: #2D4E20; }
+.invitation-card.inv-card--garden .inv-venue { color: #537A40; }
+
+/* Style: Classic ─ white, heavy navy border, navy L-corners, ornate double frame */
+.invitation-card.inv-card--classic {
+  background-color: #FFFFFF;
+  /* Bold navy L-corner brackets — 2px thick for traditional weight */
+  background-image:
+    linear-gradient(#243064, #243064), linear-gradient(#243064, #243064),
+    linear-gradient(#243064, #243064), linear-gradient(#243064, #243064),
+    linear-gradient(#243064, #243064), linear-gradient(#243064, #243064),
+    linear-gradient(#243064, #243064), linear-gradient(#243064, #243064);
+  background-size:
+    26px 2px, 2px 26px,
+    26px 2px, 2px 26px,
+    26px 2px, 2px 26px,
+    26px 2px, 2px 26px;
+  background-position:
+    left 12px top 12px,  left 12px top 12px,
+    right 12px top 12px, right 12px top 12px,
+    left 12px bottom 12px,  left 12px bottom 12px,
+    right 12px bottom 12px, right 12px bottom 12px;
+  background-repeat: no-repeat;
+  border: 2px solid rgba(36, 48, 100, 0.35);
+  border-top: 4px solid #243064;
+  box-shadow: 0 8px 36px rgba(36, 48, 100, 0.1), 0 2px 10px rgba(36, 48, 100, 0.06);
+}
+/* Outer inner-frame, tighter than default */
+.invitation-card.inv-card--classic::before {
+  inset: 10px;
+  border: 1.5px solid rgba(36, 48, 100, 0.22);
+  border-radius: calc(var(--radius-lg) - 4px);
+}
+/* Second inner-frame: creates the ornate double-mat classic look */
+.invitation-card.inv-card--classic::after {
+  content: '';
+  position: absolute;
+  inset: 18px;
+  border: 1px solid rgba(36, 48, 100, 0.1);
+  border-radius: calc(var(--radius-lg) - 10px);
+  pointer-events: none;
+}
+.invitation-card.inv-card--classic .inv-ornament {
+  color: #C9A455;
+  font-size: 1.25rem;
+  letter-spacing: 0.45em;
+}
+.invitation-card.inv-card--classic .inv-couple-names { color: #1A2748; }
+.invitation-card.inv-card--classic .inv-ampersand {
+  color: #C9A455;
+  font-style: italic;
+}
+.invitation-card.inv-card--classic .inv-invite-line { color: #5568A0; }
+.invitation-card.inv-card--classic .inv-divider {
+  width: 100px;
+  background: linear-gradient(90deg, transparent, #243064 25%, #C9A455 50%, #243064 75%, transparent);
+  margin: 2rem auto;
+}
+.invitation-card.inv-card--classic .inv-date { color: #1A2748; font-weight: 700; }
+.invitation-card.inv-card--classic .inv-venue { color: #4A5888; }
 
 .modal-error-actions {
   display: flex;

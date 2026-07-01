@@ -23,6 +23,13 @@ const invVenueInput   = document.getElementById('inv-venue');
 const invBody         = document.getElementById('inv-body');
 const invLangInputs   = Array.from(document.querySelectorAll('input[name="inv-lang"]'));
 const invStyleInputs  = Array.from(document.querySelectorAll('input[name="inv-style"]'));
+const CARD_STYLE_CLASSES = ['elegant', 'luxury', 'modern', 'garden', 'classic'].map(s => `inv-card--${s}`);
+
+function applyCardStyle(styleName) {
+  if (!invitationCard) return;
+  CARD_STYLE_CLASSES.forEach(cls => invitationCard.classList.remove(cls));
+  if (styleName) invitationCard.classList.add(`inv-card--${styleName.toLowerCase()}`);
+}
 const btnBackToReport = document.getElementById('btn-back-to-report');
 const btnDownloadPng  = document.getElementById('btn-download-png');
 const btnPrintPdf     = document.getElementById('btn-print-pdf');
@@ -79,6 +86,7 @@ invLangInputs.forEach((input) => {
 invStyleInputs.forEach((input) => {
   input.addEventListener('change', () => {
     invitationData.style = input.value;
+    applyCardStyle(input.value);
   });
 });
 
@@ -127,6 +135,7 @@ function loadFromStorage() {
 }
 
 loadFromStorage();
+applyCardStyle(invitationData.style);
 if (isEnglishSite() && invitationData.lang === 'he' && !invBody?.value) {
   invitationData.lang = 'en';
   invitationData.body = INV_DEFAULTS.en;
