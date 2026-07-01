@@ -10,6 +10,10 @@ from the browser.
 
 Project created: June 25, 2026.
 
+Project handoff status: the current active build is complete for final
+submission as of July 1, 2026. Future product ideas remain documented as
+planned work unless they are listed as active below.
+
 Repository: https://github.com/hanaamasarwa-del/WedWise
 
 ## Product Overview
