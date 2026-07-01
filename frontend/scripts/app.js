@@ -5,6 +5,7 @@
  */
 
 const TOTAL_STEPS = 6;
+const QUESTIONNAIRE_FUTURE_YEAR_LIMIT = 5;
 const i18n = window.WedWiseI18n;
 const isEnglish = () => i18n?.isEnglish?.() === true;
 const tx = (heText, enText) => (isEnglish() ? enText : heText);
@@ -113,6 +114,18 @@ function getTodayIsoDate() {
 
 function getCurrentIsoMonth() {
   return getTodayIsoDate().slice(0, 7);
+}
+
+function getMaxQuestionnaireYear() {
+  return new Date().getFullYear() + QUESTIONNAIRE_FUTURE_YEAR_LIMIT;
+}
+
+function getMaxQuestionnaireIsoDate() {
+  return `${getMaxQuestionnaireYear()}-12-31`;
+}
+
+function getMaxQuestionnaireIsoMonth() {
+  return `${getMaxQuestionnaireYear()}-12`;
 }
 
 function padDatePart(value) {
@@ -361,6 +374,10 @@ function validateStep(stepIndex) {
           showError(tx('לא ניתן לבחור חודש שכבר עבר.', 'You cannot choose a month that has already passed.'));
           return false;
         }
+        if (state.wedding_month_from > getMaxQuestionnaireIsoMonth() || state.wedding_month_to > getMaxQuestionnaireIsoMonth()) {
+          showError(tx('ניתן לבחור תאריך חתונה עד חמש שנים קדימה.', 'You can choose a wedding date up to five years ahead.'));
+          return false;
+        }
         if (state.wedding_month_from > state.wedding_month_to) {
           showError(tx('טווח החתונה לא תקין. חודש ההתחלה חייב להיות לפני חודש הסיום.', 'The wedding range is invalid. The start month must be before the end month.'));
           return false;
@@ -370,6 +387,9 @@ function validateStep(stepIndex) {
         return false;
       } else if (state.wedding_date_exact < getTodayIsoDate()) {
         showError(tx('לא ניתן לבחור תאריך שכבר עבר.', 'You cannot choose a date that has already passed.'));
+        return false;
+      } else if (state.wedding_date_exact > getMaxQuestionnaireIsoDate()) {
+        showError(tx('ניתן לבחור תאריך חתונה עד חמש שנים קדימה.', 'You can choose a wedding date up to five years ahead.'));
         return false;
       }
       return true;
@@ -498,7 +518,7 @@ function populateExactWeddingDateControls() {
   const selectedYear = Number(yearSelect.value) || currentYear;
   const selectedMonth = Number(monthSelect.value) || currentMonth;
 
-  const yearOptions = Array.from({ length: 16 }, (_, index) => {
+  const yearOptions = Array.from({ length: QUESTIONNAIRE_FUTURE_YEAR_LIMIT + 1 }, (_, index) => {
     const year = currentYear + index;
     return { value: String(year), label: String(year) };
   });
@@ -552,7 +572,7 @@ function populateWeddingRangeControls() {
   const selectedFromYear = Number(fromYearSelect.value) || currentYear;
   const selectedToYear = Number(toYearSelect.value) || selectedFromYear;
 
-  const yearOptions = Array.from({ length: 16 }, (_, index) => {
+  const yearOptions = Array.from({ length: QUESTIONNAIRE_FUTURE_YEAR_LIMIT + 1 }, (_, index) => {
     const year = currentYear + index;
     return { value: String(year), label: String(year) };
   });
@@ -1006,6 +1026,45 @@ function closeWeddingImageModal() {
   document.body.classList.remove('modal-open');
 }
 
+function renderFollowUpChoiceStatus() {
+  setWeddingImageStatus('confirmed', `
+    <div class="wedding-follow-up-inline">
+      <h3>${tx('הדוח אושר', 'Report confirmed')}</h3>
+      <p>${tx('בחרו אם תרצו שנמשיך איתכם מכאן, או המשיכו להשתמש בכלים שמתחת לדוח.', 'Choose whether you want us to continue with you from here, or keep using the tools below the report.')}</p>
+      <div class="wedding-image-download-row wedding-image-modal-actions">
+        <button type="button" class="btn btn-primary" data-follow-up-decision="continue">
+          ${tx('להמשיך לארגן את החתונה איתנו', 'Continue planning the wedding with us')}
+        </button>
+        <button type="button" class="btn btn-secondary" data-follow-up-decision="thinking">
+          ${tx('תודה, אשמור את הדוח ואחשוב על זה', 'Thanks, I will save the report and think about it')}
+        </button>
+      </div>
+    </div>
+  `);
+}
+
+function renderFollowUpSavedStatus(decision) {
+  const message = decision === 'continue'
+    ? tx('הבחירה נשלחה. הצוות שלנו קיבל את הפרטים וייצור איתכם קשר. בינתיים אפשר ליצור הדמיה, הזמנה או ספירה לאחור.', 'Your choice was sent. Our team received the details and will contact you. In the meantime, you can create a visualization, invitation, or countdown.')
+    : tx('הבחירה נשמרה. אפשר לחזור לדוח ולהשתמש בכלים שמתחתיו, ואם תרצו להמשיך איתנו בהמשך נשמח לעזור.', 'Your choice was saved. You can return to the report and use the tools below it, and if you want to continue with us later we will be happy to help.');
+
+  setWeddingImageStatus('confirmed', `
+    <div class="wedding-follow-up-inline">
+      <h3>${tx('הבחירה נשמרה', 'Choice saved')}</h3>
+      <p>${message}</p>
+    </div>
+  `);
+}
+
+function renderFollowUpSendingStatus() {
+  setWeddingImageStatus('confirmed', `
+    <div class="wedding-follow-up-inline">
+      <h3>${tx('שולחים את הבחירה', 'Sending your choice')}</h3>
+      <p>${tx('אנחנו שומרים את הפרטים ומעדכנים את הצוות. אפשר להמשיך להשתמש בכלים שמתחת לדוח מיד אחרי הסיום.', 'We are saving the details and updating the team. You can keep using the tools below the report as soon as this finishes.')}</p>
+    </div>
+  `);
+}
+
 async function markFollowUpImageGenerated() {
   if (!latestFollowUpId) return;
 
@@ -1394,6 +1453,7 @@ async function submitWeddingFollowUp(decision) {
   buttons.forEach((button) => {
     button.disabled = true;
   });
+  renderFollowUpSendingStatus();
 
   setWeddingImageModal('loading', `
     <div class="wedding-image-loading wedding-image-modal-loading" role="status">
@@ -1431,6 +1491,8 @@ async function submitWeddingFollowUp(decision) {
     if (data.leadId) latestLeadId = data.leadId;
     if (data.followUpId) latestFollowUpId = data.followUpId;
 
+    renderFollowUpSavedStatus(decision);
+
     const title = decision === 'continue'
       ? tx('תודה, הפרטים נשלחו לצוות שלנו', 'Thank you, the details were sent to our team')
       : tx('תודה, הבחירה שלכם נשמרה', 'Thank you, your choice was saved');
@@ -1448,6 +1510,7 @@ async function submitWeddingFollowUp(decision) {
     `);
   } catch (error) {
     console.error('WedWise: wedding follow-up failed:', error);
+    renderFollowUpChoiceStatus();
     setWeddingImageModal('error', `
       <div class="wedding-image-modal-message">
         <h2 id="wedding-image-modal-title">${tx('לא הצלחנו לשלוח את הבחירה', 'We could not send the choice')}</h2>
@@ -1656,21 +1719,7 @@ if (btnConfirmReport) {
       btnGenerateImage.disabled = false;
     }
     if (invitationCta) invitationCta.hidden = false;
-    setWeddingImageStatus('confirmed', `<p>${tx('הדוח אושר. אפשר לבחור כלי המשך מתחת לדוח, או לעדכן אותנו אם תרצו שנמשיך איתכם מכאן.', 'The report is confirmed. You can choose a follow-up tool below the report or let us know if you want us to continue with you from here.')}</p>`);
-    setWeddingImageModal('ready', `
-      <div class="wedding-image-modal-message">
-        <h2 id="wedding-image-modal-title">${tx('הדוח נראה לכם נכון?', 'Does the report look right?')}</h2>
-        <p>${tx('אפשר להמשיך עם WedWise מהנקודה הזאת, או לשמור את הדוח ולחשוב על זה בנחת.', 'You can continue with WedWise from here, or save the report and think about it calmly.')}</p>
-        <div class="wedding-image-download-row wedding-image-modal-actions">
-          <button type="button" class="btn btn-primary" data-follow-up-decision="continue">
-            ${tx('להמשיך לארגן את החתונה איתנו', 'Continue planning the wedding with us')}
-          </button>
-          <button type="button" class="btn btn-secondary" data-follow-up-decision="thinking">
-            ${tx('תודה, אשמור את הדוח ואחשוב על זה', 'Thanks, I will save the report and think about it')}
-          </button>
-        </div>
-      </div>
-    `);
+    renderFollowUpChoiceStatus();
   });
 }
 
