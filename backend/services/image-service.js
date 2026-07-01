@@ -9,10 +9,11 @@ function cleanText(value, maxLength = 5000) {
 
 function buildWeddingImagePrompt({ reportText, questionnaire = {} }) {
   const details = [
-    questionnaire.regionName && `Region in Israel: ${questionnaire.regionName}`,
+    (questionnaire.regionDisplayName || questionnaire.regionName) && `Region in Israel: ${questionnaire.regionDisplayName || questionnaire.regionName}`,
     questionnaire.guestCount && `Guest count: ${questionnaire.guestCount}`,
     questionnaire.budget && `Budget in ILS: ${questionnaire.budget}`,
-    questionnaire.style && `Wedding style: ${questionnaire.style}`,
+    questionnaire.weddingDateLabel && `Wedding date or range: ${questionnaire.weddingDateLabel}`,
+    (questionnaire.styleDisplay || questionnaire.style) && `Wedding style: ${questionnaire.styleDisplay || questionnaire.style}`,
     questionnaire.colors && `Preferred colors: ${questionnaire.colors}`,
     questionnaire.flowers && `Flowers: ${questionnaire.flowers}`,
     questionnaire.decorations && `Decor: ${questionnaire.decorations}`,

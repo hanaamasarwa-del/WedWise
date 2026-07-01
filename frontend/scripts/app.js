@@ -91,8 +91,16 @@ function displayValue(value) {
   return isEnglish() ? (VALUE_LABELS_EN[value] || value) : value;
 }
 
+function englishValue(value) {
+  return VALUE_LABELS_EN[value] || value;
+}
+
 function displayList(values) {
   return values.map(displayValue).join(', ');
+}
+
+function englishList(values) {
+  return values.map(englishValue).join(', ');
 }
 
 function getTodayIsoDate() {
@@ -858,6 +866,64 @@ function buildImageQuestionnaire(state) {
   };
 }
 
+function buildImageGenerationQuestionnaire() {
+  const wr = latestPayload?.wedding_request;
+  if (!wr) return latestQuestionnaire;
+
+  const style = (() => {
+    try {
+      return JSON.parse(wr.preferred_styles_json || '[]')[0] || '';
+    } catch {
+      return '';
+    }
+  })();
+
+  return {
+    budget: wr.estimated_budget_ils,
+    guestCount: wr.guest_count,
+    regionName: REGION_NAMES_EN[String(wr.region_id)] || wr.region_name || '',
+    regionDisplayName: REGION_NAMES_EN[String(wr.region_id)] || wr.region_name || '',
+    weddingDateMode: wr.wedding_date_mode,
+    weddingDateExact: wr.wedding_date_exact,
+    weddingMonthFrom: wr.wedding_month_from,
+    weddingMonthTo: wr.wedding_month_to,
+    weddingDateLabel: wr.wedding_date_label,
+    style: englishValue(style),
+    styleDisplay: englishValue(style),
+    colors: wr.preferred_colors,
+    flowers: englishList(Array.isArray(wr.flowers) ? wr.flowers : []),
+    decorations: englishList(Array.isArray(wr.decorations) ? wr.decorations : []),
+    freeText: wr.free_text,
+    inspirationUrl: wr.inspiration_url,
+  };
+}
+
+function buildImageGenerationReportText() {
+  const wr = latestPayload?.wedding_request;
+  const lead = latestPayload?.lead;
+  if (!wr) return latestReportText;
+
+  const questionnaire = buildImageGenerationQuestionnaire();
+  const lines = [
+    'WedWise wedding planning report for image generation.',
+    lead?.full_name ? `Couple/contact name: ${lead.full_name}` : '',
+    `Budget: ${questionnaire.budget || 0} ILS`,
+    `Guest count: ${questionnaire.guestCount || 0}`,
+    questionnaire.weddingDateLabel ? `Wedding date or range: ${questionnaire.weddingDateLabel}` : '',
+    questionnaire.regionName ? `Region in Israel: ${questionnaire.regionName}` : '',
+    questionnaire.style ? `Wedding style: ${questionnaire.style}` : '',
+    questionnaire.colors ? `Preferred colors: ${questionnaire.colors}` : '',
+    questionnaire.flowers ? `Flowers: ${questionnaire.flowers}` : '',
+    questionnaire.decorations ? `Decor: ${questionnaire.decorations}` : '',
+    questionnaire.freeText ? `Couple notes: ${questionnaire.freeText}` : '',
+    questionnaire.inspirationUrl ? `Inspiration link: ${questionnaire.inspirationUrl}` : '',
+    '',
+    'Create a realistic wedding visualization only. Do not include readable text, UI, logos, watermarks, documents, or invitation-card layout.',
+  ].filter(Boolean);
+
+  return lines.join('\n');
+}
+
 function setWeddingImageStatus(type, html) {
   if (!weddingImageResult) return;
   weddingImageResult.hidden = false;
@@ -1194,8 +1260,8 @@ async function generateWeddingImageFromReport() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        reportText: latestReportText,
-        questionnaire: latestQuestionnaire,
+        reportText: buildImageGenerationReportText(),
+        questionnaire: buildImageGenerationQuestionnaire(),
       }),
     });
 
@@ -1228,6 +1294,7 @@ async function generateWeddingImageFromReport() {
       <div class="wedding-image-modal-message">
         <h2 id="wedding-image-modal-title">${tx('לא הצלחנו ליצור תמונה כרגע', 'We could not create an image right now')}</h2>
         <p>${tx('בדקו שה־OpenAI API key מוגדר בשרת ונסו שוב.', 'Check that the OpenAI API key is configured on the server and try again.')}</p>
+        <p class="wedding-image-error-detail">${escapeHtml(error.message || 'Image generation failed')}</p>
         <div class="modal-error-actions">
           <button type="button" class="btn btn-primary" data-go-to-invitation>${tx('💌 המשיכו ליצירת ההזמנה', 'Continue to invitation creation')}</button>
           <button type="button" class="btn btn-secondary" data-close-image-modal>${tx('סגירה וחזרה לדוח', 'Close and return to report')}</button>

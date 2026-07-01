@@ -280,21 +280,25 @@ opens, and the report action panel shows three separate actions: create a
 wedding visualization, design a matching invitation, or build a matching
 countdown. Do not collapse those actions into the submit/confirm button.
 
-The frontend sends the confirmed report text and structured questionnaire
-details to:
+The frontend sends a language-neutral image-generation summary plus structured
+questionnaire details to:
 
 ```text
 POST /api/generate-image
 ```
 
 The backend builds a photorealistic wedding visualization prompt and calls the
-OpenAI Images API. The generated image is shown in a modal with a download
-button. The report-confirmation modal also lets the visitor choose whether to
-continue organizing the wedding with WedWise or save the report and think about
-it first. Both choices are saved to Supabase and sent to the configured Telegram bot when those services are
-configured. If Supabase is unavailable but Telegram is configured, the backend
-still notifies the team and reports the database status in the API response.
-The OpenAI API key stays server-side in `backend/.env`.
+OpenAI Images API. The image prompt must not depend on the visible report DOM
+language: Hebrew and English UI modes should send equivalent structured values
+for region, wedding date, style, colors, flowers, decor, and notes. The
+generated image is shown in a modal with a download button. The
+report-confirmation modal also lets the visitor choose whether to continue
+organizing the wedding with WedWise or save the report and think about it
+first. Both choices are saved to Supabase and sent to the configured Telegram
+bot when those services are configured. If Supabase is unavailable but Telegram
+is configured, the backend still notifies the team and reports the database
+status in the API response. The OpenAI API key stays server-side in
+`backend/.env`.
 
 Required for real image generation:
 
