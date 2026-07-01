@@ -106,11 +106,11 @@ async function sendLeadNotification(lead) {
 
 function buildFollowUpMessage(followUp) {
   const decisionText = followUp.decision === "continue"
-    ? "רוצה להמשיך ארגון חתונה עם WedWise"
-    : "רוצה לשמור את הדוח ולחשוב על זה";
+    ? "רוצה להמשיך עם WedWise"
+    : "בחר/ה שלא להמשיך כרגע";
 
   return [
-    "📌 בחירה אחרי אישור דוח החתונה",
+    "📌 עדכון סטטוס אחרי אישור הדוח",
     "",
     "פרטי קשר",
     `👤 שם מלא: ${followUp.fullName}`,
@@ -119,18 +119,6 @@ function buildFollowUpMessage(followUp) {
     "",
     "בחירת המשתמש",
     `✅ סטטוס: ${decisionText}`,
-    "",
-    "תקציר חתונה",
-    `💰 תקציב: ${Number(followUp.budget || 0).toLocaleString("he-IL")} ₪`,
-    `👥 אורחים: ${Number(followUp.guests || 0).toLocaleString("he-IL")}`,
-    `📍 אזור: ${followUp.region || "לא צוין"}`,
-    `✨ סגנון: ${followUp.style || "לא צוין"}`,
-    `🎨 צבעים: ${followUp.colors || "לא צוין"}`,
-    `🌸 פרחים: ${followUp.flowers || "לא צוין"}`,
-    `🕯️ קישוטים: ${followUp.decorations || "לא צוין"}`,
-    "",
-    "הערות אישיות",
-    followUp.freeText || "לא נכתבו הערות",
   ].join("\n");
 }
 

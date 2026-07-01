@@ -367,6 +367,11 @@ The active questionnaire posts to `/api/telegram-lead`. If Telegram delivery
 fails, the frontend still displays the local report and logs a warning in the
 browser console.
 
+The later `/api/wedding-follow-up` Telegram message is intentionally short. The
+first lead message already contains the questionnaire details, so the follow-up
+message should include only contact details and the user's status: wants to
+continue with WedWise, or chose not to continue right now.
+
 ## Supabase and Demo Data
 
 The Supabase schema is stored at:
