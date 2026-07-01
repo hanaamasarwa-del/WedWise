@@ -1627,20 +1627,7 @@ if (btnConfirmReport) {
     }
     if (invitationCta) invitationCta.hidden = false;
     setWeddingImageStatus('confirmed', `<p>${tx('הדוח אושר. אפשר לבחור כלי המשך מתחת לדוח, או לעדכן אותנו אם תרצו שנמשיך איתכם מכאן.', 'The report is confirmed. You can choose a follow-up tool below the report or let us know if you want us to continue with you from here.')}</p>`);
-    setWeddingImageModal('ready', `
-      <div class="wedding-image-modal-message">
-        <h2 id="wedding-image-modal-title">${tx('הדוח נראה לכם נכון?', 'Does the report look right?')}</h2>
-        <p>${tx('אפשר להמשיך עם WedWise מהנקודה הזאת, או לשמור את הדוח ולחשוב על זה בנחת.', 'You can continue with WedWise from here, or save the report and think about it calmly.')}</p>
-        <div class="wedding-image-download-row wedding-image-modal-actions">
-          <button type="button" class="btn btn-primary" data-follow-up-decision="continue">
-            ${tx('להמשיך לארגן את החתונה איתנו', 'Continue planning the wedding with us')}
-          </button>
-          <button type="button" class="btn btn-secondary" data-follow-up-decision="thinking">
-            ${tx('תודה, אשמור את הדוח ואחשוב על זה', 'Thanks, I will save the report and think about it')}
-          </button>
-        </div>
-      </div>
-    `);
+    closeWeddingImageModal();
   });
 }
 

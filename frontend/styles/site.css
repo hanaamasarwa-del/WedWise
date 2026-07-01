@@ -4261,6 +4261,17 @@ select {
   left: 0 !important;
 }
 
+.lang-en .hero-content {
+  direction: ltr;
+  margin-left: clamp(2rem, 7vw, 6rem);
+  margin-right: auto;
+  text-align: left !important;
+}
+
+.lang-en .hero-actions {
+  justify-content: flex-start;
+}
+
 /* ── Print / PDF ────────────────────────────────────── */
 @media print {
   .site-header,
