@@ -304,6 +304,10 @@ button, input, select, textarea {
   left: 0;
 }
 
+.lang-en select {
+  text-align: left;
+}
+
 .nav-links a {
   color: var(--color-muted);
   text-decoration: none;
@@ -1455,6 +1459,7 @@ select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23B8963E' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: left 1rem center;
+  text-align: right;
 }
 
 .style-grid {
@@ -3734,6 +3739,7 @@ select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235F5148' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: left 1rem center;
+  text-align: right;
 }
 
 .style-grid {
@@ -4272,11 +4278,200 @@ select {
   justify-content: flex-start;
 }
 
+/* ── Invitation Style Selector ─────────────────────── */
+.inv-style-selector {
+  margin-bottom: 2rem;
+}
+
+.inv-style-selector-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  letter-spacing: 0.02em;
+  margin-bottom: 1rem;
+}
+
+.inv-style-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.inv-style-card {
+  position: relative;
+  cursor: pointer;
+  flex: 1 1 100px;
+  max-width: 130px;
+  min-width: 88px;
+}
+
+.inv-style-card input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.inv-style-card-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition),
+    transform var(--transition);
+}
+
+.inv-style-card:hover .inv-style-card-inner {
+  transform: translateY(-3px);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-gold);
+}
+
+.inv-style-card input:checked + .inv-style-card-inner {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 2px rgba(185, 133, 125, 0.28), var(--shadow-gold);
+}
+
+.inv-style-card input:checked + .inv-style-card-inner::after {
+  content: '✓';
+  position: absolute;
+  top: 0.3rem;
+  left: 0.3rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+  border-radius: 50%;
+  font-size: 0.6rem;
+  font-weight: 900;
+  line-height: 1.25rem;
+  text-align: center;
+  color: var(--color-surface);
+  pointer-events: none;
+}
+
+.inv-style-card input:focus-visible + .inv-style-card-inner {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.inv-style-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  letter-spacing: 0.04em;
+  text-align: center;
+  transition: color var(--transition);
+}
+
+.inv-style-card input:checked + .inv-style-card-inner .inv-style-name {
+  color: var(--color-primary-dark);
+}
+
+/* ── Mini invitation previews ── */
+.inv-mini {
+  width: 100%;
+  height: 88px;
+  border-radius: 3px;
+  background-repeat: no-repeat;
+  /* Shared layer order: ornament-top | invite-line | names | divider | date | venue | ornament-bottom */
+  background-size:
+    5px 5px,
+    52% 2px,
+    62% 4px,
+    80% 1px,
+    44% 2px,
+    34% 2px,
+    5px 5px;
+  background-position:
+    center 8px,
+    center 22px,
+    center 34px,
+    center 46px,
+    center 56px,
+    center 65px,
+    center 78px;
+}
+
+.inv-mini--elegant {
+  background-color: #FBF7EF;
+  box-shadow: inset 0 0 0 1px rgba(192, 152, 136, 0.25);
+  background-image:
+    radial-gradient(circle, #C09888 0%, #C09888 100%),
+    linear-gradient(#A88070 0%, #A88070 100%),
+    linear-gradient(#5F5148 0%, #5F5148 100%),
+    linear-gradient(#C09888 0%, #C09888 100%),
+    linear-gradient(#8D7668 0%, #8D7668 100%),
+    linear-gradient(#8D7668 0%, #8D7668 100%),
+    radial-gradient(circle, #C09888 0%, #C09888 100%);
+}
+
+.inv-mini--luxury {
+  background-color: #1C1A18;
+  box-shadow: inset 0 0 0 1px rgba(201, 164, 85, 0.3);
+  background-image:
+    radial-gradient(circle, #C9A455 0%, #C9A455 100%),
+    linear-gradient(#9A7D44 0%, #9A7D44 100%),
+    linear-gradient(#E8C97A 0%, #E8C97A 100%),
+    linear-gradient(#C9A455 0%, #C9A455 100%),
+    linear-gradient(#B08B42 0%, #B08B42 100%),
+    linear-gradient(#B08B42 0%, #B08B42 100%),
+    radial-gradient(circle, #C9A455 0%, #C9A455 100%);
+}
+
+.inv-mini--modern {
+  background-color: #FFFFFF;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  background-image:
+    radial-gradient(circle, #444444 0%, #444444 100%),
+    linear-gradient(#BBBBBB 0%, #BBBBBB 100%),
+    linear-gradient(#111111 0%, #111111 100%),
+    linear-gradient(#DDDDDD 0%, #DDDDDD 100%),
+    linear-gradient(#888888 0%, #888888 100%),
+    linear-gradient(#888888 0%, #888888 100%),
+    radial-gradient(circle, #444444 0%, #444444 100%);
+}
+
+.inv-mini--garden {
+  background-color: #F1F5EC;
+  box-shadow: inset 0 0 0 1px rgba(90, 122, 74, 0.2);
+  background-image:
+    radial-gradient(circle, #5A7A4A 0%, #5A7A4A 100%),
+    linear-gradient(#7A9E6E 0%, #7A9E6E 100%),
+    linear-gradient(#3D5E32 0%, #3D5E32 100%),
+    linear-gradient(#7A9E6E 0%, #7A9E6E 100%),
+    linear-gradient(#5A7A4A 0%, #5A7A4A 100%),
+    linear-gradient(#5A7A4A 0%, #5A7A4A 100%),
+    radial-gradient(circle, #5A7A4A 0%, #5A7A4A 100%);
+}
+
+.inv-mini--classic {
+  background-color: #FFFFFF;
+  box-shadow: inset 0 0 0 1px rgba(43, 58, 110, 0.15);
+  background-image:
+    radial-gradient(circle, #2B3A6E 0%, #2B3A6E 100%),
+    linear-gradient(#6B7CAA 0%, #6B7CAA 100%),
+    linear-gradient(#1E2B4E 0%, #1E2B4E 100%),
+    linear-gradient(#4A5888 0%, #4A5888 100%),
+    linear-gradient(#3B4C7E 0%, #3B4C7E 100%),
+    linear-gradient(#3B4C7E 0%, #3B4C7E 100%),
+    radial-gradient(circle, #2B3A6E 0%, #2B3A6E 100%);
+}
+
 /* ── Print / PDF ────────────────────────────────────── */
 @media print {
   .site-header,
   .site-footer,
   .invitation-nav,
+  .inv-style-selector,
   .invitation-editor,
   .inv-download-bar {
     display: none !important;

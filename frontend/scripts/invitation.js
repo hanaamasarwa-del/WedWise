@@ -9,7 +9,7 @@ const INV_DEFAULTS = {
 let invitationData = {
   name1: '', name2: '', date: '', venue: '',
   body: INV_DEFAULTS.he, lang: 'he',
-  style: '', colors: '', flowers: '',
+  style: 'Elegant', colors: '', flowers: '',
 };
 const i18n = window.WedWiseI18n;
 const isEnglishSite = () => i18n?.isEnglish?.() === true;
@@ -22,6 +22,7 @@ const invDateInput    = document.getElementById('inv-date');
 const invVenueInput   = document.getElementById('inv-venue');
 const invBody         = document.getElementById('inv-body');
 const invLangInputs   = Array.from(document.querySelectorAll('input[name="inv-lang"]'));
+const invStyleInputs  = Array.from(document.querySelectorAll('input[name="inv-style"]'));
 const btnBackToReport = document.getElementById('btn-back-to-report');
 const btnDownloadPng  = document.getElementById('btn-download-png');
 const btnPrintPdf     = document.getElementById('btn-print-pdf');
@@ -75,6 +76,12 @@ invLangInputs.forEach((input) => {
   });
 });
 
+invStyleInputs.forEach((input) => {
+  input.addEventListener('change', () => {
+    invitationData.style = input.value;
+  });
+});
+
 if (btnBackToReport) {
   btnBackToReport.addEventListener('click', () => history.back());
 }
@@ -107,7 +114,11 @@ function loadFromStorage() {
     const saved = JSON.parse(raw);
     if (saved.name1)   { invitationData.name1   = saved.name1;   if (invName1)      invName1.value      = saved.name1; }
     if (saved.region)  { invitationData.venue   = saved.region;  if (invVenueInput) invVenueInput.value = saved.region; }
-    if (saved.style)   { invitationData.style   = saved.style; }
+    if (saved.style) {
+      invitationData.style = saved.style;
+      const styleInput = invStyleInputs.find((i) => i.value === saved.style);
+      if (styleInput) styleInput.checked = true;
+    }
     if (saved.colors)  { invitationData.colors  = saved.colors; }
     if (saved.flowers) { invitationData.flowers = saved.flowers; }
   } catch {

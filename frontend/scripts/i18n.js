@@ -216,6 +216,7 @@
     'עברית': 'Hebrew',
     'הורדת PNG': 'Download PNG',
     'הדפסה / שמירה כ-PDF': 'Print / save as PDF',
+    'בחרו סגנון להזמנה': 'Choose an invitation style',
 
     'אודות – WedWise': 'About - WedWise',
     'הסיפור שלנו': 'Our story',
