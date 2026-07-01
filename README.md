@@ -23,13 +23,13 @@ The current website lets a visitor:
 1. Learn how the WedWise planning process works.
 2. Complete a six-step wedding questionnaire.
 3. Move between the main page, planning questionnaire, countdown tool, wedding
-   blessing writing page, and tips/guides page from one consistent navigation
-   menu.
+   blessing writing page, tips/guides page, About Us page, and FAQ page from one
+   consistent navigation menu.
 4. Switch the site interface between Hebrew and English from the top language
    toggle.
 5. Enter a budget, guest count, wedding date or estimated date range, region,
    style, colors, flowers, decorations, personal notes, an optional inspiration
-   link, and contact details.
+   link (for example a Pinterest board), and contact details.
 6. Receive an initial browser-generated planning report with a suggested budget
    breakdown, design direction, supplier categories, and next steps.
 7. Review the report, edit questionnaire answers if needed, confirm the report,
@@ -41,8 +41,9 @@ The current website lets a visitor:
 9. Continue with invitation, countdown, blessing, and guide tools.
 10. Create a wedding countdown card, write a wedding blessing draft, and browse
    practical wedding-planning tips from dedicated pages.
-11. Open a wedding invitation editor from the report flow and export the
-   invitation as PNG or print/save it as PDF.
+11. Open a wedding invitation editor from the report flow, choose from
+   multiple invitation styles (Elegant, Luxury, Modern, Garden, and Classic),
+   and export the invitation as PNG or print/save it as PDF.
 12. Send the completed questionnaire to the agency through Telegram.
 13. Open a floating AI support chatbot for short questions about WedWise and how
    to use the website.
@@ -72,12 +73,16 @@ Working in the active user flow:
   pickers are avoided here so labels, month names, and year selection stay
   consistent in Hebrew and English. Past dates and past months are blocked,
   and year selection is limited to the current year through five years ahead.
+  A dedicated step accepts an optional inspiration link, such as a Pinterest
+  board, so the couple can share a visual reference for their desired style.
 - Wedding countdown helper page with future-only year/month/day date selection.
 - Wedding blessing writing page, labeled `כתיבת ברכה` in the navigation.
 - Wedding tips/guides page, labeled `טיפים ומדריכים`, with a visual tips grid,
   language-aware expanded guide reader, and supplier-meeting checklist.
 - Wedding invitation editor, reachable from the report flow, with Hebrew,
-  English, and Arabic invitation text modes plus PNG/PDF export options.
+  English, and Arabic invitation text modes, a choice of invitation styles
+  (Elegant, Luxury, Modern, Garden, Classic), and PNG/PDF export options.
+- About Us and FAQ pages, reachable from the shared navigation menu.
 - Local initial report generation.
 - Report review flow with answer editing, explicit report confirmation, inline
   follow-up decision, wedding image generation, matching invitation creation,
@@ -211,7 +216,7 @@ entry point served by Express:
 | `frontend/countdown.html` | Wedding countdown card builder with future-only date selection and optional AI design generation from an inspiration image. |
 | `frontend/blessing-helper.html` | Wedding blessing/speech generator. |
 | `frontend/articles.html` | Tips and guides hub labeled `טיפים ומדריכים`, with quick tips, language-aware deeper guide reader, and supplier-meeting checklist. |
-| `frontend/invitation.html` | Invitation editor reached from the report flow, with PNG/PDF export. |
+| `frontend/invitation.html` | Invitation editor reached from the report flow, with multiple invitation styles (Elegant, Luxury, Modern, Garden, Classic) and PNG/PDF export. |
 | `frontend/about.html` | About page. |
 | `frontend/faq.html` | FAQ page. |
 
