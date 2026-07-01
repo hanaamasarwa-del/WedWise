@@ -95,6 +95,48 @@ function displayList(values) {
   return values.map(displayValue).join(', ');
 }
 
+function getTodayIsoDate() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getCurrentIsoMonth() {
+  return getTodayIsoDate().slice(0, 7);
+}
+
+function formatIsoDateForDisplay(value) {
+  if (!value) return '';
+  const [year, month, day] = value.split('-').map(Number);
+  if (!year || !month || !day) return value;
+  return new Date(year, month - 1, day).toLocaleDateString(currentLocale(), {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+function formatMonthForDisplay(value) {
+  if (!value) return '';
+  const [year, month] = value.split('-').map(Number);
+  if (!year || !month) return value;
+  return new Date(year, month - 1, 1).toLocaleDateString(currentLocale(), {
+    year: 'numeric',
+    month: 'long',
+  });
+}
+
+function buildWeddingDateLabel(state) {
+  if (state.wedding_date_mode === 'range') {
+    const from = formatMonthForDisplay(state.wedding_month_from);
+    const to = formatMonthForDisplay(state.wedding_month_to);
+    return from && to ? `${from} - ${to}` : '';
+  }
+  return formatIsoDateForDisplay(state.wedding_date_exact);
+}
+
 let currentStep = 1;
 let latestReportText = '';
 let latestQuestionnaire = null;
@@ -168,7 +210,7 @@ function getCheckedValues(name) {
 function getFormState() {
   const styleInput = form.querySelector('input[name="preferred_style"]:checked');
 
-  return {
+  const state = {
     estimated_budget_ils: parseInt(form.estimated_budget_ils.value.replace(/[^\d]/g, ''), 10) || 0,
     guest_count: parseInt(form.guest_count.value.replace(/[^\d]/g, ''), 10) || 0,
     region_id: form.region_id.value,
@@ -176,6 +218,10 @@ function getFormState() {
     region_display_name: isEnglish()
       ? (REGION_NAMES_EN[form.region_id.value] || '')
       : (REGION_NAMES[form.region_id.value] || ''),
+    wedding_date_mode: form.wedding_date_mode?.value || 'exact',
+    wedding_date_exact: form.wedding_date_exact?.value || '',
+    wedding_month_from: form.wedding_month_from?.value || '',
+    wedding_month_to: form.wedding_month_to?.value || '',
     preferred_style: styleInput ? styleInput.value : '',
     preferred_colors: form.preferred_colors.value.trim(),
     flowers: getCheckedValues('flowers'),
@@ -186,6 +232,8 @@ function getFormState() {
     email: form.email.value.trim(),
     inspiration_url: form.inspiration_url.value.trim(),
   };
+  state.wedding_date_label = buildWeddingDateLabel(state);
+  return state;
 }
 
 function buildWeddingRequestPayload(state) {
@@ -199,6 +247,11 @@ function buildWeddingRequestPayload(state) {
       guest_count: state.guest_count,
       region_id: parseInt(state.region_id, 10),
       region_name: state.region_name,
+      wedding_date_mode: state.wedding_date_mode,
+      wedding_date_exact: state.wedding_date_exact || null,
+      wedding_month_from: state.wedding_month_from || null,
+      wedding_month_to: state.wedding_month_to || null,
+      wedding_date_label: state.wedding_date_label,
       preferred_styles_json: JSON.stringify([state.preferred_style]),
       preferred_colors: state.preferred_colors,
       flowers: state.flowers,
@@ -241,6 +294,26 @@ function validateStep(stepIndex) {
       }
       if (!state.guest_count || state.guest_count < 20) {
         showError(tx('נא להזין מספר אורחים של לפחות 20.', 'Please enter at least 20 guests.'));
+        return false;
+      }
+      if (state.wedding_date_mode === 'range') {
+        if (!state.wedding_month_from || !state.wedding_month_to) {
+          showError(tx('נא לבחור טווח חודשים ושנים לחתונה.', 'Please choose a month and year range for the wedding.'));
+          return false;
+        }
+        if (state.wedding_month_from < getCurrentIsoMonth() || state.wedding_month_to < getCurrentIsoMonth()) {
+          showError(tx('לא ניתן לבחור חודש שכבר עבר.', 'You cannot choose a month that has already passed.'));
+          return false;
+        }
+        if (state.wedding_month_from > state.wedding_month_to) {
+          showError(tx('טווח החתונה לא תקין. חודש ההתחלה חייב להיות לפני חודש הסיום.', 'The wedding range is invalid. The start month must be before the end month.'));
+          return false;
+        }
+      } else if (!state.wedding_date_exact) {
+        showError(tx('נא לבחור תאריך חתונה מדויק או לעבור לטווח משוער.', 'Please choose an exact wedding date or switch to an estimated range.'));
+        return false;
+      } else if (state.wedding_date_exact < getTodayIsoDate()) {
+        showError(tx('לא ניתן לבחור תאריך שכבר עבר.', 'You cannot choose a date that has already passed.'));
         return false;
       }
       return true;
@@ -345,6 +418,29 @@ function goToStep(step, options = {}) {
   }
 }
 
+function updateWeddingDateMode() {
+  const mode = form.wedding_date_mode?.value || 'exact';
+  form.querySelectorAll('[data-date-mode-panel]').forEach((panel) => {
+    const isActive = panel.dataset.dateModePanel === mode;
+    panel.hidden = !isActive;
+    panel.querySelectorAll('input').forEach((input) => {
+      input.disabled = !isActive;
+    });
+  });
+}
+
+function setWeddingDateMinimums() {
+  if (form.wedding_date_exact) {
+    form.wedding_date_exact.min = getTodayIsoDate();
+    form.wedding_date_exact.removeAttribute('max');
+  }
+  [form.wedding_month_from, form.wedding_month_to].forEach((input) => {
+    if (!input) return;
+    input.min = getCurrentIsoMonth();
+    input.removeAttribute('max');
+  });
+}
+
 function formatCurrency(amount) {
   return amount.toLocaleString(currentLocale()) + ' ₪';
 }
@@ -360,6 +456,7 @@ function generateMockReport(payload) {
   const region = isEnglish()
     ? (REGION_NAMES_EN[String(wr.region_id)] || '')
     : (REGION_NAMES[String(wr.region_id)] || '');
+  const weddingDateLabel = wr.wedding_date_label || tx('לא צוין', 'Not specified');
 
   const venueBudget    = Math.round(budget * 0.45);
   const cateringBudget = Math.round(budget * 0.30);
@@ -476,6 +573,10 @@ function generateMockReport(payload) {
             <span>${tx('מיקום מועדף', 'Preferred location')}</span>
             <strong>${region}</strong>
           </div>
+          <div>
+            <span>${tx('תאריך החתונה', 'Wedding date')}</span>
+            <strong>${weddingDateLabel}</strong>
+          </div>
         </div>
       </section>
 
@@ -492,6 +593,10 @@ function generateMockReport(payload) {
           <div class="rpt-detail-row">
             <span>${tx('עלות משוערת לאורח', 'Estimated cost per guest')}</span>
             <strong>${formatCurrency(perGuest)}</strong>
+          </div>
+          <div class="rpt-detail-row">
+            <span>${tx('תאריך או טווח חתונה', 'Wedding date or range')}</span>
+            <strong>${weddingDateLabel}</strong>
           </div>
           <div class="rpt-detail-row">
             <span>${tx('סגנון עיצובי', 'Design style')}</span>
@@ -650,6 +755,11 @@ function buildImageQuestionnaire(state) {
     guestCount: state.guest_count,
     regionName: state.region_name,
     regionDisplayName: state.region_display_name,
+    weddingDateMode: state.wedding_date_mode,
+    weddingDateExact: state.wedding_date_exact,
+    weddingMonthFrom: state.wedding_month_from,
+    weddingMonthTo: state.wedding_month_to,
+    weddingDateLabel: state.wedding_date_label,
     style: state.preferred_style,
     styleDisplay: displayValue(state.preferred_style),
     colors: state.preferred_colors,
@@ -1135,6 +1245,7 @@ function formatTelegramMessage(payload) {
     `💰 *תקציב:* ₪${wr.estimated_budget_ils.toLocaleString('he-IL')}`,
     `👥 *אורחים:* ${wr.guest_count}`,
     `📍 *אזור:* ${REGION_NAMES[String(wr.region_id)] || '—'}`,
+    `📅 *תאריך חתונה:* ${wr.wedding_date_label || '—'}`,
     `🎨 *סגנון:* ${style}`,
     `🌸 *פרחים / עיצוב:* ${wr.flowers_and_decor || '—'}`,
     `🖊 *חזון אישי:* ${wr.free_text || '—'}`,
@@ -1182,6 +1293,11 @@ async function submitQuestionnaire(payload, state) {
       budget: wr.estimated_budget_ils,
       guests: wr.guest_count,
       region: REGION_NAMES[String(wr.region_id)] || String(wr.region_id),
+      weddingDateMode: wr.wedding_date_mode,
+      weddingDateExact: wr.wedding_date_exact,
+      weddingMonthFrom: wr.wedding_month_from,
+      weddingMonthTo: wr.wedding_month_to,
+      weddingDateLabel: wr.wedding_date_label,
       weddingStyle: JSON.parse(wr.preferred_styles_json)[0] || '',
       colors: (wr.preferred_colors || '').split(',').map((c) => c.trim()).filter(Boolean),
       flowers: state.flowers,
@@ -1225,6 +1341,7 @@ async function submitQuestionnaire(payload, state) {
 
 function resetForm() {
   form.reset();
+  updateWeddingDateMode();
   currentStep = 1;
   latestReportText = '';
   latestQuestionnaire = null;
@@ -1396,6 +1513,8 @@ function saveCountdownData() {
     localStorage.setItem('wedwise_countdown', JSON.stringify({
       coupleNames: latestPayload?.lead?.full_name || '',
       customTitle: title,
+      weddingDate: latestQuestionnaire?.weddingDateExact || '',
+      weddingDateLabel: latestQuestionnaire?.weddingDateLabel || '',
       region: latestQuestionnaire?.regionName || '',
       style,
       colors: latestQuestionnaire?.colors || '',
@@ -1442,6 +1561,12 @@ document.getElementById('guest_count').addEventListener('input', function() {
   formatNumberInput(this);
 });
 
+form.querySelectorAll('input[name="wedding_date_mode"]').forEach((input) => {
+  input.addEventListener('change', updateWeddingDateMode);
+});
+
+setWeddingDateMinimums();
+updateWeddingDateMode();
 goToStep(1, { focusFirstInput: false });
 updateActiveNavLink();
 

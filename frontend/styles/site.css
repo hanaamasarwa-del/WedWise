@@ -1279,6 +1279,58 @@ body.subpage .questionnaire > .container {
   margin-bottom: 1.5rem;
 }
 
+.wedding-date-group {
+  padding-top: 0.25rem;
+}
+
+.segmented-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.segmented-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 3.25rem;
+  padding: 0.85rem 1rem;
+  color: var(--color-muted);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 700;
+  transition:
+    color var(--transition),
+    background var(--transition),
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.segmented-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.segmented-option span {
+  width: 100%;
+  text-align: center;
+}
+
+.segmented-option:has(input:checked) {
+  color: var(--color-text);
+  background: var(--color-surface);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(185, 133, 125, 0.16);
+}
+
+.date-mode-fields {
+  margin-top: 0;
+}
+
 .field-group label,
 .field-label {
   display: block;
@@ -1300,6 +1352,8 @@ input[type="number"],
 input[type="tel"],
 input[type="email"],
 input[type="url"],
+input[type="date"],
+input[type="month"],
 select,
 textarea {
   width: 100%;
@@ -1318,6 +1372,12 @@ textarea:focus {
   background: var(--color-surface);
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(185, 133, 125, 0.16);
+}
+
+input[type="date"],
+input[type="month"] {
+  min-height: 3.25rem;
+  appearance: none;
 }
 
 textarea {
