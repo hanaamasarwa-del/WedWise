@@ -254,6 +254,7 @@ function getCheckedValues(name) {
 
 function getFormState() {
   syncExactWeddingDateValue();
+  syncWeddingRangeValue();
   const styleInput = form.querySelector('input[name="preferred_style"]:checked');
 
   const state = {
@@ -469,17 +470,9 @@ function updateWeddingDateMode() {
   form.querySelectorAll('[data-date-mode-panel]').forEach((panel) => {
     const isActive = panel.dataset.dateModePanel === mode;
     panel.hidden = !isActive;
-    panel.querySelectorAll('input').forEach((input) => {
-      input.disabled = !isActive;
+    panel.querySelectorAll('input, select').forEach((field) => {
+      field.disabled = !isActive;
     });
-  });
-}
-
-function setWeddingDateMinimums() {
-  [form.wedding_month_from, form.wedding_month_to].forEach((input) => {
-    if (!input) return;
-    input.min = getCurrentIsoMonth();
-    input.removeAttribute('max');
   });
 }
 
@@ -535,6 +528,58 @@ function syncExactWeddingDateValue() {
 function refreshExactWeddingDateControls() {
   populateExactWeddingDateControls();
   syncExactWeddingDateValue();
+}
+
+function populateWeddingRangeControls() {
+  const fromYearSelect = form.wedding_range_from_year;
+  const fromMonthSelect = form.wedding_range_from_month;
+  const toYearSelect = form.wedding_range_to_year;
+  const toMonthSelect = form.wedding_range_to_month;
+  if (!fromYearSelect || !fromMonthSelect || !toYearSelect || !toMonthSelect) return;
+
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth() + 1;
+  const selectedFromYear = Number(fromYearSelect.value) || currentYear;
+  const selectedToYear = Number(toYearSelect.value) || selectedFromYear;
+
+  const yearOptions = Array.from({ length: 16 }, (_, index) => {
+    const year = currentYear + index;
+    return { value: String(year), label: String(year) };
+  });
+  setSelectOptions(fromYearSelect, yearOptions, tx('בחרו שנה', 'Choose year'));
+  setSelectOptions(toYearSelect, yearOptions, tx('בחרו שנה', 'Choose year'));
+
+  const buildMonthOptions = (selectedYear) => Array.from({ length: 12 }, (_, index) => {
+    const month = index + 1;
+    return {
+      value: padDatePart(month),
+      label: getMonthName(month),
+      disabled: selectedYear === currentYear && month < currentMonth,
+    };
+  });
+
+  setSelectOptions(fromMonthSelect, buildMonthOptions(selectedFromYear), tx('בחרו חודש', 'Choose month'));
+  setSelectOptions(toMonthSelect, buildMonthOptions(selectedToYear), tx('בחרו חודש', 'Choose month'));
+}
+
+function syncWeddingRangeValue() {
+  const fromYear = form.wedding_range_from_year?.value || '';
+  const fromMonth = form.wedding_range_from_month?.value || '';
+  const toYear = form.wedding_range_to_year?.value || '';
+  const toMonth = form.wedding_range_to_month?.value || '';
+
+  if (form.wedding_month_from) {
+    form.wedding_month_from.value = fromYear && fromMonth ? `${fromYear}-${fromMonth}` : '';
+  }
+  if (form.wedding_month_to) {
+    form.wedding_month_to.value = toYear && toMonth ? `${toYear}-${toMonth}` : '';
+  }
+}
+
+function refreshWeddingRangeControls() {
+  populateWeddingRangeControls();
+  syncWeddingRangeValue();
 }
 
 function formatCurrency(amount) {
@@ -1496,6 +1541,8 @@ async function submitQuestionnaire(payload, state) {
 
 function resetForm() {
   form.reset();
+  refreshExactWeddingDateControls();
+  refreshWeddingRangeControls();
   updateWeddingDateMode();
   currentStep = 1;
   latestReportText = '';
@@ -1726,8 +1773,14 @@ form.querySelectorAll('input[name="wedding_date_mode"]').forEach((input) => {
   field.addEventListener('change', refreshExactWeddingDateControls);
 });
 
-setWeddingDateMinimums();
+['wedding_range_from_year', 'wedding_range_from_month', 'wedding_range_to_year', 'wedding_range_to_month'].forEach((fieldName) => {
+  const field = form[fieldName];
+  if (!field) return;
+  field.addEventListener('change', refreshWeddingRangeControls);
+});
+
 refreshExactWeddingDateControls();
+refreshWeddingRangeControls();
 updateWeddingDateMode();
 goToStep(1, { focusFirstInput: false });
 updateActiveNavLink();
@@ -1737,6 +1790,7 @@ window.addEventListener('load', () => {
   updateActiveNavLink();
 });
 window.addEventListener('wedwise:languagechange', refreshExactWeddingDateControls);
+window.addEventListener('wedwise:languagechange', refreshWeddingRangeControls);
 window.addEventListener('scroll', updateActiveNavLink, { passive: true });
 window.addEventListener('resize', updateActiveNavLink);
 window.addEventListener('hashchange', updateActiveNavLink);

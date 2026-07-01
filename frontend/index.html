@@ -176,16 +176,26 @@
                     <input type="hidden" id="wedding_date_exact" name="wedding_date_exact">
                   </div>
                   <div class="date-mode-fields" data-date-mode-panel="range" hidden>
-                    <div class="field-grid">
+                    <div class="date-range-grid">
                       <div class="field-group">
-                        <label for="wedding_month_from">מחודש</label>
-                        <input type="month" id="wedding_month_from" name="wedding_month_from">
+                        <label for="wedding_range_from_year">משנה</label>
+                        <select id="wedding_range_from_year" name="wedding_range_from_year"></select>
                       </div>
                       <div class="field-group">
-                        <label for="wedding_month_to">עד חודש</label>
-                        <input type="month" id="wedding_month_to" name="wedding_month_to">
+                        <label for="wedding_range_from_month">מחודש</label>
+                        <select id="wedding_range_from_month" name="wedding_range_from_month"></select>
+                      </div>
+                      <div class="field-group">
+                        <label for="wedding_range_to_year">עד שנה</label>
+                        <select id="wedding_range_to_year" name="wedding_range_to_year"></select>
+                      </div>
+                      <div class="field-group">
+                        <label for="wedding_range_to_month">עד חודש</label>
+                        <select id="wedding_range_to_month" name="wedding_range_to_month"></select>
                       </div>
                     </div>
+                    <input type="hidden" id="wedding_month_from" name="wedding_month_from">
+                    <input type="hidden" id="wedding_month_to" name="wedding_month_to">
                     <p class="field-hint">אם עדיין אין תאריך מדויק, בחרו טווח של חודש ושנה.</p>
                   </div>
                 </div>

@@ -60,8 +60,11 @@ Working in the active user flow:
 - Protected landing hero image with subtle petal motion.
 - Six-step questionnaire with validation and back/next navigation. The first
   step asks for budget, guest count, and wedding timing: either an exact date
-  through explicit year/month/day selects or an estimated month/year range.
-  Past dates and past months are blocked; future years remain available.
+  through explicit year/month/day selects or an estimated month/year range
+  through explicit from/to year and month selects. Native browser date/month
+  pickers are avoided here so labels, month names, and year selection stay
+  consistent in Hebrew and English. Past dates and past months are blocked;
+  future years remain available.
 - Wedding countdown helper page.
 - Wedding blessing writing page, labeled `כתיבת ברכה` in the navigation.
 - Wedding tips/guides page, labeled `טיפים ומדריכים`, with a visual tips grid,
@@ -234,7 +237,9 @@ matching invitation, and matching countdown actions should exist in both flows.
 The wedding date controls must also stay synchronized: exact date selection uses
 the same `wedding_year_exact`, `wedding_month_exact`, `wedding_day_exact`, and
 hidden `wedding_date_exact` fields in both questionnaires, while estimated date
-ranges use the same `wedding_month_from` and `wedding_month_to` fields.
+ranges use the same `wedding_range_from_year`, `wedding_range_from_month`,
+`wedding_range_to_year`, `wedding_range_to_month`, and hidden
+`wedding_month_from` / `wedding_month_to` fields.
 
 The homepage may keep a different page-level layout and scale so it fits the
 landing page, but the actual `<form id="wedding-form">...</form>` content and
