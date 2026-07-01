@@ -85,12 +85,19 @@ Working in the active user flow:
   notification, and Supabase follow-up persistence.
 - Venue recommendation modal based on the questionnaire's region, budget, and
   guest count. The data source is local demo JSON under `backend/data/venues/`.
+  When the request includes the couple's `submissionId`, the shown venues are
+  saved to the `recommended_vendors` table so there is a record of what that
+  couple was offered.
 - Non-venue supplier recommendation modals from the report for DJ, photography,
   design/flowers, and catering. These use the supplier catalog/database route
-  and never generate supplier names in the browser.
+  and never generate supplier names in the browser. When the request includes
+  the couple's `submissionId`, the shown suppliers are saved per category to the
+  `recommended_vendors` table.
 - Telegram delivery of completed questionnaire details.
-- Optional Supabase persistence for questionnaire submissions, leads, reports,
-  and follow-up decisions when Supabase credentials are configured.
+- Optional Supabase persistence for questionnaire submissions (including the
+  wedding date or estimated date range), leads, reports, follow-up decisions,
+  and the vendors recommended to each couple, when Supabase credentials are
+  configured.
 - Closed-by-default floating chatbot on every active frontend page.
 - OpenAI Responses API integration using `gpt-5.4-mini`.
 - OpenAI Images API integration using `gpt-image-1`.
@@ -444,6 +451,20 @@ incremental script to add the follow-up outcome queues:
 backend/database/add-follow-up-outcome-tables.sql
 ```
 
+The `submissions` table also stores the couple's wedding timing captured in the
+questionnaire: `wedding_date_mode` (`exact` or `range`), `wedding_date_exact`
+for an exact date, and `wedding_month_from` / `wedding_month_to` for an estimated
+month range, plus a human-readable `wedding_date_label`.
+
+Vendors recommended to a couple are stored in the `recommended_vendors` table,
+which links each recommended item to a `submission_id`. Rows are tagged by
+`vendor_type` (`venue` for wedding halls, `supplier` for other vendors) and
+`category`, and keep the vendor name, location, price range, match score, the
+Hebrew reason it was recommended, and a full JSON snapshot of the item as shown.
+The venue and supplier recommendation routes write to this table (best-effort,
+never blocking the response) whenever the request includes a `submissionId`,
+replacing any previous set for that couple and type/category to avoid duplicates.
+
 Backend routes for submissions, reports, images, suppliers, and leads are
 documented in:
 
@@ -502,8 +523,8 @@ recommendations.
 | `POST` | `/api/generate-countdown-design` | Optional OpenAI countdown design endpoint; requires uploaded image and API key. |
 | `POST` | `/api/wedding-follow-up` | Active final decision endpoint; saves to Supabase and notifies Telegram. |
 | `PATCH` | `/api/wedding-follow-up/:id/image-generated` | Marks a saved follow-up as having generated an image. |
-| `POST` | `/api/venues/recommend` | Active local venue recommendation endpoint using `backend/data/venues/`. |
-| `POST` | `/api/suppliers/recommend` | Active non-venue supplier recommendation endpoint for DJ, photography, design/flowers, and catering. Uses Supabase suppliers when configured, with local demo-catalog fallback for development. |
+| `POST` | `/api/venues/recommend` | Active local venue recommendation endpoint using `backend/data/venues/`. Saves the shown venues to `recommended_vendors` when an optional `submissionId` is provided. |
+| `POST` | `/api/suppliers/recommend` | Active non-venue supplier recommendation endpoint for DJ, photography, design/flowers, and catering. Uses Supabase suppliers when configured, with local demo-catalog fallback for development. Saves the shown suppliers (per category) to `recommended_vendors` when an optional `submissionId` is provided. |
 | `GET` | `/api/suppliers/recommendations` | Available; uses demo suppliers and a saved submission. |
 | `POST` | `/api/leads` | Available; requires Supabase and optionally Telegram. |
 
@@ -582,6 +603,7 @@ node --check backend/routes/suppliers.js
 node --check backend/routes/venues.js
 node --check backend/services/chat-service.js
 node --check backend/services/supplier-service.js
+node --check backend/services/recommended-vendors-store.js
 node --check frontend/scripts/app.js
 node --check frontend/scripts/chat-widget.js
 node --check frontend/scripts/blessing-helper.js
